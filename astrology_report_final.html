@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elite Vedic Astrology Report — Final</title>
+  <style>
+
+  :root {
+    --bg-deep:    #0d0d1a;
+    --bg-card:    #131328;
+    --bg-header:  #1a1a35;
+    --gold:       #c9a84c;
+    --gold-light: #f0d080;
+    --text-main:  #e8e0d0;
+    --text-muted: #8a8090;
+    --accent:     #7c5cbf;
+    --accent2:    #c05c5c;
+    --border:     rgba(201,168,76,0.25);
+    --shadow:     rgba(0,0,0,0.6);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg-deep);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* ── Starfield ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 30%, rgba(124,92,191,.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 70%, rgba(192,92,92,.10) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Layout ── */
+  #app { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+  /* ── Hero header ── */
+  .hero {
+    text-align: center;
+    padding: 3.5rem 1rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  .hero-badge {
+    display: inline-block;
+    font-size: .75rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: .25rem .9rem;
+    border-radius: 2rem;
+    margin-bottom: 1.2rem;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    margin-bottom: .6rem;
+  }
+  .hero p { color: var(--text-muted); font-size: .9rem; }
+
+  /* ── Table of Contents ── */
+  .toc {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: .75rem;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2.5rem;
+  }
+  .toc h2 { color: var(--gold); font-size: 1rem; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1rem; }
+  .toc ol { padding-left: 1.2rem; columns: 2; column-gap: 2rem; }
+  .toc li { margin-bottom: .3rem; break-inside: avoid; }
+  .toc a { color: var(--text-main); text-decoration: none; font-size: .88rem; }
+  .toc a:hover { color: var(--gold-light); }
+
+  /* ── Section cards ── */
+  .section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: .85rem;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+  .section-header {
+    background: linear-gradient(90deg, var(--bg-header) 0%, rgba(26,26,53,.6) 100%);
+    padding: 1rem 1.5rem;
+    display: flex; align-items: center; gap: .75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon { font-size: 1.4rem; }
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  .section-body { padding: 1.4rem 1.8rem; }
+
+  /* ── Typography in body ── */
+  .section-body p { margin-bottom: .75rem; }
+  .section-body p:last-child { margin-bottom: 0; }
+  .sub-heading {
+    font-size: .9rem; font-weight: 600;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--gold); margin: 1.25rem 0 .5rem;
+    border-bottom: 1px solid var(--border); padding-bottom: .25rem;
+  }
+  .planet-heading {
+    font-size: .95rem; font-weight: 600;
+    color: var(--gold-light); margin: 1rem 0 .3rem;
+  }
+  .insight-list { padding-left: 1.4rem; margin-bottom: .75rem; }
+  .insight-list li { margin-bottom: .4rem; color: var(--text-main); }
+  .numbered { margin-bottom: .4rem; }
+  .banner {
+    text-align: center; padding: .6rem;
+    color: var(--gold-light); font-weight: 600;
+    font-size: 1rem; margin: .75rem 0;
+  }
+  .spacer { height: .5rem; }
+
+  /* ── Planetary table ── */
+  .table-wrap { overflow-x: auto; margin: .75rem 0; }
+  .planet-table {
+    border-collapse: collapse; width: 100%;
+    font-size: .85rem;
+  }
+  .planet-table td {
+    padding: .45rem .75rem;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .planet-table tr:nth-child(odd) td { background: rgba(201,168,76,.05); }
+  .planet-table tr:hover td { background: rgba(201,168,76,.12); }
+
+  /* ── Preamble ── */
+  .preamble {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: .85rem;
+    padding: 1.4rem 1.8rem;
+    margin-bottom: 2rem;
+    font-size: .88rem;
+    color: var(--text-muted);
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center; padding: 2rem 0 1rem;
+    color: var(--text-muted); font-size: .8rem;
+    border-top: 1px solid var(--border);
+    margin-top: 3rem;
+  }
+  footer span { color: var(--gold); }
+
+  @media (max-width: 600px) {
+    .toc ol { columns: 1; }
+    #app { padding: 0 1rem 3rem; }
+  }
+
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <header class="hero">
+    <div class="hero-badge">Vedic Jyotish</div>
+    <h1>🔱 Elite Vedic Astrology Report 🔱</h1>
+    <p>Powered by Multi-Layer Jyotish Reasoning Engine</p>
+  </header>
+
+  <nav class="toc" aria-label="Report sections">
+    <h2>📋 Report Contents</h2>
+    <ol><li><a href="#section-1-introduction-kundali-summary">SECTION 1 — INTRODUCTION & KUNDALI SUMMARY</a></li>
+<li><a href="#section-2-planet-by-planet-deep-synthesis">SECTION 2 — PLANET-BY-PLANET DEEP SYNTHESIS</a></li>
+<li><a href="#section-3-combination-analysis">SECTION 3 — COMBINATION ANALYSIS</a></li>
+<li><a href="#section-4-yoga-analysis">SECTION 4 — YOGA ANALYSIS</a></li>
+<li><a href="#section-5-lordship-analysis">SECTION 5 — LORDSHIP ANALYSIS</a></li>
+<li><a href="#section-6-lagna-lord-10th-lord-7th-lord">SECTION 6 — LAGNA LORD | 10TH LORD | 7TH LORD</a></li>
+<li><a href="#section-7-career-deep-analysis">SECTION 7 — CAREER DEEP ANALYSIS</a></li>
+<li><a href="#section-8-marriage-deep-analysis">SECTION 8 — MARRIAGE DEEP ANALYSIS</a></li>
+<li><a href="#section-9-timing-analysis-dasha-system">SECTION 9 — TIMING ANALYSIS (DASHA SYSTEM)</a></li>
+<li><a href="#section-10-aspects-drishti">SECTION 10 — ASPECTS (DRISHTI)</a></li>
+<li><a href="#section-11-navamsa-d9">SECTION 11 — NAVAMSA (D9)</a></li>
+<li><a href="#section-12-shadbala-planetary-strength">SECTION 12 — SHADBALA (PLANETARY STRENGTH)</a></li>
+<li><a href="#section-13-shastra-insights-classical-texts">SECTION 13 — SHASTRA INSIGHTS (CLASSICAL TEXTS)</a></li>
+<li><a href="#section-14-dosha-analysis">SECTION 14 — DOSHA ANALYSIS</a></li>
+<li><a href="#section-15-transit-analysis-sade-sati">SECTION 15 — TRANSIT ANALYSIS + SADE SATI</a></li>
+<li><a href="#section-16-remedies">SECTION 16 — REMEDIES</a></li>
+<li><a href="#section-17-final-prediction">SECTION 17 — FINAL PREDICTION</a></li>
+<li><a href="#section-18-overall-summary">SECTION 18 — OVERALL SUMMARY</a></li></ol>
+  </nav>
+
+  <div class="preamble">
+<div class="spacer"></div>
+<p class="banner">🔱 ELITE VEDIC ASTROLOGY REPORT 🔱</p>
+<p>Powered by Multi-Layer Jyotish Reasoning Engine</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+<h3 class="sub-heading">REPORT STRUCTURE</h3>
+<p class="numbered"><strong>1.</strong> Introduction &amp; Kundali Summary</p>
+<p class="numbered"><strong>2.</strong> Planet-by-Planet Deep Synthesis</p>
+<p class="numbered"><strong>3.</strong> Combination Analysis</p>
+<p class="numbered"><strong>4.</strong> Classical Yogas + Advanced Yogas (20+)</p>
+<p class="numbered"><strong>5.</strong> Lordship Analysis — All 12 House Rulers</p>
+<p class="numbered"><strong>6.</strong> Lagna Lord | 10th Lord | 7th Lord</p>
+<p class="numbered"><strong>7.</strong> Career Deep Analysis</p>
+<p class="numbered"><strong>8.</strong> Marriage Deep Analysis</p>
+<p class="numbered"><strong>9.</strong> Mahadasha + Antardasha + Timeline</p>
+<p class="numbered"><strong>10.</strong> Aspects (Drishti)</p>
+<p class="numbered"><strong>11.</strong> Navamsa (D9)</p>
+<p class="numbered"><strong>12.</strong> Shadbala (Planetary Strength)</p>
+<p class="numbered"><strong>13.</strong> Shastra Insights (Classical Texts)</p>
+<p class="numbered"><strong>14.</strong> Dosha Analysis</p>
+<p class="numbered"><strong>15.</strong> Transit Analysis + Sade Sati</p>
+<p class="numbered"><strong>16.</strong> Remedies</p>
+<p class="numbered"><strong>17.</strong> Final Prediction</p>
+<p class="numbered"><strong>18.</strong> Overall Summary</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+  </div>
+
+
+  <div class="section-card" id="section-1-introduction-kundali-summary">
+    <div class="section-header">
+      <span class="section-icon">🌟</span>
+      <span class="section-title">SECTION 1 — INTRODUCTION &amp; KUNDALI SUMMARY</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">PLANETARY PLACEMENTS AT A GLANCE</h3>
+<div class="table-wrap"><table class="planet-table"><tbody><tr><td>ASC</td><td>Sign: Gemini</td><td>House:  1</td><td>Nakshatra: Mrigasira</td></tr>
+<tr><td>Sun</td><td>Sign: Leo</td><td>House:  3</td><td>Nakshatra: Purva Phalguni</td></tr>
+<tr><td>Moon</td><td>Sign: Libra</td><td>House:  5</td><td>Nakshatra: Swati</td></tr>
+<tr><td>Mars</td><td>Sign: Cancer</td><td>House:  2</td><td>Nakshatra: Ashlesha</td></tr>
+<tr><td>Mercury</td><td>Sign: Leo</td><td>House:  3</td><td>Nakshatra: Uttara Phalguni</td></tr>
+<tr><td>Jupiter</td><td>Sign: Taurus</td><td>House: 12</td><td>Nakshatra: Rohini</td></tr>
+<tr><td>Venus</td><td>Sign: Virgo</td><td>House:  4</td><td>Nakshatra: Uttara Phalguni</td></tr>
+<tr><td>Saturn</td><td>Sign: Taurus</td><td>House: 12</td><td>Nakshatra: Krittika</td></tr>
+<tr><td>Rahu</td><td>Sign: Gemini</td><td>House:  1</td><td>Nakshatra: Punarvasu</td></tr>
+<tr><td>Ketu</td><td>Sign: Sagittarius</td><td>House:  7</td><td>Nakshatra: Uttara Ashadha</td></tr></tbody></table></div>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-2-planet-by-planet-deep-synthesis">
+    <div class="section-header">
+      <span class="section-icon">🪐</span>
+      <span class="section-title">SECTION 2 — PLANET-BY-PLANET DEEP SYNTHESIS</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">PLANET-BY-PLANET DEEP SYNTHESIS</h3>
+<p>Each planet is analyzed through its sign, house, nakshatra, and dignity to reveal the full multi-dimensional picture of your chart.</p>
+<div class="spacer"></div>
+<h4 class="planet-heading">ASC in Gemini (House 1, Nakshatra: Mrigasira)</h4>
+<p>ASC is placed in Gemini in the 1th house of your chart. This house governs self, personality, and physical body. ASC represents cosmic influence.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+<h4 class="planet-heading">Sun in Leo (House 3, Nakshatra: Purva Phalguni)</h4>
+<p>Sun is placed in Leo in the 3th house of your chart. This house governs effort, courage, siblings, and communication. Sun represents authority, ego, soul, and the relationship with the father.</p>
+<div class="spacer"></div>
+<p>The Sun governs authority, ego, the soul, and the relationship with the father. A strong Sun supports leadership, clarity of purpose, and public recognition. The Sun represents the core identity and life purpose.</p>
+<p>Sun in the 3rd house gives exceptional courage, self-expression, and the ability to lead through communication, writing, and entrepreneurial initiative.</p>
+<p>Sun is in its OWN SIGN Leo — well-established, confident, and able to fully express its natural qualities.</p>
+<div class="spacer"></div>
+<h4 class="planet-heading">Moon in Libra (House 5, Nakshatra: Swati)</h4>
+<p>Moon is placed in Libra in the 5th house of your chart. This house governs intelligence, creativity, children, and past-life merit. Moon represents mind, emotions, mother, and intuitive perception.</p>
+<div class="spacer"></div>
+<p>The Moon governs the mind, emotions, intuition, and the relationship with the mother. A strong Moon supports emotional stability, empathy, and social popularity. The Moon sign is as important as the rising sign in Vedic astrology.</p>
+<div class="spacer"></div>
+<h4 class="planet-heading">Mars in Cancer (House 2, Nakshatra: Ashlesha)</h4>
+<p>Mars is placed in Cancer in the 2th house of your chart. This house governs wealth, speech, and family values. Mars represents energy, courage, aggression, action, and physical vitality.</p>
+<div class="spacer"></div>
+<p>Mars provides energy, courage, and drive. It governs action, competition, and physical vitality. Mars periods are dynamic and conflict-prone but also highly productive when the native channels the energy constructively.</p>
+<p>Mars is DEBILITATED in Cancer — this placement creates challenges but also potential for Neecha Bhanga (cancellation of debilitation) which can produce remarkable results.</p>
+<div class="spacer"></div>
+<h4 class="planet-heading">Mercury in Leo (House 3, Nakshatra: Uttara Phalguni)</h4>
+<p>Mercury is placed in Leo in the 3th house of your chart. This house governs effort, courage, siblings, and communication. Mercury represents intellect, communication, trade, adaptability, and analysis.</p>
+<div class="spacer"></div>
+<p>Mercury rules intellect, communication, commerce, and analytical ability. Mercury-strong charts often indicate writers, traders, analysts, teachers, or speakers. Quick thinking and adaptability are hallmarks of strong Mercury.</p>
+<p>Mercury in the 3rd house — its natural house of communication — strongly supports writing, speaking, trading, and intellectual pursuits.</p>
+<div class="spacer"></div>
+<h4 class="planet-heading">Jupiter in Taurus (House 12, Nakshatra: Rohini)</h4>
+<p>Jupiter is placed in Taurus in the 12th house of your chart. This house governs loss, foreign lands, moksha, and spirituality. Jupiter represents wisdom, expansion, spirituality, children, and good fortune.</p>
+<div class="spacer"></div>
+<p>Jupiter expands whatever it touches and bestows wisdom, optimism, and higher knowledge. Jupiter periods often bring blessings, growth, children, and connection to spiritual truths.</p>
+<p>Jupiter in the 12th house indicates that knowledge comes through isolation, foreign lands, or deep inner exploration. Strong moksha and spiritual liberation potential.</p>
+<div class="spacer"></div>
+<h4 class="planet-heading">Venus in Virgo (House 4, Nakshatra: Uttara Phalguni)</h4>
+<p>Venus is placed in Virgo in the 4th house of your chart. This house governs home, mother, emotional security, and comfort. Venus represents love, beauty, comfort, arts, and relationships.</p>
+<div class="spacer"></div>
+<p>Venus governs beauty, love, arts, and material comfort. Venus periods bring social harmony, creative expression, financial gains, and relationship opportunities. Venus strong charts indicate talent in aesthetics and a refined quality of life.</p>
+<p>Venus is DEBILITATED in Virgo — this placement creates challenges but also potential for Neecha Bhanga (cancellation of debilitation) which can produce remarkable results.</p>
+<div class="spacer"></div>
+<h4 class="planet-heading">Saturn in Taurus (House 12, Nakshatra: Krittika)</h4>
+<p>Saturn is placed in Taurus in the 12th house of your chart. This house governs loss, foreign lands, moksha, and spirituality. Saturn represents discipline, karma, delay, perseverance, and hard lessons.</p>
+<div class="spacer"></div>
+<p>Saturn delays but never denies. Results come through persistence, discipline, and patience. Saturn-ruled periods test character but ultimately reward integrity and long-term effort.</p>
+<p>Saturn in the 12th house carries strong karmic isolation energy. Foreign settlement, deep spiritual evolution, or work in hidden institutions (hospitals, ashrams, research) is indicated.</p>
+<div class="spacer"></div>
+<h4 class="planet-heading">Rahu in Gemini (House 1, Nakshatra: Punarvasu)</h4>
+<p>Rahu is placed in Gemini in the 1th house of your chart. This house governs self, personality, and physical body. Rahu represents desire, obsession, illusion, innovation, and worldly ambition.</p>
+<div class="spacer"></div>
+<p>Rahu amplifies desire, ambition, and unconventional thinking. It breaks social norms and drives the native toward obsessive pursuit of chosen goals. Rahu areas bring both rapid rise and potential illusion.</p>
+<p>Rahu in the 1st house creates a magnetic, unconventional personality. The native often follows an unusual life path and may have a powerful, transformative public presence.</p>
+<div class="spacer"></div>
+<h4 class="planet-heading">Ketu in Sagittarius (House 7, Nakshatra: Uttara Ashadha)</h4>
+<p>Ketu is placed in Sagittarius in the 7th house of your chart. This house governs marriage, business partnerships, and open enemies. Ketu represents detachment, past-life karma, spirituality, and liberation.</p>
+<div class="spacer"></div>
+<p>Ketu detaches and spiritualizes. It represents past-life mastery and present-life disinterest in those areas. Ketu placements show where the native has innate skill but little worldly attachment, making liberation possible.</p>
+<p>Ketu in the 7th house indicates karmic relationships with deep soul connections but potential detachment, unusual dynamics, or spiritual orientation in partnerships.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-3-combination-analysis">
+    <div class="section-header">
+      <span class="section-icon">🔗</span>
+      <span class="section-title">SECTION 3 — COMBINATION ANALYSIS</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">COMBINED ANALYSIS</h3>
+<p>This section looks at planetary combinations in your chart that produce distinctive life themes and outcomes.</p>
+<div class="spacer"></div>
+<p>With both Saturn and Jupiter placed in the 12th house, your chart carries strong spiritual potential along with meaningful connections to foreign lands or institutions.</p>
+<p>Your Sun in the 3rd house bestows courage and a natural ability to lead through communication, writing, and self-driven effort.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-4-yoga-analysis">
+    <div class="section-header">
+      <span class="section-icon">🔥</span>
+      <span class="section-title">SECTION 4 — YOGA ANALYSIS</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<p class="banner">🔥 CORE DESTINY FACTORS (YOGAS) 🔥</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+<h3 class="sub-heading">CLASSICAL YOGA ANALYSIS</h3>
+<p>This section identifies important yogas formed in your chart.</p>
+<div class="spacer"></div>
+<p>🔥 Vipreet Raj Yoga indicates success through adversity and unexpected rise.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+<h3 class="sub-heading">ADVANCED YOGA ANALYSIS (20+ YOGAS)</h3>
+<p>This section identifies all major classical and advanced yogas present in your chart. Yogas are specific planetary combinations that produce distinctive life outcomes.</p>
+<div class="spacer"></div>
+<p class="numbered"><strong>1.</strong> ☀️ Budh-Aditya Yoga — Sun and Mercury conjunct in the same house. Strong intelligence, articulate communication, and intellectual brilliance. Excellent for writers, speakers, analysts, and diplomats. The combination of soul (Sun) and intellect (Mercury) in one house creates a razor-sharp communicator.</p>
+<div class="spacer"></div>
+<p class="numbered"><strong>2.</strong> 🔥 Vipreet Raj Yoga — Saturn in dusthana (6th, 8th, or 12th house). Success through adversity, unexpected rise, and triumph after hardship. The greater the challenge faced, the greater the eventual reward. This is the yoga of the phoenix — rising from difficulties.</p>
+<div class="spacer"></div>
+<p class="numbered"><strong>3.</strong> ♻️ Neecha Bhanga Raja Yoga potential — Mars is debilitated in Cancer. If the debilitation is cancelled by supporting factors (lord of debilitation sign in kendra, or exaltation lord in kendra), this produces extraordinary strength and unexpected rise in life, especially during the Mars Mahadasha.</p>
+<div class="spacer"></div>
+<p class="numbered"><strong>4.</strong> ♻️ Neecha Bhanga Raja Yoga potential — Venus is debilitated in Virgo. If the debilitation is cancelled by supporting factors (lord of debilitation sign in kendra, or exaltation lord in kendra), this produces extraordinary strength and unexpected rise in life, especially during the Venus Mahadasha.</p>
+<div class="spacer"></div>
+<p class="numbered"><strong>5.</strong> 🔗 Graha Malika Yoga — 5 consecutive houses are occupied by planets, forming a garland of planetary energy. This yoga indicates a life of intense activity, varied experiences, and wide-ranging impact across multiple life domains.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-5-lordship-analysis">
+    <div class="section-header">
+      <span class="section-icon">📜</span>
+      <span class="section-title">SECTION 5 — LORDSHIP ANALYSIS</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">LORDSHIP ANALYSIS — ALL 12 HOUSE RULERS</h3>
+<p>Each house has a ruling lord whose placement in the chart determines how that house&#x27;s themes manifest. This section maps every house lord to decode the full life blueprint.</p>
+<div class="spacer"></div>
+<p>Ascendant not found for lordship analysis.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-6-lagna-lord-10th-lord-7th-lord">
+    <div class="section-header">
+      <span class="section-icon">👑</span>
+      <span class="section-title">SECTION 6 — LAGNA LORD | 10TH LORD | 7TH LORD</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">LAGNA LORD ANALYSIS</h3>
+<div class="spacer"></div>
+<p>Lagna lord not found.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+<h3 class="sub-heading">10TH LORD (CAREER DEEP ANALYSIS)</h3>
+<div class="spacer"></div>
+<p>Ascendant not found for 10th lord analysis.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+<h3 class="sub-heading">7TH LORD (MARRIAGE DEEP ANALYSIS)</h3>
+<div class="spacer"></div>
+<p>Ascendant not found for 7th lord analysis.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-7-career-deep-analysis">
+    <div class="section-header">
+      <span class="section-icon">💼</span>
+      <span class="section-title">SECTION 7 — CAREER DEEP ANALYSIS</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">CAREER DEEP ANALYSIS</h3>
+<p>This section evaluates professional direction, growth, and challenges using multi-layer planetary reasoning.</p>
+<div class="spacer"></div>
+<h3 class="sub-heading">10th House Lord (Primary Career Indicator)</h3>
+<div class="spacer"></div>
+<h3 class="sub-heading">Saturn — Karma Karaka (Lord of Career Karma)</h3>
+<p>Saturn determines long-term career stability and the karmic lessons embedded in professional life. Whatever Saturn touches matures slowly but solidly.</p>
+<p>Saturn in 6/8/12: Career may involve delays, struggles, or unconventional paths — but Vipreet Raj Yoga potential creates unexpected rise through adversity.</p>
+<div class="spacer"></div>
+<h3 class="sub-heading">Sun — Authority and Status</h3>
+<p>Sun in 3rd house: Career driven by courage, self-expression, and communication. Media, writing, entrepreneurship, or broadcasting is indicated.</p>
+<div class="spacer"></div>
+<h3 class="sub-heading">Mars — Action, Drive, and Ambition</h3>
+<div class="spacer"></div>
+<h3 class="sub-heading">Mercury — Intellect and Communication</h3>
+<p>Mercury in 3rd (its natural house): Exceptional analytical, writing, and communication skills that significantly accelerate career growth.</p>
+<div class="spacer"></div>
+<h3 class="sub-heading">Jupiter — Wisdom and Career Expansion</h3>
+<p>Jupiter in 12th: Career linked to foreign lands, research, spirituality, counseling, healing, or behind-the-scenes advisory roles.</p>
+<div class="spacer"></div>
+<h3 class="sub-heading">Rahu — Unconventional Career Ambition</h3>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-8-marriage-deep-analysis">
+    <div class="section-header">
+      <span class="section-icon">💞</span>
+      <span class="section-title">SECTION 8 — MARRIAGE DEEP ANALYSIS</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">MARRIAGE &amp; RELATIONSHIP DEEP ANALYSIS</h3>
+<p>This section evaluates partnership dynamics, marital prospects, and relationship karma through multi-layer planetary reasoning.</p>
+<div class="spacer"></div>
+<h3 class="sub-heading">7th House Lord (Primary Marriage Indicator)</h3>
+<div class="spacer"></div>
+<h3 class="sub-heading">Venus — Love, Relationships, and Harmony</h3>
+<div class="spacer"></div>
+<h3 class="sub-heading">Jupiter — Spouse Indicator and Marriage Blessings</h3>
+<p>Jupiter in 12th: Spouse may be from a different culture, foreign land, or spiritual background. A deeply spiritual and transcendent connection in marriage.</p>
+<div class="spacer"></div>
+<h3 class="sub-heading">Mars — Passion, Drive, and Conflict in Relationships</h3>
+<div class="spacer"></div>
+<h3 class="sub-heading">Saturn — Karmic Bonds and Long-Term Stability</h3>
+<p>Saturn in 12th: Spiritual and karmic bonds in relationships. Foreign spouse or spiritual partnership possible. Relationship may involve sacrifice and deep inner growth.</p>
+<div class="spacer"></div>
+<h3 class="sub-heading">Rahu &amp; Ketu — Karmic Relationship Patterns</h3>
+<p>Ketu in 7th: Deep past-life connection with the partner. The relationship feels simultaneously familiar and complex. Spiritual growth through marriage is strongly indicated; detachment tendencies must be consciously managed.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-9-timing-analysis-dasha-system">
+    <div class="section-header">
+      <span class="section-icon">⏳</span>
+      <span class="section-title">SECTION 9 — TIMING ANALYSIS (DASHA SYSTEM)</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<p>⏳ TIMING ANALYSIS (DASHA SYSTEM) ⏳</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+<h3 class="sub-heading">MAHADASHA ANALYSIS</h3>
+<div class="spacer"></div>
+<p>Rahu Mahadasha (03/09/2000 - 26/01/2010):</p>
+<ul class="insight-list">
+<li>This indicates that Chilciren, clestruction of cattle, house, agricultural fields, diseases, consumption (get-enlargement  of wiil be the results, if  rahu  be  weak or be in the 8th or  l2th from the lc.&#x27;rd of  the dasa (the sun). . gain.of wealth frorn rnany sources, will be the effects if saturn.</li>
+<li>This indicates that 73-74t. antagonisbr with government officials, residing in other people&#x27;s houses, destruction of wealth, clothes, convey- ances auc cattle, will  be  the  results if mercury  be  associa,ed with saturn, 1,4&amp;rs or rahu in the 6th, the 8th or  the 121fu flrun the asccndant. tbere  will  be some beneficial effects of  the.</li>
+<li>This indicates that Ently. the effects of other planets do not come in their way. they acquire the strength of the lord of tlic house in which they are posited. tlie good and bad results of the bhava they occupy are to be interpreted in the light of the strength of the results given by rahu and ketu arc said to be.</li>
+<li>This indicates that A  planet in  the visible half  of  the zodiac potential in effects while in the invisible half it is 9. if  rahu is in the l2th  along with mars, saturn and the sun, the aative will go  to hell.  similar effect wi[  occur  if the notes :  the l2th  house relates to one,s fate after  death..</li>
+</ul>
+<div class="spacer"></div>
+<p>Jupiter Mahadasha (26/01/2010 - 26/01/2026):</p>
+<ul class="insight-list">
+<li>This indicates that By mercury.  if  the sun (ruler of  ihe 9th) joins vf&quot;r.ury, uotn of them will  confer stil  superior yoga  for sagittarius natives. mars  gives primarily  his  5th  house effects shedding his  l2th  lordship and  hence is a  favourable planet. jupiter is  neither a  first-rate benefic nor an adversary for he.</li>
+<li>This indicates that *re productivc of only mediuna efects  (not&#x27;malevolent). jupiter and  mercury  produce  auspicious effects.  consequently the native will  be physically fit,  enjoy good health and will  be  well behaved. the first house has larger number ofbenefic  vargas in tbe saptavarga of bhavas (houses). as  a  result  the nativi  wilr.</li>
+<li>This indicates that The  l0th  while  the  r0th  rord- is  strong and  be in  asfej  to jupiter. fame will come to the native ir  tne rotr, roij-il ii the 9th as the ascendant rord is in the toth and tr,. u*o  n ii 22. o  excellent of the brahmins, thus havs  been tord about the  effects of  the l0th  house in a brief manner.  other  related.</li>
+<li>This indicates that The 5th thereof, the native will be an author. place will make one an ordinary writer while mercury will  give still lesser effects in this respect. should jupiter be alone in the said house, one will be a knower of everything, be a writer, and be versed in vedas and vedanta philosophy, but not an oratorian.</li>
+<li>This indicates that The 3rd from karakamsa be also similarly considered .aqfigqdt attfitrsl qr rd  q fqu{r tlilt llve ll 47.48. effects of the  7th from  karakamsa  : &#x27; if  the  moon  and jupiter  are in the 7th from karakamsa, the native will  beget a very beautiful wife.  venus in the said  house.</li>
+</ul>
+<div class="spacer"></div>
+<p>Saturn Mahadasha (26/01/2026 - 26/01/2045):</p>
+<ul class="insight-list">
+<li>This indicates that Chilciren, clestruction of cattle, house, agricultural fields, diseases, consumption (get-enlargement  of wiil be the results, if  rahu  be  weak or be in the 8th or  l2th from the lc.&#x27;rd of  the dasa (the sun). . gain.of wealth frorn rnany sources, will be the effects if saturn.</li>
+<li>This indicates that 73-74t. antagonisbr with government officials, residing in other people&#x27;s houses, destruction of wealth, clothes, convey- ances auc cattle, will  be  the  results if mercury  be  associa,ed with saturn, 1,4&amp;rs or rahu in the 6th, the 8th or  the 121fu flrun the asccndant. tbere  will  be some beneficial effects of  the.</li>
+<li>This indicates that Deprives one  of mother&#x27;s milk.  the 7th rules thc 4th from the 4th and hence the 7th is referred to. saturn in the 4th house will&#x27;alpo  deprive om  of mother&#x27;s atmakaraka  in  scorpio  navamsa will  producc  similar effects. for a definition of atmakaraka, see ch. 32,lnfra..</li>
+<li>This indicates that Ascendant) as the sun is inthe  zth  from saturn (i.e. gth  from the  ascendant), the ages of  30, 2l  or 26 will be fatal for  the father.  if  the  9th lord is in debilitation while his  dispositor is in the 9th, the native will lose his father at  26 or 30.  thus  the astrologcrs may know the effects (of the 9th house)..</li>
+<li>This indicates that A  planet in  the visible half  of  the zodiac potential in effects while in the invisible half it is 9. if  rahu is in the l2th  along with mars, saturn and the sun, the aative will go  to hell.  similar effect wi[  occur  if the notes :  the l2th  house relates to one,s fate after  death..</li>
+</ul>
+<div class="spacer"></div>
+<div class="spacer"></div>
+<h3 class="sub-heading">ANTARDASHA ANALYSIS</h3>
+<p>This section analyzes sub-period influences within the current Mahadasha with detailed period-specific interpretations.</p>
+<div class="spacer"></div>
+<p>You are currently running the Rahu-Jupiter Dasha-Antardasha period.</p>
+<div class="spacer"></div>
+<p>Main Period Themes — Rahu Mahadasha:</p>
+<p>ambition, unconventional paths, foreign connections, illusion, and obsession. Dramatic and unexpected life shifts possible.</p>
+<div class="spacer"></div>
+<p>The Rahu Mahadasha brings sudden changes, foreign influences, and unconventional opportunities. Material ambition is high but maintaining groundedness is essential to avoid illusion and scattered focus.</p>
+<div class="spacer"></div>
+<p>Sub-Period Themes — Jupiter Antardasha:</p>
+<p>expansion, wisdom, blessings, and opportunity emerge. Auspicious events and growth are likely.</p>
+<p>The Jupiter Antardasha within this main period brings blessings, expansion, and fortunate opportunities. New doors in education, spirituality, or career may open.</p>
+<div class="spacer"></div>
+<h3 class="sub-heading">Rahu-Jupiter Compatibility Assessment</h3>
+<p>A blend of benefic and malefic energies characterizes this period — some life areas will flourish while others require careful navigation and patience. Balance and awareness are the key.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+<h3 class="sub-heading">ANTARDASHA TIMELINE</h3>
+<p>Detailed breakdown of sub-periods within the current Mahadasha.</p>
+<div class="spacer"></div>
+<p>Rahu Antardasha: 03/09/2000 → 26/01/2010</p>
+<p>Jupiter Antardasha: 26/01/2010 → 26/01/2026</p>
+<p>Saturn Antardasha: 26/01/2026 → 26/01/2045</p>
+<p>Mercury Antardasha: 26/01/2045 → 26/01/2062</p>
+<p>Ketu Antardasha: 26/01/2062 → 26/01/2069</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-10-aspects-drishti">
+    <div class="section-header">
+      <span class="section-icon">🔭</span>
+      <span class="section-title">SECTION 10 — ASPECTS (DRISHTI)</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">ASPECTS (DRISHTI)</h3>
+<p>ASC (Gemini) aspects Sagittarius (house-7 drishti) — aspecting Ketu</p>
+<p>Sun (Leo) aspects Aquarius (house-7 drishti)</p>
+<p>Moon (Libra) aspects Aries (house-7 drishti)</p>
+<p>Mars (Cancer) aspects Capricorn (house-7 drishti)</p>
+<p>Mars (Cancer) aspects Libra (house-4 drishti) — aspecting Moon</p>
+<p>Mars (Cancer) aspects Aquarius (house-8 drishti)</p>
+<p>Mercury (Leo) aspects Aquarius (house-7 drishti)</p>
+<p>Jupiter (Taurus) aspects Scorpio (house-7 drishti)</p>
+<p>Jupiter (Taurus) aspects Virgo (house-5 drishti) — aspecting Venus</p>
+<p>Jupiter (Taurus) aspects Capricorn (house-9 drishti)</p>
+<p>Venus (Virgo) aspects Pisces (house-7 drishti)</p>
+<p>Saturn (Taurus) aspects Scorpio (house-7 drishti)</p>
+<p>Saturn (Taurus) aspects Cancer (house-3 drishti) — aspecting Mars</p>
+<p>Saturn (Taurus) aspects Aquarius (house-10 drishti)</p>
+<p>Rahu (Gemini) aspects Sagittarius (house-7 drishti) — aspecting Ketu</p>
+<p>Rahu (Gemini) aspects Libra (house-5 drishti) — aspecting Moon</p>
+<p>Rahu (Gemini) aspects Aquarius (house-9 drishti)</p>
+<p>Ketu (Sagittarius) aspects Gemini (house-7 drishti) — aspecting ASC, Rahu</p>
+<p>Ketu (Sagittarius) aspects Aries (house-5 drishti)</p>
+<p>Ketu (Sagittarius) aspects Leo (house-9 drishti) — aspecting Sun, Mercury</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-11-navamsa-d9">
+    <div class="section-header">
+      <span class="section-icon">🔮</span>
+      <span class="section-title">SECTION 11 — NAVAMSA (D9)</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">NAVAMSA (D9)</h3>
+<p>ASC        → Navamsa sign: Libra</p>
+<p>Sun        → Navamsa sign: Virgo</p>
+<p>Moon       → Navamsa sign: Capricorn</p>
+<p>Mars       → Navamsa sign: Pisces</p>
+<p>Mercury    → Navamsa sign: Sagittarius</p>
+<p>Jupiter    → Navamsa sign: Taurus</p>
+<p>Venus      → Navamsa sign: Pisces</p>
+<p>Saturn     → Navamsa sign: Pisces</p>
+<p>Rahu       → Navamsa sign: Gemini</p>
+<p>Ketu       → Navamsa sign: Sagittarius</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-12-shadbala-planetary-strength">
+    <div class="section-header">
+      <span class="section-icon">⚡</span>
+      <span class="section-title">SECTION 12 — SHADBALA (PLANETARY STRENGTH)</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">SHADBALA (PLANETARY STRENGTH)</h3>
+<p>This section evaluates the strength of planets in your chart and their ability to deliver results.</p>
+<div class="spacer"></div>
+<p>ASC: Shadbala score = 20 [Moderate] (kendra)</p>
+<p>Sun: Shadbala score = 45 [Moderate] (own sign)</p>
+<p>Moon: Shadbala score = 30 [Moderate] (partial dik-bala, trikona)</p>
+<p>Mars: Shadbala score = -30 [Weak] (debilitated)</p>
+<p>Mercury: Shadbala score = 15 [Weak] (partial dik-bala)</p>
+<p>Jupiter: Shadbala score = -20 [Weak] (dusthana)</p>
+<p>Venus: Shadbala score = 20 [Moderate] (debilitated, full dik-bala, kendra)</p>
+<p>Saturn: Shadbala score = -20 [Weak] (dusthana)</p>
+<p>Rahu: Shadbala score = 20 [Moderate] (kendra)</p>
+<p>Ketu: Shadbala score = 20 [Moderate] (kendra)</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-13-shastra-insights-classical-texts">
+    <div class="section-header">
+      <span class="section-icon">📚</span>
+      <span class="section-title">SECTION 13 — SHASTRA INSIGHTS (CLASSICAL TEXTS)</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">SHASTRA INSIGHTS</h3>
+<p>The following insights are drawn from classical Vedic texts and are relevant to the planetary placements in your chart.</p>
+<div class="spacer"></div>
+<ul class="insight-list">
+<li>This indicates that 62  the satwik planets are the sun (leo), moon (cancer) and jupiter (pisces &amp; sagittarius). the rajas planets are mercury (virgo &amp; gemini) and venus (taurus &amp; libra). the tamas planets are mars (aries &amp; scorpio) and saturn (capricorn &amp; aquarius). this should not be mistaken with the natural nature o.</li>
+<li>This indicates that Taurus ascendant, gemini ascendant, c.ancer asc€n- dant, leo  ascendant, virgo ascendant, libra ascen- daot,  scorpio  ascendant, sagittarius  ascendant, capricorn ascendant, aquarius ascendant, and pisces formation and effects of rajju, musala, nala, maala.</li>
+<li>This indicates that Gemini, libra, aquarius or the first half  of sagittarius. if aries, taurus, leo or first half of  capricorn or  the  second half  of sagittarius happen to be the bhava, deduct the 4th house (nadir) from it.  should the bhava be in cancer or  in  scorpio deduct from it the asccndant. and deduct the.</li>
+<li>This indicates that Effects of the antardasas of the sun, the moon, mars rahu, jupiter, saturn, mercury, ketu and  venus, auspicious and  inauspicious effects according to the dignities and indignities, strength and  disposition of the antardasa lord with reference to the  ascendant.</li>
+<li>This indicates that In those signs. this aspect is called rasi drishti (sign aspect). for example, a planet in libra will aspect the houses and planets in aq, ta and le. exercise 15: find the rasis, houses and planets aspected with rasi drishti by sun, moon, mars, mercury, jupiter, venus, saturn, rahu and ketu in 10.4.</li>
+</ul>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-14-dosha-analysis">
+    <div class="section-header">
+      <span class="section-icon">⚠️</span>
+      <span class="section-title">SECTION 14 — DOSHA ANALYSIS</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">DOSHA ANALYSIS</h3>
+<p>This section identifies key karmic patterns in your chart that may influence important life areas.</p>
+<div class="spacer"></div>
+<p>A Kaal Sarp pattern is detected in your chart — your life journey may feature dramatic highs and lows, but these experiences ultimately shape profound inner growth.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-15-transit-analysis-sade-sati">
+    <div class="section-header">
+      <span class="section-icon">🌊</span>
+      <span class="section-title">SECTION 15 — TRANSIT ANALYSIS + SADE SATI</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">TRANSIT ANALYSIS</h3>
+<p>This section examines how current planetary transits are interacting with your natal chart and what shifts they may bring.</p>
+<div class="spacer"></div>
+<p>Saturn transiting Taurus, natal Moon in Libra (Saturn in 8th from Moon).</p>
+<p>⚠  ASHTAMA SHANI active — pressure on health, finances, and stability.</p>
+<div class="spacer"></div>
+<p class="banner">🪐 TRANSIT ANALYSIS (INCLUDING SADE SATI) 🪐</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+<h3 class="sub-heading">SADE SATI ANALYSIS</h3>
+<p>Sade Sati is a transit-based influence and should be interpreted along with Dasha and Yogas.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+<p>Rising Phase (10/09/2009 - 14/11/2011):</p>
+<ul class="insight-list">
+<li>This indicates that Mahapurush  yog.  it is  subject  to  a  negative  papkartari yog  between  the sun and  ketu  that indicates  loss  of vehicles etc.  at the time of downfall in business. virgo the fourth house has the argala of sun in the eleventh from  it  obstructed  by  saturn,  rahu  &amp;  moon  in  the.</li>
+<li>This indicates that Chart 3-1, the atmakaraka is saturn, amatyakaraka is jupiter and the atmakaraka saturn is placed in virgo in the navamsa chart. this is called the karakamsa. the twelfth house from this sign is to be examined for bandana (bondage/re-birth) &amp; moksha (emancipation). this is leo and mercury is placed in this sign in vargottama. mercury indicates.</li>
+<li>This indicates that With  jupiter  it  causes  chandala  yoga  and  the  pregnancy  was  aborted. this  occurred  in  sun-saturn  dasa-antar.  the  second  issue  is  seen  from the seventh house (3rd from 9th house in reverse direction) and its lord mercury  is  exalted  (son)  in  virgo.  with  advent  of  sun-mercury  dasa- antar, she was carrying this issue. we have already seen house mercury.</li>
+<li>This indicates that The lagna is pisces and badhak house is virgo. it is empty but its lords mercury is placed in capricorn (evil sign signifying spirits/spells/black magic) and is conjoined saturn and ketu. this is a clean case of preta badhak333 and in the visible portion of the chant (i.e. houses 7th to 12th) indicates the curse from paternal elders. the first.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+</ul>
+<div class="spacer"></div>
+<p>Peak Phase (15/11/2011 - 15/05/2012):</p>
+<ul class="insight-list">
+<li>This indicates that Conjoin,  the enemy suffers losses and thus the native gains.  if this  association  also  occurs  in  a  dusthana (3,6,8  or  12th  house)  then  vipareeta  rajyoga  results. similarly,  if  saturn  becomes  a  yogakaraka  (e.g.  for taurus of libra ascendant) and is  placed in a dusthana.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+<li>This indicates that Rasi (of the bhuja) to thc bhuja.  the degrees etc. of the bhuja (devoid of rasi) be multiplied by the figure corresponding to the higher of  the left  out khandas and divided by  30.  add  the resultant product  to  the sum obtained earlier.  convert this the  moon and saturn are in libra or  ahead.</li>
+<li>This indicates that Vantageous. for libra ascendant. satrun is classified as unsullied yogakaraka because he  owns the  4th (an angle) and the 5th (a trine). the sun&#x27;s benelicence ro  taurus asccndant cannot be compared to  saturn&#x27;s for libra,  because the sun has only one house which is angular to the ascendant. for leo ascendar,t.</li>
+<li>This indicates that Aneously owns a trine he will be favourable. for example, jupiter is doubly evil for  libra  ascendant as he owns the 3id and 6th. saturn, though owning the 8th, will be favourabre for a  gemini nativity as he is the lord of the 9th as wcll.  in  considering two lordships  in  any context,  the  moolatrikona  house has prime.</li>
+</ul>
+<div class="spacer"></div>
+<p>Rising Phase (16/05/2012 - 03/08/2012):</p>
+<ul class="insight-list">
+<li>This indicates that Mahapurush  yog.  it is  subject  to  a  negative  papkartari yog  between  the sun and  ketu  that indicates  loss  of vehicles etc.  at the time of downfall in business. virgo the fourth house has the argala of sun in the eleventh from  it  obstructed  by  saturn,  rahu  &amp;  moon  in  the.</li>
+<li>This indicates that Chart 3-1, the atmakaraka is saturn, amatyakaraka is jupiter and the atmakaraka saturn is placed in virgo in the navamsa chart. this is called the karakamsa. the twelfth house from this sign is to be examined for bandana (bondage/re-birth) &amp; moksha (emancipation). this is leo and mercury is placed in this sign in vargottama. mercury indicates.</li>
+<li>This indicates that With  jupiter  it  causes  chandala  yoga  and  the  pregnancy  was  aborted. this  occurred  in  sun-saturn  dasa-antar.  the  second  issue  is  seen  from the seventh house (3rd from 9th house in reverse direction) and its lord mercury  is  exalted  (son)  in  virgo.  with  advent  of  sun-mercury  dasa- antar, she was carrying this issue. we have already seen house mercury.</li>
+<li>This indicates that The lagna is pisces and badhak house is virgo. it is empty but its lords mercury is placed in capricorn (evil sign signifying spirits/spells/black magic) and is conjoined saturn and ketu. this is a clean case of preta badhak333 and in the visible portion of the chant (i.e. houses 7th to 12th) indicates the curse from paternal elders. the first.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+</ul>
+<div class="spacer"></div>
+<p>Peak Phase (04/08/2012 - 02/11/2014):</p>
+<ul class="insight-list">
+<li>This indicates that Conjoin,  the enemy suffers losses and thus the native gains.  if this  association  also  occurs  in  a  dusthana (3,6,8  or  12th  house)  then  vipareeta  rajyoga  results. similarly,  if  saturn  becomes  a  yogakaraka  (e.g.  for taurus of libra ascendant) and is  placed in a dusthana.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+<li>This indicates that Rasi (of the bhuja) to thc bhuja.  the degrees etc. of the bhuja (devoid of rasi) be multiplied by the figure corresponding to the higher of  the left  out khandas and divided by  30.  add  the resultant product  to  the sum obtained earlier.  convert this the  moon and saturn are in libra or  ahead.</li>
+<li>This indicates that Vantageous. for libra ascendant. satrun is classified as unsullied yogakaraka because he  owns the  4th (an angle) and the 5th (a trine). the sun&#x27;s benelicence ro  taurus asccndant cannot be compared to  saturn&#x27;s for libra,  because the sun has only one house which is angular to the ascendant. for leo ascendar,t.</li>
+<li>This indicates that Aneously owns a trine he will be favourable. for example, jupiter is doubly evil for  libra  ascendant as he owns the 3id and 6th. saturn, though owning the 8th, will be favourabre for a  gemini nativity as he is the lord of the 9th as wcll.  in  considering two lordships  in  any context,  the  moolatrikona  house has prime.</li>
+</ul>
+<div class="spacer"></div>
+<p>Setting Phase (03/11/2014 - 26/01/2017):</p>
+<ul class="insight-list">
+<li>This indicates that Deprives one  of mother&#x27;s milk.  the 7th rules thc 4th from the 4th and hence the 7th is referred to. saturn in the 4th house will&#x27;alpo  deprive om  of mother&#x27;s atmakaraka  in  scorpio  navamsa will  producc  similar effects. for a definition of atmakaraka, see ch. 32,lnfra..</li>
+<li>This indicates that Ketu. this indicates great wealth from speculation etc. in scorpio it shows his initial investments in oil  prop erties. the second house from arudha lagna has rahu indicating great financial strain during rahu dasa. for tunately  the  second  house  is  aspected  by saturn  &amp;.</li>
+<li>This indicates that Complete destruction of his business. the narayana dasa of (chart 7-15) capricorn starts from july 1993 and capricorn is a malefic sign, the eighth house from lagna and lagna lord mercury. it is also aspected by the terrible combination of moon, rahu and saturn from scorpio (another most evil sign). this indicates the beginning of some very bad.</li>
+<li>This indicates that (d)  the  moon  &quot;  abotit  to &quot;&quot;&#x27;e&lt;  iile  bride·,  house.  iile  ~ ..... (e,  saturn&quot; with  the  l.a8m  lord in  scorpio.  gmng  cartpml)/  to (/i  ~ from  tau ....  &quot;  -=&quot;ng  the  ~&quot;&quot; io&lt;d  and  more so  !he  wjnlly  m.1n  m.vrieo  a  bride  fmm  &quot;  wnlly  with  •  rich opirllual  ~nd. &quot;&quot;&quot;&quot;&quot;3  __  tile  great a~ mol..</li>
+<li>This indicates that House. jupirer,s son, yamaghantaka, has it in  sagittarius. ardhaprahara, mercury&#x27;s son, is  in  own  sign if in bemini. i  mrityu, son of mars has scorpio as own house. it  is not known why_kala, a son of the  sun  shifted to capricorn, a sign of his i  brother (saturn) leaving his  father,s leo.  obviously] saturn.</li>
+</ul>
+<div class="spacer"></div>
+<p>Setting Phase (21/06/2017 - 26/10/2017):</p>
+<ul class="insight-list">
+<li>This indicates that Deprives one  of mother&#x27;s milk.  the 7th rules thc 4th from the 4th and hence the 7th is referred to. saturn in the 4th house will&#x27;alpo  deprive om  of mother&#x27;s atmakaraka  in  scorpio  navamsa will  producc  similar effects. for a definition of atmakaraka, see ch. 32,lnfra..</li>
+<li>This indicates that Ketu. this indicates great wealth from speculation etc. in scorpio it shows his initial investments in oil  prop erties. the second house from arudha lagna has rahu indicating great financial strain during rahu dasa. for tunately  the  second  house  is  aspected  by saturn  &amp;.</li>
+<li>This indicates that Complete destruction of his business. the narayana dasa of (chart 7-15) capricorn starts from july 1993 and capricorn is a malefic sign, the eighth house from lagna and lagna lord mercury. it is also aspected by the terrible combination of moon, rahu and saturn from scorpio (another most evil sign). this indicates the beginning of some very bad.</li>
+<li>This indicates that (d)  the  moon  &quot;  abotit  to &quot;&quot;&#x27;e&lt;  iile  bride·,  house.  iile  ~ ..... (e,  saturn&quot; with  the  l.a8m  lord in  scorpio.  gmng  cartpml)/  to (/i  ~ from  tau ....  &quot;  -=&quot;ng  the  ~&quot;&quot; io&lt;d  and  more so  !he  wjnlly  m.1n  m.vrieo  a  bride  fmm  &quot;  wnlly  with  •  rich opirllual  ~nd. &quot;&quot;&quot;&quot;&quot;3  __  tile  great a~ mol..</li>
+<li>This indicates that House. jupirer,s son, yamaghantaka, has it in  sagittarius. ardhaprahara, mercury&#x27;s son, is  in  own  sign if in bemini. i  mrityu, son of mars has scorpio as own house. it  is not known why_kala, a son of the  sun  shifted to capricorn, a sign of his i  brother (saturn) leaving his  father,s leo.  obviously] saturn.</li>
+</ul>
+<div class="spacer"></div>
+<p>Rising Phase (23/10/2038 - 05/04/2039):</p>
+<ul class="insight-list">
+<li>This indicates that Mahapurush  yog.  it is  subject  to  a  negative  papkartari yog  between  the sun and  ketu  that indicates  loss  of vehicles etc.  at the time of downfall in business. virgo the fourth house has the argala of sun in the eleventh from  it  obstructed  by  saturn,  rahu  &amp;  moon  in  the.</li>
+<li>This indicates that Chart 3-1, the atmakaraka is saturn, amatyakaraka is jupiter and the atmakaraka saturn is placed in virgo in the navamsa chart. this is called the karakamsa. the twelfth house from this sign is to be examined for bandana (bondage/re-birth) &amp; moksha (emancipation). this is leo and mercury is placed in this sign in vargottama. mercury indicates.</li>
+<li>This indicates that With  jupiter  it  causes  chandala  yoga  and  the  pregnancy  was  aborted. this  occurred  in  sun-saturn  dasa-antar.  the  second  issue  is  seen  from the seventh house (3rd from 9th house in reverse direction) and its lord mercury  is  exalted  (son)  in  virgo.  with  advent  of  sun-mercury  dasa- antar, she was carrying this issue. we have already seen house mercury.</li>
+<li>This indicates that The lagna is pisces and badhak house is virgo. it is empty but its lords mercury is placed in capricorn (evil sign signifying spirits/spells/black magic) and is conjoined saturn and ketu. this is a clean case of preta badhak333 and in the visible portion of the chant (i.e. houses 7th to 12th) indicates the curse from paternal elders. the first.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+</ul>
+<div class="spacer"></div>
+<p>Rising Phase (13/07/2039 - 27/01/2041):</p>
+<ul class="insight-list">
+<li>This indicates that Mahapurush  yog.  it is  subject  to  a  negative  papkartari yog  between  the sun and  ketu  that indicates  loss  of vehicles etc.  at the time of downfall in business. virgo the fourth house has the argala of sun in the eleventh from  it  obstructed  by  saturn,  rahu  &amp;  moon  in  the.</li>
+<li>This indicates that Chart 3-1, the atmakaraka is saturn, amatyakaraka is jupiter and the atmakaraka saturn is placed in virgo in the navamsa chart. this is called the karakamsa. the twelfth house from this sign is to be examined for bandana (bondage/re-birth) &amp; moksha (emancipation). this is leo and mercury is placed in this sign in vargottama. mercury indicates.</li>
+<li>This indicates that With  jupiter  it  causes  chandala  yoga  and  the  pregnancy  was  aborted. this  occurred  in  sun-saturn  dasa-antar.  the  second  issue  is  seen  from the seventh house (3rd from 9th house in reverse direction) and its lord mercury  is  exalted  (son)  in  virgo.  with  advent  of  sun-mercury  dasa- antar, she was carrying this issue. we have already seen house mercury.</li>
+<li>This indicates that The lagna is pisces and badhak house is virgo. it is empty but its lords mercury is placed in capricorn (evil sign signifying spirits/spells/black magic) and is conjoined saturn and ketu. this is a clean case of preta badhak333 and in the visible portion of the chant (i.e. houses 7th to 12th) indicates the curse from paternal elders. the first.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+</ul>
+<div class="spacer"></div>
+<p>Peak Phase (28/01/2041 - 05/02/2041):</p>
+<ul class="insight-list">
+<li>This indicates that Conjoin,  the enemy suffers losses and thus the native gains.  if this  association  also  occurs  in  a  dusthana (3,6,8  or  12th  house)  then  vipareeta  rajyoga  results. similarly,  if  saturn  becomes  a  yogakaraka  (e.g.  for taurus of libra ascendant) and is  placed in a dusthana.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+<li>This indicates that Rasi (of the bhuja) to thc bhuja.  the degrees etc. of the bhuja (devoid of rasi) be multiplied by the figure corresponding to the higher of  the left  out khandas and divided by  30.  add  the resultant product  to  the sum obtained earlier.  convert this the  moon and saturn are in libra or  ahead.</li>
+<li>This indicates that Vantageous. for libra ascendant. satrun is classified as unsullied yogakaraka because he  owns the  4th (an angle) and the 5th (a trine). the sun&#x27;s benelicence ro  taurus asccndant cannot be compared to  saturn&#x27;s for libra,  because the sun has only one house which is angular to the ascendant. for leo ascendar,t.</li>
+<li>This indicates that Aneously owns a trine he will be favourable. for example, jupiter is doubly evil for  libra  ascendant as he owns the 3id and 6th. saturn, though owning the 8th, will be favourabre for a  gemini nativity as he is the lord of the 9th as wcll.  in  considering two lordships  in  any context,  the  moolatrikona  house has prime.</li>
+</ul>
+<div class="spacer"></div>
+<p>Rising Phase (06/02/2041 - 25/09/2041):</p>
+<ul class="insight-list">
+<li>This indicates that Mahapurush  yog.  it is  subject  to  a  negative  papkartari yog  between  the sun and  ketu  that indicates  loss  of vehicles etc.  at the time of downfall in business. virgo the fourth house has the argala of sun in the eleventh from  it  obstructed  by  saturn,  rahu  &amp;  moon  in  the.</li>
+<li>This indicates that Chart 3-1, the atmakaraka is saturn, amatyakaraka is jupiter and the atmakaraka saturn is placed in virgo in the navamsa chart. this is called the karakamsa. the twelfth house from this sign is to be examined for bandana (bondage/re-birth) &amp; moksha (emancipation). this is leo and mercury is placed in this sign in vargottama. mercury indicates.</li>
+<li>This indicates that With  jupiter  it  causes  chandala  yoga  and  the  pregnancy  was  aborted. this  occurred  in  sun-saturn  dasa-antar.  the  second  issue  is  seen  from the seventh house (3rd from 9th house in reverse direction) and its lord mercury  is  exalted  (son)  in  virgo.  with  advent  of  sun-mercury  dasa- antar, she was carrying this issue. we have already seen house mercury.</li>
+<li>This indicates that The lagna is pisces and badhak house is virgo. it is empty but its lords mercury is placed in capricorn (evil sign signifying spirits/spells/black magic) and is conjoined saturn and ketu. this is a clean case of preta badhak333 and in the visible portion of the chant (i.e. houses 7th to 12th) indicates the curse from paternal elders. the first.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+</ul>
+<div class="spacer"></div>
+<p>Peak Phase (26/09/2041 - 11/12/2043):</p>
+<ul class="insight-list">
+<li>This indicates that Conjoin,  the enemy suffers losses and thus the native gains.  if this  association  also  occurs  in  a  dusthana (3,6,8  or  12th  house)  then  vipareeta  rajyoga  results. similarly,  if  saturn  becomes  a  yogakaraka  (e.g.  for taurus of libra ascendant) and is  placed in a dusthana.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+<li>This indicates that Rasi (of the bhuja) to thc bhuja.  the degrees etc. of the bhuja (devoid of rasi) be multiplied by the figure corresponding to the higher of  the left  out khandas and divided by  30.  add  the resultant product  to  the sum obtained earlier.  convert this the  moon and saturn are in libra or  ahead.</li>
+<li>This indicates that Vantageous. for libra ascendant. satrun is classified as unsullied yogakaraka because he  owns the  4th (an angle) and the 5th (a trine). the sun&#x27;s benelicence ro  taurus asccndant cannot be compared to  saturn&#x27;s for libra,  because the sun has only one house which is angular to the ascendant. for leo ascendar,t.</li>
+<li>This indicates that Aneously owns a trine he will be favourable. for example, jupiter is doubly evil for  libra  ascendant as he owns the 3id and 6th. saturn, though owning the 8th, will be favourabre for a  gemini nativity as he is the lord of the 9th as wcll.  in  considering two lordships  in  any context,  the  moolatrikona  house has prime.</li>
+</ul>
+<div class="spacer"></div>
+<p>Setting Phase (12/12/2043 - 22/06/2044):</p>
+<ul class="insight-list">
+<li>This indicates that Deprives one  of mother&#x27;s milk.  the 7th rules thc 4th from the 4th and hence the 7th is referred to. saturn in the 4th house will&#x27;alpo  deprive om  of mother&#x27;s atmakaraka  in  scorpio  navamsa will  producc  similar effects. for a definition of atmakaraka, see ch. 32,lnfra..</li>
+<li>This indicates that Ketu. this indicates great wealth from speculation etc. in scorpio it shows his initial investments in oil  prop erties. the second house from arudha lagna has rahu indicating great financial strain during rahu dasa. for tunately  the  second  house  is  aspected  by saturn  &amp;.</li>
+<li>This indicates that Complete destruction of his business. the narayana dasa of (chart 7-15) capricorn starts from july 1993 and capricorn is a malefic sign, the eighth house from lagna and lagna lord mercury. it is also aspected by the terrible combination of moon, rahu and saturn from scorpio (another most evil sign). this indicates the beginning of some very bad.</li>
+<li>This indicates that (d)  the  moon  &quot;  abotit  to &quot;&quot;&#x27;e&lt;  iile  bride·,  house.  iile  ~ ..... (e,  saturn&quot; with  the  l.a8m  lord in  scorpio.  gmng  cartpml)/  to (/i  ~ from  tau ....  &quot;  -=&quot;ng  the  ~&quot;&quot; io&lt;d  and  more so  !he  wjnlly  m.1n  m.vrieo  a  bride  fmm  &quot;  wnlly  with  •  rich opirllual  ~nd. &quot;&quot;&quot;&quot;&quot;3  __  tile  great a~ mol..</li>
+<li>This indicates that House. jupirer,s son, yamaghantaka, has it in  sagittarius. ardhaprahara, mercury&#x27;s son, is  in  own  sign if in bemini. i  mrityu, son of mars has scorpio as own house. it  is not known why_kala, a son of the  sun  shifted to capricorn, a sign of his i  brother (saturn) leaving his  father,s leo.  obviously] saturn.</li>
+</ul>
+<div class="spacer"></div>
+<p>Peak Phase (23/06/2044 - 29/08/2044):</p>
+<ul class="insight-list">
+<li>This indicates that Conjoin,  the enemy suffers losses and thus the native gains.  if this  association  also  occurs  in  a  dusthana (3,6,8  or  12th  house)  then  vipareeta  rajyoga  results. similarly,  if  saturn  becomes  a  yogakaraka  (e.g.  for taurus of libra ascendant) and is  placed in a dusthana.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+<li>This indicates that Rasi (of the bhuja) to thc bhuja.  the degrees etc. of the bhuja (devoid of rasi) be multiplied by the figure corresponding to the higher of  the left  out khandas and divided by  30.  add  the resultant product  to  the sum obtained earlier.  convert this the  moon and saturn are in libra or  ahead.</li>
+<li>This indicates that Vantageous. for libra ascendant. satrun is classified as unsullied yogakaraka because he  owns the  4th (an angle) and the 5th (a trine). the sun&#x27;s benelicence ro  taurus asccndant cannot be compared to  saturn&#x27;s for libra,  because the sun has only one house which is angular to the ascendant. for leo ascendar,t.</li>
+<li>This indicates that Aneously owns a trine he will be favourable. for example, jupiter is doubly evil for  libra  ascendant as he owns the 3id and 6th. saturn, though owning the 8th, will be favourabre for a  gemini nativity as he is the lord of the 9th as wcll.  in  considering two lordships  in  any context,  the  moolatrikona  house has prime.</li>
+</ul>
+<div class="spacer"></div>
+<p>Setting Phase (30/08/2044 - 07/12/2046):</p>
+<ul class="insight-list">
+<li>This indicates that Deprives one  of mother&#x27;s milk.  the 7th rules thc 4th from the 4th and hence the 7th is referred to. saturn in the 4th house will&#x27;alpo  deprive om  of mother&#x27;s atmakaraka  in  scorpio  navamsa will  producc  similar effects. for a definition of atmakaraka, see ch. 32,lnfra..</li>
+<li>This indicates that Ketu. this indicates great wealth from speculation etc. in scorpio it shows his initial investments in oil  prop erties. the second house from arudha lagna has rahu indicating great financial strain during rahu dasa. for tunately  the  second  house  is  aspected  by saturn  &amp;.</li>
+<li>This indicates that Complete destruction of his business. the narayana dasa of (chart 7-15) capricorn starts from july 1993 and capricorn is a malefic sign, the eighth house from lagna and lagna lord mercury. it is also aspected by the terrible combination of moon, rahu and saturn from scorpio (another most evil sign). this indicates the beginning of some very bad.</li>
+<li>This indicates that (d)  the  moon  &quot;  abotit  to &quot;&quot;&#x27;e&lt;  iile  bride·,  house.  iile  ~ ..... (e,  saturn&quot; with  the  l.a8m  lord in  scorpio.  gmng  cartpml)/  to (/i  ~ from  tau ....  &quot;  -=&quot;ng  the  ~&quot;&quot; io&lt;d  and  more so  !he  wjnlly  m.1n  m.vrieo  a  bride  fmm  &quot;  wnlly  with  •  rich opirllual  ~nd. &quot;&quot;&quot;&quot;&quot;3  __  tile  great a~ mol..</li>
+<li>This indicates that House. jupirer,s son, yamaghantaka, has it in  sagittarius. ardhaprahara, mercury&#x27;s son, is  in  own  sign if in bemini. i  mrityu, son of mars has scorpio as own house. it  is not known why_kala, a son of the  sun  shifted to capricorn, a sign of his i  brother (saturn) leaving his  father,s leo.  obviously] saturn.</li>
+</ul>
+<div class="spacer"></div>
+<p>Rising Phase (30/08/2068 - 04/11/2070):</p>
+<ul class="insight-list">
+<li>This indicates that Mahapurush  yog.  it is  subject  to  a  negative  papkartari yog  between  the sun and  ketu  that indicates  loss  of vehicles etc.  at the time of downfall in business. virgo the fourth house has the argala of sun in the eleventh from  it  obstructed  by  saturn,  rahu  &amp;  moon  in  the.</li>
+<li>This indicates that Chart 3-1, the atmakaraka is saturn, amatyakaraka is jupiter and the atmakaraka saturn is placed in virgo in the navamsa chart. this is called the karakamsa. the twelfth house from this sign is to be examined for bandana (bondage/re-birth) &amp; moksha (emancipation). this is leo and mercury is placed in this sign in vargottama. mercury indicates.</li>
+<li>This indicates that With  jupiter  it  causes  chandala  yoga  and  the  pregnancy  was  aborted. this  occurred  in  sun-saturn  dasa-antar.  the  second  issue  is  seen  from the seventh house (3rd from 9th house in reverse direction) and its lord mercury  is  exalted  (son)  in  virgo.  with  advent  of  sun-mercury  dasa- antar, she was carrying this issue. we have already seen house mercury.</li>
+<li>This indicates that The lagna is pisces and badhak house is virgo. it is empty but its lords mercury is placed in capricorn (evil sign signifying spirits/spells/black magic) and is conjoined saturn and ketu. this is a clean case of preta badhak333 and in the visible portion of the chant (i.e. houses 7th to 12th) indicates the curse from paternal elders. the first.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+</ul>
+<div class="spacer"></div>
+<p>Peak Phase (05/11/2070 - 05/02/2073):</p>
+<ul class="insight-list">
+<li>This indicates that Conjoin,  the enemy suffers losses and thus the native gains.  if this  association  also  occurs  in  a  dusthana (3,6,8  or  12th  house)  then  vipareeta  rajyoga  results. similarly,  if  saturn  becomes  a  yogakaraka  (e.g.  for taurus of libra ascendant) and is  placed in a dusthana.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+<li>This indicates that Rasi (of the bhuja) to thc bhuja.  the degrees etc. of the bhuja (devoid of rasi) be multiplied by the figure corresponding to the higher of  the left  out khandas and divided by  30.  add  the resultant product  to  the sum obtained earlier.  convert this the  moon and saturn are in libra or  ahead.</li>
+<li>This indicates that Vantageous. for libra ascendant. satrun is classified as unsullied yogakaraka because he  owns the  4th (an angle) and the 5th (a trine). the sun&#x27;s benelicence ro  taurus asccndant cannot be compared to  saturn&#x27;s for libra,  because the sun has only one house which is angular to the ascendant. for leo ascendar,t.</li>
+<li>This indicates that Aneously owns a trine he will be favourable. for example, jupiter is doubly evil for  libra  ascendant as he owns the 3id and 6th. saturn, though owning the 8th, will be favourabre for a  gemini nativity as he is the lord of the 9th as wcll.  in  considering two lordships  in  any context,  the  moolatrikona  house has prime.</li>
+</ul>
+<div class="spacer"></div>
+<p>Setting Phase (06/02/2073 - 30/03/2073):</p>
+<ul class="insight-list">
+<li>This indicates that Deprives one  of mother&#x27;s milk.  the 7th rules thc 4th from the 4th and hence the 7th is referred to. saturn in the 4th house will&#x27;alpo  deprive om  of mother&#x27;s atmakaraka  in  scorpio  navamsa will  producc  similar effects. for a definition of atmakaraka, see ch. 32,lnfra..</li>
+<li>This indicates that Ketu. this indicates great wealth from speculation etc. in scorpio it shows his initial investments in oil  prop erties. the second house from arudha lagna has rahu indicating great financial strain during rahu dasa. for tunately  the  second  house  is  aspected  by saturn  &amp;.</li>
+<li>This indicates that Complete destruction of his business. the narayana dasa of (chart 7-15) capricorn starts from july 1993 and capricorn is a malefic sign, the eighth house from lagna and lagna lord mercury. it is also aspected by the terrible combination of moon, rahu and saturn from scorpio (another most evil sign). this indicates the beginning of some very bad.</li>
+<li>This indicates that (d)  the  moon  &quot;  abotit  to &quot;&quot;&#x27;e&lt;  iile  bride·,  house.  iile  ~ ..... (e,  saturn&quot; with  the  l.a8m  lord in  scorpio.  gmng  cartpml)/  to (/i  ~ from  tau ....  &quot;  -=&quot;ng  the  ~&quot;&quot; io&lt;d  and  more so  !he  wjnlly  m.1n  m.vrieo  a  bride  fmm  &quot;  wnlly  with  •  rich opirllual  ~nd. &quot;&quot;&quot;&quot;&quot;3  __  tile  great a~ mol..</li>
+<li>This indicates that House. jupirer,s son, yamaghantaka, has it in  sagittarius. ardhaprahara, mercury&#x27;s son, is  in  own  sign if in bemini. i  mrityu, son of mars has scorpio as own house. it  is not known why_kala, a son of the  sun  shifted to capricorn, a sign of his i  brother (saturn) leaving his  father,s leo.  obviously] saturn.</li>
+</ul>
+<div class="spacer"></div>
+<p>Peak Phase (31/03/2073 - 23/10/2073):</p>
+<ul class="insight-list">
+<li>This indicates that Conjoin,  the enemy suffers losses and thus the native gains.  if this  association  also  occurs  in  a  dusthana (3,6,8  or  12th  house)  then  vipareeta  rajyoga  results. similarly,  if  saturn  becomes  a  yogakaraka  (e.g.  for taurus of libra ascendant) and is  placed in a dusthana.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+<li>This indicates that Rasi (of the bhuja) to thc bhuja.  the degrees etc. of the bhuja (devoid of rasi) be multiplied by the figure corresponding to the higher of  the left  out khandas and divided by  30.  add  the resultant product  to  the sum obtained earlier.  convert this the  moon and saturn are in libra or  ahead.</li>
+<li>This indicates that Vantageous. for libra ascendant. satrun is classified as unsullied yogakaraka because he  owns the  4th (an angle) and the 5th (a trine). the sun&#x27;s benelicence ro  taurus asccndant cannot be compared to  saturn&#x27;s for libra,  because the sun has only one house which is angular to the ascendant. for leo ascendar,t.</li>
+<li>This indicates that Aneously owns a trine he will be favourable. for example, jupiter is doubly evil for  libra  ascendant as he owns the 3id and 6th. saturn, though owning the 8th, will be favourabre for a  gemini nativity as he is the lord of the 9th as wcll.  in  considering two lordships  in  any context,  the  moolatrikona  house has prime.</li>
+</ul>
+<div class="spacer"></div>
+<p>Setting Phase (24/10/2073 - 16/01/2076):</p>
+<ul class="insight-list">
+<li>This indicates that Deprives one  of mother&#x27;s milk.  the 7th rules thc 4th from the 4th and hence the 7th is referred to. saturn in the 4th house will&#x27;alpo  deprive om  of mother&#x27;s atmakaraka  in  scorpio  navamsa will  producc  similar effects. for a definition of atmakaraka, see ch. 32,lnfra..</li>
+<li>This indicates that Ketu. this indicates great wealth from speculation etc. in scorpio it shows his initial investments in oil  prop erties. the second house from arudha lagna has rahu indicating great financial strain during rahu dasa. for tunately  the  second  house  is  aspected  by saturn  &amp;.</li>
+<li>This indicates that Complete destruction of his business. the narayana dasa of (chart 7-15) capricorn starts from july 1993 and capricorn is a malefic sign, the eighth house from lagna and lagna lord mercury. it is also aspected by the terrible combination of moon, rahu and saturn from scorpio (another most evil sign). this indicates the beginning of some very bad.</li>
+<li>This indicates that (d)  the  moon  &quot;  abotit  to &quot;&quot;&#x27;e&lt;  iile  bride·,  house.  iile  ~ ..... (e,  saturn&quot; with  the  l.a8m  lord in  scorpio.  gmng  cartpml)/  to (/i  ~ from  tau ....  &quot;  -=&quot;ng  the  ~&quot;&quot; io&lt;d  and  more so  !he  wjnlly  m.1n  m.vrieo  a  bride  fmm  &quot;  wnlly  with  •  rich opirllual  ~nd. &quot;&quot;&quot;&quot;&quot;3  __  tile  great a~ mol..</li>
+<li>This indicates that House. jupirer,s son, yamaghantaka, has it in  sagittarius. ardhaprahara, mercury&#x27;s son, is  in  own  sign if in bemini. i  mrityu, son of mars has scorpio as own house. it  is not known why_kala, a son of the  sun  shifted to capricorn, a sign of his i  brother (saturn) leaving his  father,s leo.  obviously] saturn.</li>
+</ul>
+<div class="spacer"></div>
+<p>Setting Phase (11/07/2076 - 11/10/2076):</p>
+<ul class="insight-list">
+<li>This indicates that Deprives one  of mother&#x27;s milk.  the 7th rules thc 4th from the 4th and hence the 7th is referred to. saturn in the 4th house will&#x27;alpo  deprive om  of mother&#x27;s atmakaraka  in  scorpio  navamsa will  producc  similar effects. for a definition of atmakaraka, see ch. 32,lnfra..</li>
+<li>This indicates that Ketu. this indicates great wealth from speculation etc. in scorpio it shows his initial investments in oil  prop erties. the second house from arudha lagna has rahu indicating great financial strain during rahu dasa. for tunately  the  second  house  is  aspected  by saturn  &amp;.</li>
+<li>This indicates that Complete destruction of his business. the narayana dasa of (chart 7-15) capricorn starts from july 1993 and capricorn is a malefic sign, the eighth house from lagna and lagna lord mercury. it is also aspected by the terrible combination of moon, rahu and saturn from scorpio (another most evil sign). this indicates the beginning of some very bad.</li>
+<li>This indicates that (d)  the  moon  &quot;  abotit  to &quot;&quot;&#x27;e&lt;  iile  bride·,  house.  iile  ~ ..... (e,  saturn&quot; with  the  l.a8m  lord in  scorpio.  gmng  cartpml)/  to (/i  ~ from  tau ....  &quot;  -=&quot;ng  the  ~&quot;&quot; io&lt;d  and  more so  !he  wjnlly  m.1n  m.vrieo  a  bride  fmm  &quot;  wnlly  with  •  rich opirllual  ~nd. &quot;&quot;&quot;&quot;&quot;3  __  tile  great a~ mol..</li>
+<li>This indicates that House. jupirer,s son, yamaghantaka, has it in  sagittarius. ardhaprahara, mercury&#x27;s son, is  in  own  sign if in bemini. i  mrityu, son of mars has scorpio as own house. it  is not known why_kala, a son of the  sun  shifted to capricorn, a sign of his i  brother (saturn) leaving his  father,s leo.  obviously] saturn.</li>
+</ul>
+<div class="spacer"></div>
+<p>Rising Phase (12/10/2097 - 02/05/2098):</p>
+<ul class="insight-list">
+<li>This indicates that Mahapurush  yog.  it is  subject  to  a  negative  papkartari yog  between  the sun and  ketu  that indicates  loss  of vehicles etc.  at the time of downfall in business. virgo the fourth house has the argala of sun in the eleventh from  it  obstructed  by  saturn,  rahu  &amp;  moon  in  the.</li>
+<li>This indicates that Chart 3-1, the atmakaraka is saturn, amatyakaraka is jupiter and the atmakaraka saturn is placed in virgo in the navamsa chart. this is called the karakamsa. the twelfth house from this sign is to be examined for bandana (bondage/re-birth) &amp; moksha (emancipation). this is leo and mercury is placed in this sign in vargottama. mercury indicates.</li>
+<li>This indicates that With  jupiter  it  causes  chandala  yoga  and  the  pregnancy  was  aborted. this  occurred  in  sun-saturn  dasa-antar.  the  second  issue  is  seen  from the seventh house (3rd from 9th house in reverse direction) and its lord mercury  is  exalted  (son)  in  virgo.  with  advent  of  sun-mercury  dasa- antar, she was carrying this issue. we have already seen house mercury.</li>
+<li>This indicates that The lagna is pisces and badhak house is virgo. it is empty but its lords mercury is placed in capricorn (evil sign signifying spirits/spells/black magic) and is conjoined saturn and ketu. this is a clean case of preta badhak333 and in the visible portion of the chant (i.e. houses 7th to 12th) indicates the curse from paternal elders. the first.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+</ul>
+<div class="spacer"></div>
+<p>Rising Phase (20/06/2098 - 25/12/2099):</p>
+<ul class="insight-list">
+<li>This indicates that Mahapurush  yog.  it is  subject  to  a  negative  papkartari yog  between  the sun and  ketu  that indicates  loss  of vehicles etc.  at the time of downfall in business. virgo the fourth house has the argala of sun in the eleventh from  it  obstructed  by  saturn,  rahu  &amp;  moon  in  the.</li>
+<li>This indicates that Chart 3-1, the atmakaraka is saturn, amatyakaraka is jupiter and the atmakaraka saturn is placed in virgo in the navamsa chart. this is called the karakamsa. the twelfth house from this sign is to be examined for bandana (bondage/re-birth) &amp; moksha (emancipation). this is leo and mercury is placed in this sign in vargottama. mercury indicates.</li>
+<li>This indicates that With  jupiter  it  causes  chandala  yoga  and  the  pregnancy  was  aborted. this  occurred  in  sun-saturn  dasa-antar.  the  second  issue  is  seen  from the seventh house (3rd from 9th house in reverse direction) and its lord mercury  is  exalted  (son)  in  virgo.  with  advent  of  sun-mercury  dasa- antar, she was carrying this issue. we have already seen house mercury.</li>
+<li>This indicates that The lagna is pisces and badhak house is virgo. it is empty but its lords mercury is placed in capricorn (evil sign signifying spirits/spells/black magic) and is conjoined saturn and ketu. this is a clean case of preta badhak333 and in the visible portion of the chant (i.e. houses 7th to 12th) indicates the curse from paternal elders. the first.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+</ul>
+<div class="spacer"></div>
+<p>Peak Phase (26/12/2099 - 17/03/2100):</p>
+<ul class="insight-list">
+<li>This indicates that Conjoin,  the enemy suffers losses and thus the native gains.  if this  association  also  occurs  in  a  dusthana (3,6,8  or  12th  house)  then  vipareeta  rajyoga  results. similarly,  if  saturn  becomes  a  yogakaraka  (e.g.  for taurus of libra ascendant) and is  placed in a dusthana.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+<li>This indicates that Rasi (of the bhuja) to thc bhuja.  the degrees etc. of the bhuja (devoid of rasi) be multiplied by the figure corresponding to the higher of  the left  out khandas and divided by  30.  add  the resultant product  to  the sum obtained earlier.  convert this the  moon and saturn are in libra or  ahead.</li>
+<li>This indicates that Vantageous. for libra ascendant. satrun is classified as unsullied yogakaraka because he  owns the  4th (an angle) and the 5th (a trine). the sun&#x27;s benelicence ro  taurus asccndant cannot be compared to  saturn&#x27;s for libra,  because the sun has only one house which is angular to the ascendant. for leo ascendar,t.</li>
+<li>This indicates that Aneously owns a trine he will be favourable. for example, jupiter is doubly evil for  libra  ascendant as he owns the 3id and 6th. saturn, though owning the 8th, will be favourabre for a  gemini nativity as he is the lord of the 9th as wcll.  in  considering two lordships  in  any context,  the  moolatrikona  house has prime.</li>
+</ul>
+<div class="spacer"></div>
+<p>Rising Phase (18/03/2100 - 16/09/2100):</p>
+<ul class="insight-list">
+<li>This indicates that Mahapurush  yog.  it is  subject  to  a  negative  papkartari yog  between  the sun and  ketu  that indicates  loss  of vehicles etc.  at the time of downfall in business. virgo the fourth house has the argala of sun in the eleventh from  it  obstructed  by  saturn,  rahu  &amp;  moon  in  the.</li>
+<li>This indicates that Chart 3-1, the atmakaraka is saturn, amatyakaraka is jupiter and the atmakaraka saturn is placed in virgo in the navamsa chart. this is called the karakamsa. the twelfth house from this sign is to be examined for bandana (bondage/re-birth) &amp; moksha (emancipation). this is leo and mercury is placed in this sign in vargottama. mercury indicates.</li>
+<li>This indicates that With  jupiter  it  causes  chandala  yoga  and  the  pregnancy  was  aborted. this  occurred  in  sun-saturn  dasa-antar.  the  second  issue  is  seen  from the seventh house (3rd from 9th house in reverse direction) and its lord mercury  is  exalted  (son)  in  virgo.  with  advent  of  sun-mercury  dasa- antar, she was carrying this issue. we have already seen house mercury.</li>
+<li>This indicates that The lagna is pisces and badhak house is virgo. it is empty but its lords mercury is placed in capricorn (evil sign signifying spirits/spells/black magic) and is conjoined saturn and ketu. this is a clean case of preta badhak333 and in the visible portion of the chant (i.e. houses 7th to 12th) indicates the curse from paternal elders. the first.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+</ul>
+<div class="spacer"></div>
+<p>Peak Phase (17/09/2100 - 02/12/2102):</p>
+<ul class="insight-list">
+<li>This indicates that Conjoin,  the enemy suffers losses and thus the native gains.  if this  association  also  occurs  in  a  dusthana (3,6,8  or  12th  house)  then  vipareeta  rajyoga  results. similarly,  if  saturn  becomes  a  yogakaraka  (e.g.  for taurus of libra ascendant) and is  placed in a dusthana.</li>
+<li>This indicates that Authentic information on aspect of mandi (and other upagra- has), it may be said that it aspects thc 7th house. the rule as  per the  sloka applies to  aquarius, taurus, virgo&#x27;andlibra.  in the case of the latter  two lagnas, saturn though  rules the 5th  is hetpless obviously because of afriction.</li>
+<li>This indicates that Rasi (of the bhuja) to thc bhuja.  the degrees etc. of the bhuja (devoid of rasi) be multiplied by the figure corresponding to the higher of  the left  out khandas and divided by  30.  add  the resultant product  to  the sum obtained earlier.  convert this the  moon and saturn are in libra or  ahead.</li>
+<li>This indicates that Vantageous. for libra ascendant. satrun is classified as unsullied yogakaraka because he  owns the  4th (an angle) and the 5th (a trine). the sun&#x27;s benelicence ro  taurus asccndant cannot be compared to  saturn&#x27;s for libra,  because the sun has only one house which is angular to the ascendant. for leo ascendar,t.</li>
+<li>This indicates that Aneously owns a trine he will be favourable. for example, jupiter is doubly evil for  libra  ascendant as he owns the 3id and 6th. saturn, though owning the 8th, will be favourabre for a  gemini nativity as he is the lord of the 9th as wcll.  in  considering two lordships  in  any context,  the  moolatrikona  house has prime.</li>
+</ul>
+<div class="spacer"></div>
+<p>Setting Phase (03/12/2102 - 29/11/2105):</p>
+<ul class="insight-list">
+<li>This indicates that Deprives one  of mother&#x27;s milk.  the 7th rules thc 4th from the 4th and hence the 7th is referred to. saturn in the 4th house will&#x27;alpo  deprive om  of mother&#x27;s atmakaraka  in  scorpio  navamsa will  producc  similar effects. for a definition of atmakaraka, see ch. 32,lnfra..</li>
+<li>This indicates that Ketu. this indicates great wealth from speculation etc. in scorpio it shows his initial investments in oil  prop erties. the second house from arudha lagna has rahu indicating great financial strain during rahu dasa. for tunately  the  second  house  is  aspected  by saturn  &amp;.</li>
+<li>This indicates that Complete destruction of his business. the narayana dasa of (chart 7-15) capricorn starts from july 1993 and capricorn is a malefic sign, the eighth house from lagna and lagna lord mercury. it is also aspected by the terrible combination of moon, rahu and saturn from scorpio (another most evil sign). this indicates the beginning of some very bad.</li>
+<li>This indicates that (d)  the  moon  &quot;  abotit  to &quot;&quot;&#x27;e&lt;  iile  bride·,  house.  iile  ~ ..... (e,  saturn&quot; with  the  l.a8m  lord in  scorpio.  gmng  cartpml)/  to (/i  ~ from  tau ....  &quot;  -=&quot;ng  the  ~&quot;&quot; io&lt;d  and  more so  !he  wjnlly  m.1n  m.vrieo  a  bride  fmm  &quot;  wnlly  with  •  rich opirllual  ~nd. &quot;&quot;&quot;&quot;&quot;3  __  tile  great a~ mol..</li>
+<li>This indicates that House. jupirer,s son, yamaghantaka, has it in  sagittarius. ardhaprahara, mercury&#x27;s son, is  in  own  sign if in bemini. i  mrityu, son of mars has scorpio as own house. it  is not known why_kala, a son of the  sun  shifted to capricorn, a sign of his i  brother (saturn) leaving his  father,s leo.  obviously] saturn.</li>
+</ul>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-16-remedies">
+    <div class="section-header">
+      <span class="section-icon">🌿</span>
+      <span class="section-title">SECTION 16 — REMEDIES</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">CLASSICAL REMEDIES</h3>
+<p>These remedies are based on traditional Vedic practices.</p>
+<div class="spacer"></div>
+<ul class="insight-list">
+<li>Chant &#x27;Om Sham Shanicharaya Namah&#x27; on Saturdays.</li>
+<li>Donate black sesame seeds or mustard oil.</li>
+<li>Chant &#x27;Om Angarakaya Namah&#x27;.</li>
+<li>Visit Hanuman temple on Tuesdays.</li>
+<li>Chant &#x27;Om Rahave Namah&#x27;.</li>
+<li>Chant &#x27;Om Ketave Namah&#x27;.</li>
+</ul>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-17-final-prediction">
+    <div class="section-header">
+      <span class="section-icon">🎯</span>
+      <span class="section-title">SECTION 17 — FINAL PREDICTION</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">FINAL PREDICTION</h3>
+<p>Based on the full analysis of your chart, here is a synthesised view of what lies ahead.</p>
+<div class="spacer"></div>
+<p>Your chart suggests possible career delays and struggles, but long-term stability is very much attainable with patience and consistent effort.</p>
+<p>Your emotional tendencies are influenced by Libra, shaping the way you process and make important decisions in life.</p>
+<p>The current Mahadasha of Rahu is set to dominate key life events and themes during this period.</p>
+<p>Saturn transiting Taurus, natal Moon in Libra (Saturn in 8th from Moon).</p>
+<p>⚠  ASHTAMA SHANI active — pressure on health, finances, and stability.</p>
+<div class="spacer"></div>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="section-card" id="section-18-overall-summary">
+    <div class="section-header">
+      <span class="section-icon">✨</span>
+      <span class="section-title">SECTION 18 — OVERALL SUMMARY</span>
+    </div>
+    <div class="section-body">
+<div class="spacer"></div>
+<h3 class="sub-heading">OVERALL SUMMARY</h3>
+<p>Your chart shows a blend of karmic challenges and growth opportunities. With the right effort and awareness, strong progress is indicated in key areas of life.</p>
+<div class="spacer"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Generated by <span>Elite Vedic Astrology Engine</span> · Jyotish Wisdom</p>
+  </footer>
+
+</div>
+</body>
+</html>
