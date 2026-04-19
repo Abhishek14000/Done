@@ -1,5 +1,7 @@
 import itertools
 import json
+import sys
+from collections import defaultdict
 
 # -------------------------------
 # LOAD FILES
@@ -1444,6 +1446,444 @@ def analyze_lordships(planet_data):
     return output
 
 
+# ============================================================
+# COMBUSTION (ASTA) ANALYSIS
+# ============================================================
+
+# Classical combustion orbs (degrees of separation from Sun within same sign)
+_COMBUSTION_ORBS = {
+    "Moon":    12,
+    "Mars":    17,
+    "Mercury": 14,
+    "Jupiter": 11,
+    "Venus":   10,
+    "Saturn":  15,
+}
+
+
+def detect_combustion(planet_data):
+    """Detect planets combust (Asta) by proximity to the Sun."""
+    output = "\n=== COMBUSTION (ASTA) ANALYSIS ===\n"
+    output += (
+        "A planet is combust (Asta) when it falls within a critical angular distance "
+        "of the Sun in the same sign, weakening its independent significations.\n\n"
+    )
+
+    sun = planet_data.get("Sun", {})
+    sun_sign = sun.get("sign", "")
+    sun_deg  = sun.get("degree", 0)
+
+    if not sun_sign:
+        return output + "Sun data unavailable for combustion analysis.\n"
+
+    combust_found = False
+    for planet, data in planet_data.items():
+        if planet in ("Sun", "ASC", "Rahu", "Ketu"):
+            continue
+        orb = _COMBUSTION_ORBS.get(planet)
+        if orb is None:
+            continue
+        if data.get("sign") == sun_sign:
+            diff = abs(data.get("degree", 0) - sun_deg)
+            if diff <= orb:
+                combust_found = True
+                output += (
+                    f"⚠  {planet} is COMBUST — {diff:.2f}° from Sun "
+                    f"(orb limit: {orb}°) in {sun_sign}.\n"
+                    f"   Effect: {planet}'s significations are weakened and "
+                    f"overshadowed by solar energy. Independent results of {planet} "
+                    f"may be muted or delayed; however, the native gains solar clarity "
+                    f"in {planet}-ruled areas when consciously directing willpower.\n\n"
+                )
+
+    if not combust_found:
+        output += "No planets are combust in this chart.\n"
+
+    return output
+
+
+# ============================================================
+# CONJUNCTION ANALYSIS
+# ============================================================
+
+# Named conjunctions and their classical interpretations
+_NAMED_CONJUNCTIONS = {
+    frozenset({"Sun", "Mercury"}): (
+        "Budha-Aditya Yoga — Sun and Mercury together bestow heightened intellect, "
+        "communication mastery, and analytical brilliance. The native excels in writing, "
+        "speaking, teaching, and advisory roles."
+    ),
+    frozenset({"Sun", "Venus"}): (
+        "Sun-Venus conjunction — Artistic talent, charisma, and a refined aesthetic sense. "
+        "Venus may be partially combust; check the Combustion section for degree orb."
+    ),
+    frozenset({"Sun", "Mars"}): (
+        "Sun-Mars conjunction — Exceptional courage, leadership drive, and competitive energy. "
+        "Aggression must be consciously channelled to avoid conflict and impulsiveness."
+    ),
+    frozenset({"Sun", "Moon"}): (
+        "Amavasya (New Moon) conjunction — Strong willpower but potential emotional volatility; "
+        "the mind and soul are deeply interlinked, creating intense focus."
+    ),
+    frozenset({"Jupiter", "Saturn"}): (
+        "Jupiter-Saturn conjunction — A rare and weighty combination: disciplined wisdom, "
+        "spiritual ambition, and long-term achievement through patient, principled effort. "
+        "In a dusthana house this activates Vipreet Raj Yoga potential."
+    ),
+    frozenset({"Jupiter", "Venus"}): (
+        "Jupiter-Venus conjunction — Wealth, beauty, and spiritual grace combined. "
+        "Strong indications for prosperity, higher learning, and harmonious relationships."
+    ),
+    frozenset({"Jupiter", "Mercury"}): (
+        "Jupiter-Mercury conjunction — Philosophical intellect and commercial acumen. "
+        "Teaching, writing, law, and advisory careers are strongly supported."
+    ),
+    frozenset({"Mars", "Rahu"}): (
+        "Angarak Yoga — Mars-Rahu conjunction creates intense, explosive drive. "
+        "Success through bold unconventional action; impulsiveness and temper require management."
+    ),
+    frozenset({"Moon", "Rahu"}): (
+        "Grahan Yoga — Moon-Rahu conjunction heightens imagination, ambition, and psychic "
+        "sensitivity, but can bring emotional instability and obsessive mental patterns."
+    ),
+    frozenset({"Moon", "Ketu"}): (
+        "Moon-Ketu conjunction — Deep intuition and past-life sensitivity. Emotional "
+        "detachment and spiritual seeking are pronounced; worldly emotions feel unfamiliar."
+    ),
+    frozenset({"Venus", "Mars"}): (
+        "Venus-Mars conjunction — Passionate, creative, and romantically charged energy. "
+        "Strong artistic talent combined with bold, decisive ambition."
+    ),
+    frozenset({"Saturn", "Rahu"}): (
+        "Saturn-Rahu conjunction (Shrapit Yoga) — Karmic burdens and unconventional "
+        "discipline. Hard-earned but potentially dramatic rise after sustained effort."
+    ),
+    frozenset({"Saturn", "Mars"}): (
+        "Saturn-Mars conjunction — Disciplined aggression; methodical execution of bold plans. "
+        "Potential for engineering, construction, or rigorous physical/technical achievement."
+    ),
+}
+
+
+def detect_conjunctions(planet_data):
+    """Detect planets sharing a house and apply classical conjunction interpretations."""
+    output = "\n=== CONJUNCTION ANALYSIS ===\n"
+    output += (
+        "Conjunctions occur when two or more planets occupy the same house, merging their "
+        "energies and producing distinctive life themes in that house's domain.\n\n"
+    )
+
+    house_map = defaultdict(list)
+    for planet, data in planet_data.items():
+        if planet == "ASC":
+            continue
+        h = data.get("house")
+        if h:
+            house_map[h].append(planet)
+
+    found = False
+    for house_num, plist in sorted(house_map.items()):
+        if len(plist) < 2:
+            continue
+        found = True
+        sign = next((planet_data[p].get("sign", "") for p in plist), "")
+        output += f"House {house_num} ({sign}): {' + '.join(plist)}\n"
+
+        pset = set(plist)
+        # Check every pair for named conjunctions
+        named_shown = set()
+        for p1 in plist:
+            for p2 in plist:
+                if p1 >= p2:
+                    continue
+                key = frozenset({p1, p2})
+                if key in _NAMED_CONJUNCTIONS and key not in named_shown:
+                    named_shown.add(key)
+                    output += f"  → {_NAMED_CONJUNCTIONS[key]}\n"
+
+        # Validate with classical text chunks
+        keywords = [p.lower() for p in plist] + ["conjunction", "conjunct", "together"]
+        insights = retrieve_insights(keywords)
+        for insight in insights[:2]:
+            interpreted = interpret_text(insight)
+            if interpreted:
+                output += f"  📖 Classical: {interpreted}\n"
+
+        output += "\n"
+
+    if not found:
+        output += "No multi-planet conjunctions found in this chart.\n"
+
+    return output
+
+
+# ============================================================
+# RETROGRADE PLANET ANALYSIS
+# ============================================================
+
+_RETROGRADE_PRINCIPLES = {
+    "Saturn": (
+        "If Saturn is retrograde: karmic lessons become more internalized. Discipline and "
+        "delays are felt more keenly but the eventual rewards are exceptionally durable. "
+        "The native revisits past-life karmic debts with greater intensity and thoroughness."
+    ),
+    "Jupiter": (
+        "If Jupiter is retrograde: wisdom develops through introspection rather than "
+        "external mentors. Blessings arrive after re-evaluation and inner growth. "
+        "Spiritual or philosophical values may be unconventional and self-developed."
+    ),
+    "Mars": (
+        "If Mars is retrograde: energy and drive turn inward — the native is a 'strategic "
+        "warrior' who plans before acting. Assertiveness can be bottled up and released "
+        "suddenly; physical vitality strengthens through disciplined internal practice."
+    ),
+    "Mercury": (
+        "If Mercury is retrograde: communication and analysis deepen through review and "
+        "revision. The intellect is thorough and non-linear. Writing, research, and "
+        "behind-the-scenes analytical work often produce outstanding results."
+    ),
+    "Venus": (
+        "If Venus is retrograde: relationship values are reassessed through deep inner "
+        "reflection. Artistic ability deepens by revisiting and refining creative works. "
+        "Past-life romantic patterns may resurface for resolution."
+    ),
+}
+
+
+def detect_retrograde(planet_data):
+    """Provide retrograde interpretation framework for the chart."""
+    output = "\n=== RETROGRADE PLANET ANALYSIS ===\n"
+    output += (
+        "Retrograde planets (Vakri Graha) redirect their energy inward, deepening internal "
+        "development while delaying external results. Retrograde flags are not encoded in "
+        "the source kundali JSON; the following principles apply if any of these planets "
+        "were retrograde at birth — verify against an ephemeris for the birth date.\n\n"
+    )
+    for planet, principle in _RETROGRADE_PRINCIPLES.items():
+        if planet in planet_data:
+            output += f"{planet}:\n  {principle}\n\n"
+    return output
+
+
+# ============================================================
+# DASHA TIMELINE — TIME + EVENT + REASON
+# ============================================================
+
+_DASHA_PROFILES = {
+    "Sun": {
+        "theme":       "Authority, identity, and professional recognition",
+        "events":      "Career advancement, government connections, clarity of life purpose, recognition from superiors",
+        "challenges":  "Ego conflicts, authority clashes, health issues (heart/eyes), father-related events",
+        "reason":      "Sun governs the soul, ego, authority, and the father — its period activates these themes centrally",
+    },
+    "Moon": {
+        "theme":       "Mind, emotions, public life, and the mother",
+        "events":      "Social popularity, career in public-facing roles, emotional growth, travel, mother-related events",
+        "challenges":  "Emotional instability, mental anxiety, wavering decisions, sensitivity to criticism",
+        "reason":      "Moon governs the mind and emotional field — its period heightens sensitivity, intuition, and public dealings",
+    },
+    "Mars": {
+        "theme":       "Energy, action, property, and ambition",
+        "events":      "Property transactions, competitive success, sibling-related events, physical ventures, bold career moves",
+        "challenges":  "Impulsiveness, accidents, conflicts, short-temper, disputes over land or siblings",
+        "reason":      "Mars governs drive, courage, and real estate — its period is dynamic, action-oriented, and competitive",
+    },
+    "Mercury": {
+        "theme":       "Intellect, communication, business, and education",
+        "events":      "Career in communication/technology/business, educational achievements, writing, networking successes",
+        "challenges":  "Indecisiveness, nervous energy, information overload, contractual disputes",
+        "reason":      "Mercury governs the analytical mind and commerce — its period favours intellectual and business pursuits",
+    },
+    "Jupiter": {
+        "theme":       "Wisdom, expansion, spirituality, and fortune",
+        "events":      "Marriage, children, higher education, career expansion, spiritual initiation, financial growth",
+        "challenges":  "Overconfidence, excessive optimism, weight gain, legal matters",
+        "reason":      "Jupiter governs dharma, wisdom, and abundance — its period is among the most auspicious in Vedic astrology",
+    },
+    "Venus": {
+        "theme":       "Relationships, beauty, luxury, and creative expression",
+        "events":      "Marriage/romantic union, artistic career growth, financial gains, social expansion, comforts and pleasures",
+        "challenges":  "Overindulgence, relationship complications, material attachment",
+        "reason":      "Venus governs love, beauty, and material comfort — its period activates relationships and creative life",
+    },
+    "Saturn": {
+        "theme":       "Discipline, karma, hard work, and long-term building",
+        "events":      "Career restructuring, relocation, karmic relationship events, professional authority, property through hard work",
+        "challenges":  "Delays, health burdens, loneliness, isolation, losses, heavy responsibilities",
+        "reason":      "Saturn governs karma and discipline — its long 19-year period is the most transformative and character-building",
+    },
+    "Rahu": {
+        "theme":       "Ambition, foreign connections, and unconventional breakthroughs",
+        "events":      "Rapid material rise, foreign travel or settlement, unconventional career success, sudden fame or notoriety",
+        "challenges":  "Illusion, obsession, deception, scattered focus, sudden reversals",
+        "reason":      "Rahu amplifies desire and drives the native toward obsessive ambition — results are dramatic but volatile",
+    },
+    "Ketu": {
+        "theme":       "Spirituality, detachment, and past-life resolution",
+        "events":      "Spiritual awakening, withdrawal from worldly pursuits, psychic experiences, losses that lead to liberation",
+        "challenges":  "Isolation, purposelessness, health issues, worldly disorientation",
+        "reason":      "Ketu governs liberation and past-life karma — its period dissolves worldly attachments in favour of inner growth",
+    },
+}
+
+
+def _house_lord_context(planet, planet_data):
+    """Return a brief house-placement context string for a planet."""
+    data = planet_data.get(planet, {})
+    house = data.get("house")
+    sign  = data.get("sign", "?")
+    if house is None:
+        return ""
+    return f"{planet} is placed in House {house} ({sign})"
+
+
+def analyze_dasha_timeline(dasha_list, planet_data):
+    """Generate structured Time + Event + Reason predictions for every Mahadasha."""
+    output = "\n=== DASHA TIMELINE — TIME | EVENT | REASON ===\n"
+    output += (
+        "Each Mahadasha period is analysed with its time window, predicted life events, "
+        "and the astrological reason drawn from the chart's unique planetary placements.\n\n"
+    )
+
+    for idx, period in enumerate(dasha_list):
+        planet = period.get("planet", "Unknown")
+        start  = period.get("start", "?")
+        end    = period.get("end", "?")
+        years  = period.get("years", "?")
+
+        profile = _DASHA_PROFILES.get(planet, {})
+        placement = _house_lord_context(planet, planet_data)
+
+        output += f"{'=' * 55}\n"
+        output += f"  {planet.upper()} MAHADASHA   {start} → {end}   ({years} years)\n"
+        output += f"{'=' * 55}\n"
+
+        if profile:
+            output += f"  Theme:      {profile.get('theme', '')}\n"
+            output += f"  Time:       {start} to {end}\n"
+            output += f"  Events:     {profile.get('events', '')}\n"
+            output += f"  Challenges: {profile.get('challenges', '')}\n"
+            output += f"  Reason:     {profile.get('reason', '')}\n"
+            if placement:
+                output += f"  Placement:  {placement}\n"
+
+        # House-specific refinement
+        pdata = planet_data.get(planet, {})
+        house = pdata.get("house")
+        sign  = pdata.get("sign", "")
+
+        if house == 12:
+            output += (
+                f"  Chart note: {planet} in 12th house — events lean toward foreign lands, "
+                f"spiritual pursuits, research, or behind-the-scenes institutional work. "
+                f"Vipreet Raj Yoga may activate if {planet} is a natural malefic.\n"
+            )
+        elif house in (1, 5, 9):
+            output += (
+                f"  Chart note: {planet} in House {house} (trikona) — dharmic grace and "
+                f"fortunate results from this Mahadasha are strongly supported.\n"
+            )
+        elif house in (4, 7, 10):
+            output += (
+                f"  Chart note: {planet} in House {house} (kendra) — this Mahadasha brings "
+                f"decisive, tangible results in career, relationships, or domestic life.\n"
+            )
+        elif house in (6, 8):
+            output += (
+                f"  Chart note: {planet} in House {house} (dusthana) — transformation and "
+                f"struggle characterise this period, but hard-won gains are lasting.\n"
+            )
+
+        # Classical text validation
+        keywords = [planet.lower(), "dasha", "mahadasa", sign.lower(), "period"]
+        insights = retrieve_insights(keywords)
+        classical_added = 0
+        for insight in insights:
+            interpreted = interpret_text(insight)
+            if interpreted and classical_added < 2:
+                output += f"  📖 Classical: {interpreted}\n"
+                classical_added += 1
+
+        output += "\n"
+
+    return output
+
+
+# ============================================================
+# HOUSE LORD EFFECTS SUMMARY
+# ============================================================
+
+_HOUSE_LORD_EFFECT_RULES = {
+    # (house_of_lord, placed_in_house) -> effect description
+    # Capture most meaningful placements
+    (1, 1):  "Lagna lord in Lagna — strong self, vitality, and personal authority; life is self-directed.",
+    (1, 5):  "Lagna lord in 5th — intelligence, creativity, and children are key life themes.",
+    (1, 9):  "Lagna lord in 9th — dharmic life path; fortune through higher knowledge and spiritual pursuit.",
+    (1, 10): "Lagna lord in 10th — career is the primary life focus; professional recognition is prominent.",
+    (1, 12): "Lagna lord in 12th — spiritual orientation, possible foreign settlement; inner journey dominates.",
+    (2, 2):  "2nd lord in 2nd — stable family wealth and strong speech.",
+    (2, 11): "2nd lord in 11th — financial gains multiply through networks and elder siblings.",
+    (5, 9):  "5th lord in 9th — exceptional intelligence linked to dharma, teaching, and higher philosophy.",
+    (5, 5):  "5th lord in 5th — strong past-life merit; creativity, children, and intelligence all flourish.",
+    (7, 7):  "7th lord in 7th — powerful partnership energy; marriage is a central and fulfilling life theme.",
+    (7, 1):  "7th lord in Lagna — partnerships and self-identity are deeply intertwined.",
+    (9, 1):  "9th lord in Lagna — dharma permeates personality; natural teacher or philosopher.",
+    (9, 9):  "9th lord in 9th — exceptional luck, spiritual grace, and blessings from lineage.",
+    (10, 10):"10th lord in 10th — peak career potential; authority, recognition, and professional legacy.",
+    (10, 11):"10th lord in 11th — career directly translates to income and social network gains.",
+    (11, 11):"11th lord in 11th — abundant income, fulfilled aspirations, and strong social influence.",
+}
+
+
+def analyze_house_lord_effects(planet_data):
+    """Map every house lord's placement to its primary effect on life themes."""
+    output = "\n=== HOUSE LORD EFFECTS ANALYSIS ===\n"
+    output += (
+        "This section maps each house lord to its placement to decode how the 12 life "
+        "domains actually express in the chart.\n\n"
+    )
+
+    lagna = kundali.get("ascendant", "")
+    if lagna not in SIGN_ORDER:
+        return output + "Ascendant not found.\n"
+
+    lagna_idx = SIGN_ORDER.index(lagna)
+
+    for house_num in range(1, 13):
+        house_sign = SIGN_ORDER[(lagna_idx + house_num - 1) % 12]
+        lord = SIGN_LORDS.get(house_sign, "Unknown")
+        lord_data = planet_data.get(lord, {})
+        lord_house = lord_data.get("house")
+        lord_sign  = lord_data.get("sign", "?")
+
+        placed = f"House {lord_house} ({lord_sign})" if lord_house else "unknown"
+        output += f"House {house_num:2d} lord ({lord:8s}) placed in {placed}\n"
+
+        # Lookup specific rule
+        rule = _HOUSE_LORD_EFFECT_RULES.get((house_num, lord_house))
+        if rule:
+            output += f"  ★ {rule}\n"
+        elif lord_house in (6, 8, 12):
+            output += (
+                f"  ⚑ Lord of House {house_num} in dusthana (House {lord_house}) — "
+                f"the themes of House {house_num} undergo transformation, hidden development, "
+                f"or face karmic tests before manifesting fully.\n"
+            )
+        elif lord_house in (1, 4, 7, 10):
+            output += (
+                f"  ✓ Lord of House {house_num} in kendra (House {lord_house}) — "
+                f"themes of House {house_num} are supported by angular strength and tangible results.\n"
+            )
+        elif lord_house in (5, 9):
+            output += (
+                f"  ✓ Lord of House {house_num} in trikona (House {lord_house}) — "
+                f"themes of House {house_num} benefit from dharmic grace and fortunate circumstances.\n"
+            )
+        output += "\n"
+
+    return output
+
+
 # -------------------------------
 # FINAL REPORT
 # -------------------------------
@@ -1455,22 +1895,27 @@ def generate_report():
     print("\n=== REPORT STRUCTURE ===")
     print("1.  Introduction & Kundali Summary")
     print("2.  Planet-by-Planet Deep Synthesis")
-    print("3.  Combination Analysis")
-    print("4.  Classical Yogas + Advanced Yogas (20+)")
-    print("5.  Lordship Analysis — All 12 House Rulers")
-    print("6.  Lagna Lord | 10th Lord | 7th Lord")
-    print("7.  Career Deep Analysis")
-    print("8.  Marriage Deep Analysis")
-    print("9.  Mahadasha + Antardasha + Timeline")
-    print("10. Aspects (Drishti)")
-    print("11. Navamsa (D9)")
-    print("12. Shadbala (Planetary Strength)")
-    print("13. Shastra Insights (Classical Texts)")
-    print("14. Dosha Analysis")
-    print("15. Transit Analysis + Sade Sati")
-    print("16. Remedies")
-    print("17. Final Prediction")
-    print("18. Overall Summary\n")
+    print("3.  Combustion (Asta) Analysis")
+    print("4.  Conjunction Analysis")
+    print("5.  Retrograde Planet Analysis")
+    print("6.  Combination Analysis")
+    print("7.  Classical Yogas + Advanced Yogas (20+)")
+    print("8.  Lordship Analysis — All 12 House Rulers")
+    print("9.  House Lord Effects Analysis")
+    print("10. Lagna Lord | 10th Lord | 7th Lord")
+    print("11. Career Deep Analysis")
+    print("12. Marriage Deep Analysis")
+    print("13. Dasha Timeline — Time | Event | Reason")
+    print("14. Mahadasha + Antardasha + Timeline")
+    print("15. Aspects (Drishti)")
+    print("16. Navamsa (D9)")
+    print("17. Shadbala (Planetary Strength)")
+    print("18. Shastra Insights (Classical Texts)")
+    print("19. Dosha Analysis")
+    print("20. Transit Analysis + Sade Sati")
+    print("21. Remedies")
+    print("22. Final Prediction")
+    print("23. Overall Summary\n")
 
     # --------------------------------------------------------
     # 1. INTRODUCTION & KUNDALI SUMMARY
@@ -1478,9 +1923,12 @@ def generate_report():
     print("=" * 60)
     print("SECTION 1 — INTRODUCTION & KUNDALI SUMMARY")
     print("=" * 60)
-    for key in ("name", "date_of_birth", "time_of_birth", "place_of_birth", "ascendant"):
-        if key in kundali:
-            print(f"  {key.replace('_', ' ').title()}: {kundali[key]}")
+    bd = kundali.get("basic_details", kundali)
+    for key in ("name", "date_of_birth", "time_of_birth", "place_of_birth",
+                "place", "lagna", "ascendant", "rasi", "nakshatra"):
+        val = bd.get(key) or kundali.get(key)
+        if val:
+            print(f"  {key.replace('_', ' ').title()}: {val}")
     print()
 
     print("=== PLANETARY PLACEMENTS AT A GLANCE ===")
@@ -1497,62 +1945,102 @@ def generate_report():
     print(synthesize_all_planets(planets))
 
     # --------------------------------------------------------
-    # 3. COMBINATION ANALYSIS
+    # 3. COMBUSTION (ASTA) ANALYSIS  [NEW]
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 3 — COMBINATION ANALYSIS")
+    print("SECTION 3 — COMBUSTION (ASTA) ANALYSIS")
+    print("=" * 60)
+    print(detect_combustion(planets))
+
+    # --------------------------------------------------------
+    # 4. CONJUNCTION ANALYSIS  [NEW]
+    # --------------------------------------------------------
+    print("=" * 60)
+    print("SECTION 4 — CONJUNCTION ANALYSIS")
+    print("=" * 60)
+    print(detect_conjunctions(planets))
+
+    # --------------------------------------------------------
+    # 5. RETROGRADE PLANET ANALYSIS  [NEW]
+    # --------------------------------------------------------
+    print("=" * 60)
+    print("SECTION 5 — RETROGRADE PLANET ANALYSIS")
+    print("=" * 60)
+    print(detect_retrograde(planets))
+
+    # --------------------------------------------------------
+    # 6. COMBINATION ANALYSIS
+    # --------------------------------------------------------
+    print("=" * 60)
+    print("SECTION 6 — COMBINATION ANALYSIS")
     print("=" * 60)
     print(combined_analysis(planets))
 
     # --------------------------------------------------------
-    # 4. YOGAS — CLASSICAL + ADVANCED
+    # 7. YOGAS — CLASSICAL + ADVANCED
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 4 — YOGA ANALYSIS")
+    print("SECTION 7 — YOGA ANALYSIS")
     print("=" * 60)
     print("\n🔥 CORE DESTINY FACTORS (YOGAS) 🔥\n")
     print(detect_real_yogas(planets))
     print(detect_advanced_yogas(planets))
 
     # --------------------------------------------------------
-    # 5. LORDSHIP ANALYSIS
+    # 8. LORDSHIP ANALYSIS
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 5 — LORDSHIP ANALYSIS")
+    print("SECTION 8 — LORDSHIP ANALYSIS")
     print("=" * 60)
     print(analyze_lordships(planets))
 
     # --------------------------------------------------------
-    # 6. LAGNA LORD | 10TH LORD | 7TH LORD
+    # 9. HOUSE LORD EFFECTS  [NEW]
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 6 — LAGNA LORD | 10TH LORD | 7TH LORD")
+    print("SECTION 9 — HOUSE LORD EFFECTS ANALYSIS")
+    print("=" * 60)
+    print(analyze_house_lord_effects(planets))
+
+    # --------------------------------------------------------
+    # 10. LAGNA LORD | 10TH LORD | 7TH LORD
+    # --------------------------------------------------------
+    print("=" * 60)
+    print("SECTION 10 — LAGNA LORD | 10TH LORD | 7TH LORD")
     print("=" * 60)
     print(analyze_lagna_lord(kundali, planets))
     print(analyze_10th_lord(planets, kundali))
     print(analyze_7th_lord(planets, kundali))
 
     # --------------------------------------------------------
-    # 7. CAREER DEEP ANALYSIS
+    # 11. CAREER DEEP ANALYSIS
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 7 — CAREER DEEP ANALYSIS")
+    print("SECTION 11 — CAREER DEEP ANALYSIS")
     print("=" * 60)
     print(analyze_career(planets))
 
     # --------------------------------------------------------
-    # 8. MARRIAGE DEEP ANALYSIS
+    # 12. MARRIAGE DEEP ANALYSIS
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 8 — MARRIAGE DEEP ANALYSIS")
+    print("SECTION 12 — MARRIAGE DEEP ANALYSIS")
     print("=" * 60)
     print(analyze_marriage(planets))
 
     # --------------------------------------------------------
-    # 9. DASHA + ANTARDASHA + TIMELINE
+    # 13. DASHA TIMELINE — TIME | EVENT | REASON  [NEW]
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 9 — TIMING ANALYSIS (DASHA SYSTEM)")
+    print("SECTION 13 — DASHA TIMELINE (TIME | EVENT | REASON)")
+    print("=" * 60)
+    print(analyze_dasha_timeline(dasha, planets))
+
+    # --------------------------------------------------------
+    # 14. DASHA + ANTARDASHA + TIMELINE
+    # --------------------------------------------------------
+    print("=" * 60)
+    print("SECTION 14 — TIMING ANALYSIS (DASHA SYSTEM)")
     print("=" * 60)
     print("\n⏳ TIMING ANALYSIS (DASHA SYSTEM) ⏳\n")
     print(analyze_dasha())
@@ -1560,20 +2048,20 @@ def generate_report():
     print(antardasha_timeline(dasha))
 
     # --------------------------------------------------------
-    # 10. ASPECTS (DRISHTI)
+    # 15. ASPECTS (DRISHTI)
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 10 — ASPECTS (DRISHTI)")
+    print("SECTION 15 — ASPECTS (DRISHTI)")
     print("=" * 60)
     print("\n=== ASPECTS (DRISHTI) ===")
     for a in calculate_aspects(planets):
         print(" ", a)
 
     # --------------------------------------------------------
-    # 11. NAVAMSA (D9)
+    # 16. NAVAMSA (D9)
     # --------------------------------------------------------
     print("\n" + "=" * 60)
-    print("SECTION 11 — NAVAMSA (D9)")
+    print("SECTION 16 — NAVAMSA (D9)")
     print("=" * 60)
     print("\n=== NAVAMSA (D9) ===")
     for p, d in planets.items():
@@ -1581,10 +2069,10 @@ def generate_report():
         print(f"  {p:10s} → Navamsa sign: {nav}")
 
     # --------------------------------------------------------
-    # 12. SHADBALA
+    # 17. SHADBALA
     # --------------------------------------------------------
     print("\n" + "=" * 60)
-    print("SECTION 12 — SHADBALA (PLANETARY STRENGTH)")
+    print("SECTION 17 — SHADBALA (PLANETARY STRENGTH)")
     print("=" * 60)
     print("\n=== SHADBALA (PLANETARY STRENGTH) ===")
     print("This section evaluates the strength of planets in your chart and their ability to deliver results.\n")
@@ -1592,10 +2080,10 @@ def generate_report():
         print(" ", s)
 
     # --------------------------------------------------------
-    # 13. SHASTRA INSIGHTS (CLASSICAL TEXTS)
+    # 18. SHASTRA INSIGHTS (CLASSICAL TEXTS)
     # --------------------------------------------------------
     print("\n" + "=" * 60)
-    print("SECTION 13 — SHASTRA INSIGHTS (CLASSICAL TEXTS)")
+    print("SECTION 18 — SHASTRA INSIGHTS (CLASSICAL TEXTS)")
     print("=" * 60)
     print("\n=== SHASTRA INSIGHTS ===")
     print("The following insights are drawn from classical Vedic texts and are relevant to the planetary placements in your chart.\n")
@@ -1612,18 +2100,18 @@ def generate_report():
             print("-", interpreted)
 
     # --------------------------------------------------------
-    # 14. DOSHA ANALYSIS
+    # 19. DOSHA ANALYSIS
     # --------------------------------------------------------
     print("\n" + "=" * 60)
-    print("SECTION 14 — DOSHA ANALYSIS")
+    print("SECTION 19 — DOSHA ANALYSIS")
     print("=" * 60)
     print(detect_doshas(planets))
 
     # --------------------------------------------------------
-    # 15. TRANSIT ANALYSIS + SADE SATI
+    # 20. TRANSIT ANALYSIS + SADE SATI
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 15 — TRANSIT ANALYSIS + SADE SATI")
+    print("SECTION 20 — TRANSIT ANALYSIS + SADE SATI")
     print("=" * 60)
     print("\n=== TRANSIT ANALYSIS ===")
     print("This section examines how current planetary transits are interacting with your natal chart and what shifts they may bring.\n")
@@ -1633,27 +2121,27 @@ def generate_report():
     print(analyze_sadesati())
 
     # --------------------------------------------------------
-    # 16. REMEDIES
+    # 21. REMEDIES
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 16 — REMEDIES")
+    print("SECTION 21 — REMEDIES")
     print("=" * 60)
     print(suggest_remedies(planets))
 
     # --------------------------------------------------------
-    # 17. FINAL PREDICTION
+    # 22. FINAL PREDICTION
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 17 — FINAL PREDICTION")
+    print("SECTION 22 — FINAL PREDICTION")
     print("=" * 60)
     final_pred = generate_final_prediction(planets, dasha, transit_text)
     print(final_pred)
 
     # --------------------------------------------------------
-    # 18. OVERALL SUMMARY
+    # 23. OVERALL SUMMARY
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 18 — OVERALL SUMMARY")
+    print("SECTION 23 — OVERALL SUMMARY")
     print("=" * 60)
     print("\n=== OVERALL SUMMARY ===")
     print("Your chart shows a blend of karmic challenges and growth opportunities. With the right effort and awareness, strong progress is indicated in key areas of life.")
@@ -1663,4 +2151,28 @@ def generate_report():
 # ENTRY POINT
 # -------------------------------
 if __name__ == "__main__":
-    generate_report()
+    _OUTPUT_FILE = "astrology_report.txt"
+
+    class _Tee:
+        """Write to both the report file and the real stdout simultaneously."""
+        def __init__(self, file_obj):
+            self._file = file_obj
+            self._stdout = sys.__stdout__
+
+        def write(self, data):
+            self._stdout.write(data)
+            self._file.write(data)
+
+        def flush(self):
+            self._stdout.flush()
+            self._file.flush()
+
+    with open(_OUTPUT_FILE, "w", encoding="utf-8") as _report_file:
+        sys.stdout = _Tee(_report_file)
+        try:
+            generate_report()
+        finally:
+            sys.stdout = sys.__stdout__
+
+    print(f"\n✅ Report saved to {_OUTPUT_FILE}")
+
