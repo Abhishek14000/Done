@@ -6,8 +6,31 @@ import json
 with open("kundali_rebuilt.json", "r") as f:
     kundali = json.load(f)
 
+# filtered_chunks.json — list of {"id": ..., "text": ...}
 with open("filtered_chunks.json", "r") as f:
     chunks = json.load(f)
+
+# all_books_chunked.json — dict keyed by book title; each value has
+# {"total_chunks": N, "chunks": [str, str, ...]}
+# Normalize to {"text": ...} dicts so all sources share one format.
+with open("all_books_chunked.json", "r") as f:
+    _all_books_chunked_raw = json.load(f)
+
+_all_books_chunked_normalized = []
+for _book_title, _book_data in _all_books_chunked_raw.items():
+    for _chunk_text in _book_data.get("chunks", []):
+        if isinstance(_chunk_text, str):
+            _all_books_chunked_normalized.append({"text": _chunk_text, "book": _book_title})
+        elif isinstance(_chunk_text, dict):
+            _all_books_chunked_normalized.append(_chunk_text)
+
+# all_books_chunks.json — list of {"text": ..., "page": ..., "book": ...}
+with open("all_books_chunks.json", "r") as f:
+    _all_books_chunks = json.load(f)
+
+# Combined pool used by retrieve_insights for full-dataset coverage.
+# Order: filtered_chunks first (highest quality), then both large datasets.
+all_chunks = chunks + _all_books_chunked_normalized + _all_books_chunks
 
 planets = kundali["planets"]
 dasha = kundali.get("Vimshottari_Dasha", [])
@@ -16,30 +39,45 @@ sadesati = kundali.get("SadeSati", [])
 # -------------------------------
 # SMART RETRIEVAL (UPGRADED)
 # -------------------------------
+_LOGIC_WORDS = ["house", "effect", "result", "indicates", "gives", "causes"]
+
+_RETRIEVAL_BATCH_SIZE = 500  # process chunks in batches to stay memory-efficient
+
+
 def retrieve_insights(keywords, chunk_list=None):
+    """Search *every* chunk in chunk_list for keyword relevance.
+
+    Processes the full dataset in batches of _RETRIEVAL_BATCH_SIZE so that no
+    chunk is ever skipped, even for very large inputs.  Defaults to all_chunks
+    which combines all four loaded datasets for complete coverage.
+    """
     if chunk_list is None:
-        chunk_list = chunks
+        chunk_list = all_chunks
 
     scored = []
+    total = len(chunk_list)
 
-    for chunk in chunk_list:
-        text = chunk.get("text", "").lower()
+    # Iterate the entire dataset in fixed-size batches — no skipping, no sampling.
+    for batch_start in range(0, total, _RETRIEVAL_BATCH_SIZE):
+        batch = chunk_list[batch_start: batch_start + _RETRIEVAL_BATCH_SIZE]
 
-        score = 0
+        for chunk in batch:
+            text = chunk.get("text", "").lower()
 
-        # strong keyword match
-        for k in keywords:
-            if k in text:
-                score += 2
+            score = 0
 
-        # logic words bonus
-        logic_words = ["house", "effect", "result", "indicates", "gives", "causes"]
-        for lw in logic_words:
-            if lw in text:
-                score += 1
+            # strong keyword match
+            for k in keywords:
+                if k in text:
+                    score += 2
 
-        if score >= 3:
-            scored.append((score, chunk["text"]))
+            # logic words bonus
+            for lw in _LOGIC_WORDS:
+                if lw in text:
+                    score += 1
+
+            if score >= 3:
+                scored.append((score, chunk["text"]))
 
     scored.sort(reverse=True, key=lambda x: x[0])
 
