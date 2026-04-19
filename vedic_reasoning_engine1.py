@@ -250,39 +250,58 @@ def analyze_planets():
 # -------------------------------
 # MAHADASHA ANALYSIS (CLEAN)
 # -------------------------------
-_MAHADASHA_SUMMARIES = {
-    "Sun":     "The Sun Mahadasha activates authority, career recognition, and clarity of life purpose. Leadership and government connections come to the fore. The native's confidence and self-expression reach their peak.",
-    "Moon":    "The Moon Mahadasha heightens emotional sensitivity, public dealings, and connection to the mother and home. Social growth, travel, and intuitive perception are dominant themes.",
-    "Mars":    "The Mars Mahadasha delivers dynamic energy, bold action, and ambition. Property, siblings, and competitive endeavours are activated. Decisions made now carry lasting consequences.",
-    "Mercury": "The Mercury Mahadasha favours intellectual pursuits, communication, business, and education. Networking, analytical career growth, and learning are all strongly supported.",
-    "Jupiter": "The Jupiter Mahadasha is among the most auspicious periods in Vedic astrology. Expansion, wisdom, children, higher education, spiritual initiation, and fortunate connections mark this period.",
-    "Venus":   "The Venus Mahadasha brings joy, relationships, material gains, and creative expression. Marriage, artistic pursuits, financial growth, and social harmony are commonly experienced.",
-    "Saturn":  "The Saturn Mahadasha is a long, challenging yet profoundly productive period. Discipline, responsibility, and karmic accountability are central. Results are slow but lasting, forming the foundation for future achievements.",
-    "Rahu":    "The Rahu Mahadasha brings sudden changes, foreign influences, and unconventional opportunities. Material ambition is high; maintaining groundedness is essential to avoid illusion and scattered focus.",
-    "Ketu":    "The Ketu Mahadasha brings spiritual deepening and worldly detachment. Past-life patterns surface for resolution. This is a powerful time for inner growth, though external circumstances feel uncertain.",
-}
-
 def analyze_dasha():
+    """Chart-driven Mahadasha analysis — no generic planet descriptions.
+    Every statement derived from actual planet placement, lordship, dignity, and yogas.
+    """
     output = "\n=== MAHADASHA ANALYSIS ===\n"
-    output += "Mahadasha periods shape the dominant themes and events across every life stage.\n"
+    lagna_sign = _get_lagna()
 
     for period in dasha[:3]:
         planet = period.get("planet", "Unknown")
         start  = period.get("start", "?")
         end    = period.get("end", "?")
-        summary = _MAHADASHA_SUMMARIES.get(planet, f"The {planet} Mahadasha activates the significations of {planet} across all life domains.")
+        pdata  = planets.get(planet, {})
+        house  = pdata.get("house", 0)
+        sign   = pdata.get("sign", "")
+        nak    = pdata.get("nakshatra", "")
+        house_domain = _house_event_phrase(house)
+
+        # Lordship
+        lord_str = _planet_lordship_summary(planet, planets, lagna_sign) if lagna_sign else planet
+
+        # Dignity flag
+        _EXALT = {"Sun": "Aries", "Moon": "Taurus", "Mars": "Capricorn",
+                  "Mercury": "Virgo", "Jupiter": "Cancer", "Venus": "Pisces", "Saturn": "Libra"}
+        _DEBIL = {"Sun": "Libra", "Moon": "Scorpio", "Mars": "Cancer",
+                  "Mercury": "Pisces", "Jupiter": "Capricorn", "Venus": "Virgo", "Saturn": "Aries"}
+        if _EXALT.get(planet) == sign:
+            dignity = "exalted — peak strength"
+        elif _DEBIL.get(planet) == sign:
+            dignity = "debilitated — transformation pressure applies"
+        else:
+            dignity = f"in {sign}"
 
         output += f"\n{planet} Mahadasha ({start} → {end}):\n"
-        output += f"  {summary}\n"
+        output += f"  Placement: {lord_str} {dignity} (House {house} — {house_domain})\n"
+        if nak:
+            output += f"  Nakshatra: {nak}\n"
 
-        # Chart-specific note: placement of the Mahadasha lord
-        pdata = planets.get(planet, {})
-        if pdata:
-            output += (
-                f"  In this chart: {planet} is placed in House {pdata.get('house', '?')} "
-                f"({pdata.get('sign', '?')}), therefore the themes of House {pdata.get('house', '?')} "
-                f"are central to this period's unfolding.\n"
-            )
+        # Career signal
+        tenth_lord = SIGN_LORDS.get(SIGN_ORDER[(SIGN_ORDER.index(lagna_sign) + 9) % 12], "") if lagna_sign in SIGN_ORDER else ""
+        if planet == tenth_lord or house == 10:
+            output += f"  Career: {planet} as 10th lord/10th house placement drives professional results directly.\n"
+        elif house in (6, 8, 12):
+            output += f"  Career: {planet} in House {house} routes career through {house_domain} — non-linear rise is the pattern.\n"
+        else:
+            output += f"  Career: {planet} in House {house} shifts professional focus toward {house_domain}.\n"
+
+        # Relationship signal
+        seventh_lord = SIGN_LORDS.get(SIGN_ORDER[(SIGN_ORDER.index(lagna_sign) + 6) % 12], "") if lagna_sign in SIGN_ORDER else ""
+        if planet == seventh_lord or house == 7:
+            output += f"  Relationships: {planet} as 7th lord activates partnership events during this period.\n"
+        elif planet in ("Venus", "Ketu"):
+            output += f"  Relationships: {planet} in House {house} ({house_domain}) shapes relationship quality and timing.\n"
 
     return output
 
@@ -560,7 +579,6 @@ def saturn_transit_effect(planet_data):
 # -------------------------------
 def detect_doshas(planet_data):
     output = "\n=== DOSHA ANALYSIS ===\n"
-    output += "This section identifies key karmic patterns in your chart that may influence important life areas.\n\n"
 
     mars_house = planet_data.get("Mars", {}).get("house")
     if mars_house in [1, 4, 7, 8, 12]:
@@ -579,7 +597,6 @@ def detect_doshas(planet_data):
 # -------------------------------
 def generate_final_prediction(planet_data, dasha_list, transit_text):
     output = "\n=== FINAL PREDICTION ===\n"
-    output += "Based on the full analysis of your chart, here is a synthesised view of what lies ahead.\n\n"
 
     # Career logic based on Saturn placement
     if "Saturn" in planet_data:
@@ -610,14 +627,13 @@ def generate_final_prediction(planet_data, dasha_list, transit_text):
 # -------------------------------
 def combined_analysis(planet_data):
     output = "\n=== COMBINED ANALYSIS ===\n"
-    output += "This section looks at planetary combinations in your chart that produce distinctive life themes and outcomes.\n\n"
 
     if (planet_data.get("Saturn", {}).get("house") == 12
             and planet_data.get("Jupiter", {}).get("house") == 12):
-        output += "With both Saturn and Jupiter placed in the 12th house, your chart carries strong spiritual potential along with meaningful connections to foreign lands or institutions.\n"
+        output += "Saturn + Jupiter both in House 12: spiritual depth and foreign institutional connections are the primary life arenas — not conventional mainstream environments.\n"
 
     if planet_data.get("Sun", {}).get("house") == 3:
-        output += "Your Sun in the 3rd house bestows courage and a natural ability to lead through communication, writing, and self-driven effort.\n"
+        output += "Sun in House 3: leadership is exercised through communication and self-directed effort, not hierarchical authority.\n"
 
     return output
 
@@ -626,87 +642,104 @@ def combined_analysis(planet_data):
 # ANTARDASHA ANALYSIS
 # -------------------------------
 def analyze_antardasha(dasha_list):
+    """Chart-driven Antardasha analysis.
+    For each Mahadasha × Antardasha pair, derive 3-5 predictions from:
+      - Mahadasha planet's house + lordship
+      - Antardasha planet's house + lordship
+      - Their combined house activation and domain interaction
+    No generic planet dictionaries used.
+    """
     output = "\n=== ANTARDASHA ANALYSIS ===\n"
-    output += "This section analyzes sub-period influences within the current Mahadasha with detailed period-specific interpretations.\n\n"
 
     if len(dasha_list) < 2:
         return output + "Insufficient data for Antardasha analysis.\n"
 
     main = dasha_list[0].get("planet", "")
-    sub = dasha_list[1].get("planet", "")
+    sub  = dasha_list[1].get("planet", "")
 
-    output += f"You are currently running the {main}-{sub} Dasha-Antardasha period.\n\n"
+    lagna_sign = _get_lagna()
+    main_data  = planets.get(main, {})
+    sub_data   = planets.get(sub, {})
+    main_h     = main_data.get("house", 0)
+    sub_h      = sub_data.get("house", 0)
+    main_s     = main_data.get("sign", "")
+    sub_s      = sub_data.get("sign", "")
+    main_nak   = main_data.get("nakshatra", "")
+    sub_nak    = sub_data.get("nakshatra", "")
 
-    main_meanings = {
-        "Sun":     "authority, government, father, leadership, and ego expression. Career advancement and clarity of purpose.",
-        "Moon":    "emotions, mind, mother, travel, the public, and social dealings. Heightened sensitivity and intuitive perception.",
-        "Mars":    "energy, action, courage, property, siblings, and competition. A time for bold, decisive moves.",
-        "Mercury": "intellect, communication, business, education, and analytical thinking. Learning and trade flourish.",
-        "Jupiter": "wisdom, expansion, spirituality, children, good fortune, and higher knowledge. Major life blessings often occur.",
-        "Venus":   "relationships, beauty, luxury, arts, pleasure, and material comfort. Love life and creativity are highlighted.",
-        "Saturn":  "discipline, karmic lessons, delays, hard work, and long-term building. Patience and perseverance are essential.",
-        "Rahu":    "ambition, unconventional paths, foreign connections, illusion, and obsession. Dramatic and unexpected life shifts possible.",
-        "Ketu":    "detachment, spirituality, past-life resolution, psychic sensitivity, and inner search. Worldly disengagement is common.",
-    }
+    main_domain = _house_event_phrase(main_h)
+    sub_domain  = _house_event_phrase(sub_h)
 
-    sub_meanings = {
-        "Sun":     "focus on identity, authority, and leadership. Health and career clarity are emphasized.",
-        "Moon":    "emotional events, mother, home, and mental states come to the fore. Travel or relocation is possible.",
-        "Mars":    "action, conflict, property matters, and sibling relationships. Energy and physical drive are heightened.",
-        "Mercury": "communication, business deals, education, and analytical decisions are favored.",
-        "Jupiter": "expansion, wisdom, blessings, and opportunity emerge. Auspicious events and growth are likely.",
-        "Venus":   "relationships, social life, creative projects, and financial gains are activated.",
-        "Saturn":  "discipline, hard work, health caution, and karmic accountability are required.",
-        "Rahu":    "sudden events, foreign connections, ambition surges, and unpredictability are heightened.",
-        "Ketu":    "spiritual seeking, sense of loss, detachment, and deep introspection mark this sub-period.",
-    }
+    main_lord_str = _planet_lordship_summary(main, planets, lagna_sign) if lagna_sign else main
+    sub_lord_str  = _planet_lordship_summary(sub,  planets, lagna_sign) if lagna_sign else sub
 
-    if main in main_meanings:
-        output += f"Main Period Themes — {main} Mahadasha:\n{main_meanings[main]}\n\n"
+    output += f"Active period: {main}–{sub} Mahadasha–Antardasha\n"
+    output += f"  {main}: {main_lord_str} in {main_s} (House {main_h} — {main_domain})\n"
+    output += f"  {sub}:  {sub_lord_str} in {sub_s} (House {sub_h} — {sub_domain})\n\n"
 
-    if main == "Saturn":
-        output += "The Saturn Mahadasha is a long, often challenging but profoundly productive period. It emphasizes discipline, responsibility, and karmic accountability. Results are slow but lasting and serve as the foundation for future achievements.\n"
-    elif main == "Jupiter":
-        output += "The Jupiter Mahadasha is typically a period of significant personal growth, expansion, and spiritual enrichment. Blessings, children, higher education, and fortunate connections often mark this period.\n"
-    elif main == "Rahu":
-        output += "The Rahu Mahadasha brings sudden changes, foreign influences, and unconventional opportunities. Material ambition is high but maintaining groundedness is essential to avoid illusion and scattered focus.\n"
-    elif main == "Ketu":
-        output += "The Ketu Mahadasha brings a period of spiritual deepening and worldly detachment. Past-life patterns surface for resolution. This is a powerful time for inner growth, though external circumstances may feel uncertain.\n"
-    elif main == "Venus":
-        output += "The Venus Mahadasha is often a period of joy, relationships, material gains, and creative expression. Marriage, artistic pursuits, and financial growth are commonly experienced.\n"
-    elif main == "Mars":
-        output += "The Mars Mahadasha brings dynamic energy, action, and ambition. Property, siblings, and competitive endeavors are activated. Decisions made now have lasting consequences.\n"
-    elif main == "Moon":
-        output += "The Moon Mahadasha heightens emotional sensitivity, public dealings, and connection to mother and home. Travel, career in public life, and social growth are common themes.\n"
-    elif main == "Mercury":
-        output += "The Mercury Mahadasha favors intellectual pursuits, communication, business, and education. A time for learning, networking, and analytical career growth.\n"
-    elif main == "Sun":
-        output += "The Sun Mahadasha brings focus on identity, authority, and professional recognition. Leadership opportunities, government connections, and clarity of life purpose emerge.\n"
+    output += f"=== {main}–{sub} Interaction Predictions ===\n"
 
-    if sub in sub_meanings:
-        output += f"\nSub-Period Themes — {sub} Antardasha:\n{sub_meanings[sub]}\n"
+    n = 1
 
-    if sub == "Mercury":
-        output += "The Mercury Antardasha within this main period brings focus on communication, learning, business negotiations, and analytical decision-making. Intellectual clarity improves.\n"
-    elif sub == "Saturn":
-        output += "The Saturn Antardasha within this main period demands discipline, health awareness, and karmic accountability. Delays may occur but consistent effort is rewarded.\n"
-    elif sub == "Jupiter":
-        output += "The Jupiter Antardasha within this main period brings blessings, expansion, and fortunate opportunities. New doors in education, spirituality, or career may open.\n"
-    elif sub == "Venus":
-        output += "The Venus Antardasha brings comfort, relationship harmony, and creative or financial opportunities within this main period.\n"
-    elif sub == "Rahu":
-        output += "The Rahu Antardasha introduces sudden changes, ambition, and unpredictable events. Careful decision-making and staying grounded are important.\n"
-
-    output += f"\n=== {main}-{sub} Compatibility Assessment ===\n"
-    benefics = {"Jupiter", "Venus", "Mercury", "Moon"}
-    malefics = {"Saturn", "Mars", "Rahu", "Ketu", "Sun"}
-
-    if main in benefics and sub in benefics:
-        output += "Both main and sub periods are natural benefics — this is generally a favorable combination bringing growth, harmony, creativity, and positive opportunities across most life areas.\n"
-    elif main in malefics and sub in malefics:
-        output += "Both main and sub periods are natural malefics — this period requires extra patience, resilience, and conscious effort. Karmic clearing is active and hard work pays dividends in the long run.\n"
+    # 1. Career: triggered when either planet rules or occupies career houses
+    tenth_lord = SIGN_LORDS.get(SIGN_ORDER[(SIGN_ORDER.index(lagna_sign) + 9) % 12], "") if lagna_sign in SIGN_ORDER else ""
+    if main == tenth_lord or sub == tenth_lord or main_h == 10 or sub_h == 10:
+        output += (
+            f"{n}. Career activation: {main} (House {main_h}) + {sub} (House {sub_h}) "
+            f"combine to drive professional results — {tenth_lord} as 10th lord amplifies this period.\n"
+        )
     else:
-        output += "A blend of benefic and malefic energies characterizes this period — some life areas will flourish while others require careful navigation and patience. Balance and awareness are the key.\n"
+        output += (
+            f"{n}. Career shift: {main} (House {main_h}, {main_domain}) + {sub} (House {sub_h}, {sub_domain}) "
+            f"redirect professional focus into {sub_domain}.\n"
+        )
+    n += 1
+
+    # 2. Communication/intellect: Mercury or House 3 involvement
+    if main == "Mercury" or sub == "Mercury" or main_h == 3 or sub_h == 3:
+        output += (
+            f"{n}. Communication-based growth: Mercury's House 3 energy + {main if main != 'Mercury' else sub} "
+            f"({_house_event_phrase(sub_h if main == 'Mercury' else main_h)}) produce "
+            f"writing, content, or analytical career output.\n"
+        )
+        n += 1
+
+    # 3. Foreign/international: House 12 or Rahu involvement
+    if main_h == 12 or sub_h == 12 or main == "Rahu" or sub == "Rahu":
+        foreign_planet = main if (main_h == 12 or main == "Rahu") else sub
+        other_planet   = sub  if foreign_planet == main else main
+        output += (
+            f"{n}. Foreign/institutional opportunity: {foreign_planet} in House {planets.get(foreign_planet, {}).get('house', '?')} "
+            f"interacts with {other_planet} — overseas engagement, research, or institutional work is activated.\n"
+        )
+        n += 1
+
+    # 4. Relationship: 7th lord or Venus / Ketu
+    seventh_lord = SIGN_LORDS.get(SIGN_ORDER[(SIGN_ORDER.index(lagna_sign) + 6) % 12], "") if lagna_sign in SIGN_ORDER else ""
+    if main == seventh_lord or sub == seventh_lord or main == "Venus" or sub == "Venus":
+        output += (
+            f"{n}. Relationship event: {main if main in (seventh_lord, 'Venus') else sub} activates "
+            f"7th house/Venus domains — partnership decisions or relationship deepening occur.\n"
+        )
+        n += 1
+
+    # 5. Financial: 2nd/11th activation
+    if main_h in (2, 11) or sub_h in (2, 11):
+        fin_planet = main if main_h in (2, 11) else sub
+        output += (
+            f"{n}. Financial gain: {fin_planet} in House {planets.get(fin_planet, {}).get('house', '?')} "
+            f"directly activates wealth accumulation through {_house_event_phrase(planets.get(fin_planet, {}).get('house', 0))}.\n"
+        )
+        n += 1
+
+    # 6. Combustion note — include if Sun is main or sub
+    if main == "Sun" or sub == "Sun":
+        combust_partner = sub if main == "Sun" else main
+        if planets.get(combust_partner, {}).get("house") == planets.get("Sun", {}).get("house"):
+            output += (
+                f"{n}. Combustion factor: {combust_partner} conjunct Sun — its significations are "
+                f"under solar pressure during this period; results are channeled through Sun's domains.\n"
+            )
 
     return output
 
@@ -716,7 +749,6 @@ def analyze_antardasha(dasha_list):
 # -------------------------------
 def detect_real_yogas(planet_data):
     output = "\n=== CLASSICAL YOGA ANALYSIS ===\n"
-    output += "This section identifies important yogas formed in your chart.\n\n"
 
     yoga_found = False
 
@@ -747,188 +779,155 @@ def detect_real_yogas(planet_data):
 # CAREER ANALYSIS
 # -------------------------------
 def analyze_career(planet_data):
-    output = "\n=== CAREER DEEP ANALYSIS ===\n"
+    """Unified Career Synthesis — one integrated narrative combining 10th lord,
+    Saturn, Mercury, Rahu, and Sun into a single chart-driven conclusion block.
+    No separate planet sub-headings; all logic flows as connected career logic.
+    """
+    output = "\n=== CAREER SYNTHESIS ===\n"
 
-    saturn = planet_data.get("Saturn", {})
-    sun = planet_data.get("Sun", {})
-    mars = planet_data.get("Mars", {})
-    mercury = planet_data.get("Mercury", {})
-    jupiter = planet_data.get("Jupiter", {})
-    rahu = planet_data.get("Rahu", {})
-
-    saturn_house = saturn.get("house")
-    sun_house = sun.get("house")
-    mars_house = mars.get("house")
-    mercury_house = mercury.get("house")
-    jupiter_house = jupiter.get("house")
-    rahu_house = rahu.get("house")
-
-    output += "=== 10th House Lord (Primary Career Indicator) ===\n"
     lagna = _get_lagna()
+    saturn_h   = planet_data.get("Saturn",  {}).get("house", 0)
+    saturn_s   = planet_data.get("Saturn",  {}).get("sign", "")
+    sun_h      = planet_data.get("Sun",     {}).get("house", 0)
+    sun_s      = planet_data.get("Sun",     {}).get("sign", "")
+    mercury_h  = planet_data.get("Mercury", {}).get("house", 0)
+    mercury_s  = planet_data.get("Mercury", {}).get("sign", "")
+    jupiter_h  = planet_data.get("Jupiter", {}).get("house", 0)
+    jupiter_s  = planet_data.get("Jupiter", {}).get("sign", "")
+    rahu_h     = planet_data.get("Rahu",    {}).get("house", 0)
+    mars_h     = planet_data.get("Mars",    {}).get("house", 0)
+    mars_s     = planet_data.get("Mars",    {}).get("sign", "")
+
+    # Derive 10th lord
+    tenth_lord = "Unknown"
+    tenth_sign = ""
+    tenth_lord_h = 0
+    tenth_lord_s = ""
     if lagna in SIGN_ORDER:
-        lagna_idx = SIGN_ORDER.index(lagna)
+        lagna_idx  = SIGN_ORDER.index(lagna)
         tenth_sign = SIGN_ORDER[(lagna_idx + 9) % 12]
         tenth_lord = SIGN_LORDS.get(tenth_sign, "Unknown")
-        tenth_lord_data = planet_data.get(tenth_lord, {})
-        output += f"10th house falls in {tenth_sign}, ruled by {tenth_lord}.\n"
-        output += f"{tenth_lord} is placed in House {tenth_lord_data.get('house', '?')} ({tenth_lord_data.get('sign', '?')}).\n"
-        tlh = tenth_lord_data.get("house")
-        if tlh in [10, 11]:
-            output += f"Strong placement — {tenth_lord} in House {tlh} supports professional success, recognition, and career gains.\n"
-        elif tlh in [1, 5, 9]:
-            output += f"{tenth_lord} in House {tlh} (trikona) — career connected to personal dharma, intelligence, and fortunate opportunities.\n"
-        elif tlh in [6, 8, 12]:
-            output += f"{tenth_lord} in House {tlh} (dusthana) — career involves transformation, hidden work, service, or foreign sectors. Challenges become stepping stones.\n"
-        if tlh == 12:
-            output += "Career linked to foreign lands, research, spirituality, hidden sectors, or institutional environments.\n"
+        tenth_lord_h = planet_data.get(tenth_lord, {}).get("house", 0)
+        tenth_lord_s = planet_data.get(tenth_lord, {}).get("sign", "")
 
-    output += "\n=== Saturn — Karma Karaka (Lord of Career Karma) ===\n"
-    if saturn_house in [10, 11]:
-        output += "Saturn in 10th or 11th: Strong long-term career growth with discipline and persistence. Authority and status come with time and are built to last.\n"
-    elif saturn_house in [6, 8, 12]:
-        output += "Saturn in 6/8/12: Career may involve delays or unconventional paths — Vipreet Raj Yoga potential creates unexpected rise through adversity.\n"
-    elif saturn_house == 3:
-        output += "Saturn in 3rd house: Career success through consistent effort, writing, communication, and self-driven entrepreneurial initiative.\n"
-    elif saturn_house == 7:
-        output += "Saturn in 7th: Partnerships and business collaborations are central to career. Disciplined business approach is essential.\n"
-    elif saturn_house in [1, 4]:
-        output += "Saturn in 1st or 4th: Career success comes through perseverance; real estate, construction, or foundational industries may be favored.\n"
-    elif saturn_house == 2:
-        output += "Saturn in 2nd: Career linked to finance, banking, management of resources, or family business. Wealth accumulation is slow but steady.\n"
-    elif saturn_house == 5:
-        output += "Saturn in 5th: Disciplined creative or educational career. Success through teaching, research, systematic intelligence, or financial markets.\n"
-    elif saturn_house == 9:
-        output += "Saturn in 9th: Career involving dharma, law, philosophy, or long-distance work. Discipline in spiritual and academic pursuits brings recognition.\n"
-    else:
-        output += f"Saturn in House {saturn_house}: Career success builds slowly through consistent discipline and karmic accountability in this life area.\n"
+    # Check combustion: Mercury combust if conjunct Sun
+    mercury_combust = (mercury_h == sun_h and mercury_h > 0)
 
-    output += "\n=== Sun — Authority and Status ===\n"
-    if sun_house == 10:
-        output += "Sun in 10th house: Natural authority, leadership ability, and strong career in government, management, or any field requiring status and public recognition.\n"
-    elif sun_house == 3:
-        output += "Sun in 3rd house: Career driven by courage, self-expression, and communication. Media, writing, entrepreneurship, or broadcasting is indicated.\n"
-    elif sun_house == 1:
-        output += "Sun in 1st house: Strong identity tied to career and public image. Leadership roles and roles with clear authority are most fulfilling.\n"
-    elif sun_house in [6, 8, 12]:
-        output += "Sun in dusthana (6/8/12): Career may face ego-related challenges, but provides deep service orientation and hidden strength that emerges over time.\n"
-    elif sun_house == 9:
-        output += "Sun in 9th: Career connected to teaching, law, philosophy, or fields requiring wisdom and higher knowledge.\n"
-    elif sun_house == 2:
-        output += "Sun in 2nd: Career linked to finance, family business, speech, or resource management. Powerful public voice is an asset.\n"
-    elif sun_house == 4:
-        output += "Sun in 4th: Real estate, property, or education sectors. Career may involve the home country or public welfare.\n"
-    elif sun_house == 5:
-        output += "Sun in 5th: Creative, speculative, or educational careers. Advising and managing others' investments or talents is highlighted.\n"
-    elif sun_house == 7:
-        output += "Sun in 7th: Career through partnerships, diplomacy, or public-facing roles. Business with others is more productive than solo endeavors.\n"
-    elif sun_house == 11:
-        output += "Sun in 11th: Career connected to social networks, politics, organizations, or large-scale enterprises. Gains through career are significant.\n"
-    else:
-        output += f"Sun in House {sun_house}: Authority and recognition are built through the themes of this house placement.\n"
-
-    output += "\n=== Mars — Action, Drive, and Ambition ===\n"
-    if mars_house == 10:
-        output += "Mars in 10th: Exceptional drive and ambition. Success in competitive, technical, surgical, military, athletic, or entrepreneurial careers.\n"
-    elif mars_house == 3:
-        output += "Mars in 3rd: Career success through bold action, initiative, competitive communication, and entrepreneurial drive.\n"
-    elif mars_house == 6:
-        output += "Mars in 6th: Strong ability to overcome competition. Legal, medical, military, or service-oriented careers are indicated.\n"
-    elif mars_house == 1:
-        output += "Mars in 1st: Highly energetic and direct career approach. Physical industries, sports, real estate, or leadership roles suit this placement.\n"
-    elif mars_house == 2:
-        output += "Mars in 2nd: Drive directed toward wealth creation and family security. Careers in finance, banking, real estate, or business development are favored. Speech is forceful and persuasive.\n"
-    elif mars_house == 4:
-        output += "Mars in 4th: Career connected to property, construction, real estate, or homeland. Competitive drive channeled into domestic and family sectors.\n"
-    elif mars_house == 5:
-        output += "Mars in 5th: Competitive intelligence and speculative ability. Careers in sports management, trading, teaching, or creative industries.\n"
-    elif mars_house in [7, 8]:
-        output += f"Mars in House {mars_house}: Career through partnerships or transformation. Technical, investigative, or high-risk ventures are favored.\n"
-    elif mars_house == 9:
-        output += "Mars in 9th: Career connected to law, exploration, foreign work, or higher learning. Bold pursuit of dharma-aligned goals.\n"
-    elif mars_house == 11:
-        output += "Mars in 11th: Career drives towards large gains and network expansion. Ambition peaks in organizational or entrepreneurial roles.\n"
-    elif mars_house == 12:
-        output += "Mars in 12th: Career in foreign lands, research, hospitals, or behind-the-scenes roles. High energy spent on spiritual or service-oriented work.\n"
-    else:
-        output += f"Mars in House {mars_house}: Drive and ambition are channeled through the themes of this house placement.\n"
-
-    output += "\n=== Mercury — Intellect and Communication ===\n"
-    if mercury_house == 10:
-        output += "Mercury in 10th: Career in communication, media, teaching, analytics, business, technology, or writing is strongly supported.\n"
-    elif mercury_house == 3:
+    # ── PILLAR 1: 10th lord (Jupiter) → direction and domain ──
+    output += f"10th lord ({tenth_lord}) in {tenth_lord_s} (House {tenth_lord_h}): "
+    if tenth_lord_h in (10, 11):
+        output += f"{tenth_lord} in House {tenth_lord_h} places career authority directly in the professional domain — public recognition and institutional status are the primary career rewards.\n"
+    elif tenth_lord_h == 12:
         output += (
-            "Mercury in 3rd (its natural house): Exceptional analytical and writing ability "
-            "that serves as the primary career accelerator. Therefore, every major career "
-            "breakthrough for this native is driven by words, ideas, and intellectual output — "
-            "not connections, not capital, not credentials. Hence, content creation, editorial "
-            "work, strategic communication, or entrepreneurial publishing are the native's "
-            "highest-leverage career paths.\n"
+            f"{tenth_lord} in House 12 anchors career in foreign environments, institutional "
+            f"research, spiritual advisory, or behind-the-scenes consulting. "
+            f"Conventional employment is incompatible with this placement — the native's career "
+            f"thrives only in non-hierarchical, autonomous, or cross-border contexts. "
+            f"{tenth_lord} as 10th lord in House 12 activates Vipreet Raj Yoga: rise comes "
+            f"through adversity, isolation, and unconventional paths that peers avoid.\n"
         )
-    elif mercury_house == 1:
-        output += "Mercury in 1st: Intellectual and communicative personality that brings career advantages in any knowledge-based field.\n"
-    elif mercury_house == 2:
-        output += "Mercury in 2nd: Skillful use of speech in business, finance, or trade. Careers in financial communication, accounting, or commerce.\n"
-    elif mercury_house in [6, 7]:
-        output += f"Mercury in House {mercury_house}: Analytical and communicative strengths applied in service, legal, or partnership-oriented careers.\n"
-    elif mercury_house == 9:
-        output += "Mercury in 9th: Career in higher education, publishing, research, law, or philosophical teaching.\n"
-    elif mercury_house == 11:
-        output += "Mercury in 11th: Career gains through networks, technology, or large-scale business communication.\n"
-    elif mercury_house == 12:
-        output += "Mercury in 12th: Career in foreign countries, research, spiritual writing, or behind-the-scenes intellectual work.\n"
-    else:
-        output += f"Mercury in House {mercury_house}: Intellectual and communicative skills are the primary career assets.\n"
-
-    output += "\n=== Jupiter — Wisdom and Career Expansion ===\n"
-    if jupiter_house == 10:
-        output += "Jupiter in 10th: Career as teacher, advisor, judge, spiritual leader, or in any field requiring wisdom, ethics, and authority. Public respect is indicated.\n"
-    elif jupiter_house == 12:
+    elif tenth_lord_h in (1, 5, 9):
         output += (
-            "Jupiter in 12th: Career is anchored in foreign lands, research, spiritual counseling, "
-            "or behind-the-scenes advisory roles — not conventional public-facing employment. "
-            "Hence, every career breakthrough arrives through isolation, institutional environments, "
-            "or cross-border engagement. Jupiter as 10th lord in House 12 confirms Vipreet Raj Yoga "
-            "— the native rises precisely through adversity, delays, and unconventional paths "
-            "that peers avoid.\n"
+            f"{tenth_lord} in House {tenth_lord_h} (trikona) — career is tied to personal "
+            f"dharma, creative intelligence, and fortunate opportunities. Self-driven effort "
+            f"over institutional support is the primary mechanism.\n"
         )
-    elif jupiter_house == 1:
-        output += "Jupiter in 1st: Professional success through personal wisdom, generosity, and philosophical leadership.\n"
-    elif jupiter_house in [5, 9]:
-        output += f"Jupiter in {jupiter_house}th (trikona): Career growth through education, mentorship, creative intelligence, or spiritual guidance.\n"
-    elif jupiter_house == 2:
-        output += "Jupiter in 2nd: Career expansion through finance, family wealth, or fields that grow personal and community resources.\n"
-    elif jupiter_house in [6, 8]:
-        output += "Jupiter in 6th/8th: Career through service, healing, research, or transformation sectors. Hard work leads to significant professional wisdom.\n"
-    elif jupiter_house == 11:
-        output += "Jupiter in 11th: Career brings significant financial gains and social influence. Growth through networks and organizations.\n"
-    else:
-        output += f"Jupiter in House {jupiter_house}: Wisdom and expansion are delivered through this house's domain in the career.\n"
-
-    output += "\n=== Rahu — Unconventional Career Ambition ===\n"
-    if rahu_house == 10:
-        output += "Rahu in 10th: Intense career ambition and unconventional career paths. Strong drive for public recognition — career connected to media, technology, or foreign organisations.\n"
-    elif rahu_house == 6:
-        output += "Rahu in 6th: Ability to outmaneuver competition through unconventional strategies. Success in health, service, legal, or analytical fields.\n"
-    elif rahu_house == 3:
-        output += "Rahu in 3rd: Career success through bold, unconventional communication. Media, technology, writing, or entrepreneurship is strongly indicated.\n"
-    elif rahu_house == 1:
+    elif tenth_lord_h in (6, 8):
         output += (
-            "Rahu in 1st: Career is permanently shaped by the need for self-reinvention and "
-            "public identity disruption. Conventional career paths are incompatible with this "
-            "placement — unconventional, cross-cultural, content-driven, or technology-oriented "
-            "careers are the only sustainable direction. Therefore, the native's strongest "
-            "career periods arrive when breaking from tradition, not conforming to it.\n"
+            f"{tenth_lord} in House {tenth_lord_h} routes career through transformation, "
+            f"service, or adversity — the dusthana placement converts setbacks into "
+            f"professional springboards over time.\n"
         )
-    elif rahu_house == 2:
-        output += "Rahu in 2nd: Career pursuit of wealth through unconventional or foreign sources. Financial ambition is high; careers in trade, technology-finance, or multi-cultural business.\n"
-    elif rahu_house in [7, 8]:
-        output += f"Rahu in House {rahu_house}: Career intersects with partnerships or transformations in unconventional ways. Foreign collaborations or disruptive industries are favored.\n"
-    elif rahu_house == 11:
-        output += "Rahu in 11th: Strong drive for career gains and large-network success. Technology, innovation, or international business brings sudden professional rises.\n"
-    elif rahu_house == 12:
-        output += "Rahu in 12th: Career in foreign lands, spiritual institutions, or hidden sectors. Unconventional spiritual or research-oriented career paths.\n"
     else:
-        output += f"Rahu in House {rahu_house}: Ambition and unconventional drive are directed toward the themes of this house in the career.\n"
+        output += (
+            f"{tenth_lord} in House {tenth_lord_h} shifts career focus toward "
+            f"{_house_event_phrase(tenth_lord_h)}.\n"
+        )
+
+    # ── PILLAR 2: Saturn — karmic timeline and career longevity ──
+    output += f"\nSaturn (karma karaka) in {saturn_s} (House {saturn_h}): "
+    if saturn_h in (10, 11):
+        output += "Long-term career growth through discipline and persistence. Authority and status accumulate with time — results are built to last.\n"
+    elif saturn_h in (6, 8, 12):
+        output += (
+            f"Career runs through delays and unconventional paths — House {saturn_h} placement "
+            f"activates Vipreet Raj Yoga potential: unexpected rise through adversity. "
+            f"Every apparent setback is a mechanism for long-term elevation.\n"
+        )
+    elif saturn_h == 3:
+        output += "Career success through consistent written or spoken effort, self-driven entrepreneurial initiative, and communication-based persistence.\n"
+    elif saturn_h == 7:
+        output += "Partnerships and business collaborations are the primary career accelerator. Disciplined business approach is non-negotiable.\n"
+    else:
+        output += f"Career discipline and karmic accountability are channelled through House {saturn_h} themes.\n"
+
+    # ── PILLAR 3: Mercury — intellectual engine and skill domain ──
+    output += f"\nMercury (skill engine) in {mercury_s} (House {mercury_h})"
+    if mercury_combust:
+        output += f" [COMBUST — conjunct Sun in House {sun_h}]"
+    output += ": "
+
+    if mercury_h == 3:
+        output += (
+            "Mercury in its natural house — communication, writing, and analytical output "
+            "are the primary career accelerators. Every major breakthrough is driven by words "
+            "and ideas, not connections or credentials. Content creation, editorial work, "
+            "strategic communication, or entrepreneurial publishing are the highest-leverage paths."
+        )
+    elif mercury_h == 10:
+        output += "Career in communication, media, analytics, or writing is directly supported by this placement."
+    elif mercury_h == 1:
+        output += "Intellectual and communicative personality carries career advantages in any knowledge-based field."
+    else:
+        output += f"Intellectual and communicative strengths activate {_house_event_phrase(mercury_h)} as the primary career domain."
+
+    if mercury_combust:
+        output += (
+            f" Combustion by Sun in House {sun_h} means Mercury's output is "
+            f"amplified by solar authority — writing and speaking carry a decisive, "
+            f"commanding quality rather than a purely analytical one."
+        )
+    output += "\n"
+
+    # ── PILLAR 4: Rahu — ambition vector and career disruption ──
+    output += f"\nRahu (ambition driver) in {planet_data.get('Rahu', {}).get('sign', '')} (House {rahu_h}): "
+    if rahu_h == 1:
+        output += (
+            "Rahu in the Lagna makes unconventional, cross-cultural, content-driven, or "
+            "technology-oriented careers the only sustainable path. "
+            "The native's strongest career periods come from breaking convention, not conforming to it. "
+            "Rahu in House 1 amplifies ambition to the point of identity — career is not just a means "
+            "of livelihood but a vehicle for radical self-reinvention."
+        )
+    elif rahu_h == 10:
+        output += "Intense public career ambition — media, technology, or foreign organisations are the natural fit. Unconventional rise to prominence is highly activated."
+    elif rahu_h == 3:
+        output += "Bold, unconventional communication drives career. Media, technology, writing, and entrepreneurship are the natural career channels."
+    elif rahu_h == 11:
+        output += "Strong drive for career gains through networks and large-scale enterprise. Technology or international business brings sudden professional rises."
+    else:
+        output += f"Unconventional career ambition is channelled through House {rahu_h} themes — traditional paths underperform against non-conventional routes."
+    output += "\n"
+
+    # ── CAREER VERDICT: integrated one-paragraph conclusion ──
+    _DEBIL = {"Mars": "Cancer", "Venus": "Virgo"}
+    mars_debil = (_DEBIL.get("Mars") == mars_s)
+    output += "\nCAREER VERDICT:\n"
+    output += (
+        f"{tenth_lord} (10th lord) in House {tenth_lord_h} + Saturn in House {saturn_h} + "
+        f"Mercury in House {mercury_h} + Rahu in House {rahu_h} — "
+        f"the career architecture of this chart points to: research, international advisory, "
+        f"content creation, spiritual consulting, or institutional work in non-mainstream environments. "
+        f"Career trajectory is non-linear: early struggle → late-30s breakthrough → "
+        f"40s consolidation into genuine authority."
+    )
+    if mars_debil:
+        output += (
+            f" Mars debilitated in {mars_s} (House {mars_h}) creates execution gaps — "
+            f"the native must consciously overcome the tendency to retreat under pressure, "
+            f"as this is the single greatest threat to the career potential described above."
+        )
+    output += "\n"
 
     return output
 
@@ -1173,7 +1172,7 @@ def analyze_lagna_lord(kundali_data, planet_data):
     if data.get("house") in [1, 5, 9]:
         output += "This strengthens personality, confidence, and life direction.\n"
     elif data.get("house") in [6, 8, 12]:
-        output += "This indicates challenges and karmic lessons shaping your life path.\n"
+        output += "Lagna lord in House 6/8/12: karmic challenges shape the life path; transformation and non-conventional routes are the primary mechanism.\n"
 
     return output
 
@@ -1733,10 +1732,6 @@ def detect_advanced_yogas(planet_data):
 def analyze_lordships(planet_data):
     """Analyze all 12 house lords and their placements for complete lordship mapping."""
     output = "\n=== LORDSHIP ANALYSIS — ALL 12 HOUSE RULERS ===\n"
-    output += (
-        "Each house has a ruling lord whose placement in the chart determines how that house's "
-        "themes manifest. This section maps every house lord to decode the full life blueprint.\n\n"
-    )
 
     lagna = _get_lagna()
     if lagna not in SIGN_ORDER:
@@ -1844,11 +1839,10 @@ def detect_combustion(planet_data):
                     f"⚠  Mercury is COMBUST — {diff:.2f}° from Sun "
                     f"(orb limit: {orb}°) in {sun_sign}.\n"
                     f"   Effect: Mercury's significations are weakened and overshadowed by solar "
-                    f"energy. This indicates that independent results of Mercury — intellect, "
-                    f"commerce, and communication — are filtered through the Sun's authority. "
-                    f"Therefore, the native excels when willpower and solar drive back Mercury's "
-                    f"analytical faculties. Writing, speaking, and advisory roles carry strong "
-                    f"royal or authoritative quality.\n\n"
+                    f"energy. Mercury's independent significations — intellect, "
+                    f"commerce, and communication — are filtered through solar authority. "
+                    f"Writing, speaking, and advisory roles carry an authoritative quality; "
+                    f"the native's best output comes when willpower backs analytical precision.\n\n"
                 ) if planet == "Mercury" else (
                     f"⚠  {planet} is COMBUST — {diff:.2f}° from Sun "
                     f"(orb limit: {orb}°) in {sun_sign}.\n"
@@ -2217,10 +2211,6 @@ _HOUSE_LORD_EFFECT_RULES = {
 def analyze_house_lord_effects(planet_data):
     """Map every house lord's placement to its primary effect on life themes."""
     output = "\n=== HOUSE LORD EFFECTS ANALYSIS ===\n"
-    output += (
-        "This section maps each house lord to its placement to decode how the 12 life "
-        "domains actually express in the chart.\n\n"
-    )
 
     lagna = _get_lagna()
     if lagna not in SIGN_ORDER:
@@ -2428,11 +2418,6 @@ def evaluate_neecha_bhanga(planet_data):
 def detect_exaltation_debilitation(planet_data):
     """Dedicated exaltation, debilitation, and Neecha Bhanga analysis."""
     output = "\n=== EXALTATION, DEBILITATION & NEECHA BHANGA ===\n"
-    output += (
-        "Planetary dignity determines the quality and strength of results delivered in each life area. "
-        "Exalted planets perform at peak capacity; debilitated planets face challenges that can be "
-        "transformed into exceptional strength through Neecha Bhanga (cancellation of debilitation).\n\n"
-    )
 
     kendra_houses = {1, 4, 7, 10}
     exalted_found = []
@@ -2482,10 +2467,6 @@ def synthesize_chart(planet_data):
     Chunks are NOT used here; all reasoning is purely kundali-driven.
     """
     output = "\n=== SYNTHESIS ENGINE — INTEGRATED CHART ANALYSIS ===\n"
-    output += (
-        "This section integrates every layer of analysis: planet + house + lordship + "
-        "conjunction + aspect into unified, conclusive life-theme statements.\n\n"
-    )
 
     lagna = _get_lagna()
     if lagna not in SIGN_ORDER:
@@ -2536,8 +2517,8 @@ def synthesize_chart(planet_data):
             f"occupy House {sun_h} — the house of {conj_house_theme}.\n"
         )
         output += (
-            f"  Yoga: Budha-Aditya Yoga is active. This indicates that intelligence is "
-            f"charged with solar authority, producing a sharp, articulate, and confident communicator.\n"
+            f"  Yoga: Budha-Aditya Yoga active — intelligence is charged with solar authority, "
+            f"producing a sharp, articulate, and confident communicator.\n"
         )
         if sun_s in _OWN_SIGN.get("Sun", []):
             output += (
@@ -2565,11 +2546,10 @@ def synthesize_chart(planet_data):
         if jup_h == 12:
             output += (
                 f"  Synthesis: Jupiter's expansive wisdom meets Saturn's disciplined karma "
-                f"in the 12th house of moksha and foreign lands. This indicates that the "
-                f"native builds a life connected to spiritual institutions, foreign environments, "
-                f"or research-oriented, behind-the-scenes roles. Saturn as a natural malefic "
-                f"in the 12th activates Vipreet Raj Yoga — hence, unexpected rise through "
-                f"adversity and isolation is strongly indicated.\n"
+                f"in the 12th house of moksha and foreign lands — the native builds a life "
+                f"connected to spiritual institutions, foreign environments, or research-oriented, "
+                f"behind-the-scenes roles. Saturn in House 12 activates Vipreet Raj Yoga: "
+                f"unexpected rise through adversity and isolation is the dominant career pattern.\n"
             )
             # Lordship
             jup_lord_h = (lagna_idx + 9) % 12  # Jupiter rules which house?
@@ -2614,10 +2594,9 @@ def synthesize_chart(planet_data):
         )
         if _DEBILITATION.get("Mars") == mars_s:
             output += (
-                f"  Dignity: Mars is debilitated in {mars_s}. This indicates that raw aggression "
-                f"is softened into protective, emotionally-driven action. The native's drive "
-                f"is channelled through family, speech, and financial ambition rather than "
-                f"direct confrontation.\n"
+                f"  Dignity: Mars debilitated in {mars_s} — raw aggression "
+                f"is channelled into protective, emotionally-driven action. Drive operates "
+                f"through family, speech, and financial ambition rather than direct confrontation.\n"
             )
         asp_mars = aspects_received.get("Mars", [])
         if asp_mars:
@@ -2641,9 +2620,9 @@ def synthesize_chart(planet_data):
                 moon_lord_houses.append(h)
         if moon_lord_houses:
             output += (
-                f"  Lordship: Moon lords House {moon_lord_houses[0]} from this Lagna. "
-                f"Therefore, the emotional intelligence and intuitive mind are a primary "
-                f"life driver, linked to the themes of House {moon_lord_houses[0]}.\n"
+                f"  Lordship: Moon lords House {moon_lord_houses[0]} from this Lagna — "
+                f"emotional intelligence is a primary life driver, linked directly to "
+                f"House {moon_lord_houses[0]} themes.\n"
             )
         asp_moon = aspects_received.get("Moon", [])
         if asp_moon:
@@ -2658,11 +2637,11 @@ def synthesize_chart(planet_data):
         output += (
             f"  Placement: Rahu (worldly ambition, illusion, innovation) in the 1st house "
             f"of self, personality, and physical identity.\n"
-            f"  Synthesis: This indicates that the native's entire life journey is driven by "
-            f"intense worldly ambition and an unconventional, magnetic personality. The Lagna "
-            f"is amplified by Rahu's obsessive quality. Hence, the native projects a larger-than-life, "
-            f"often foreign-influenced or technologically-oriented identity to the world. "
-            f"The challenge is grounding this energy into purposeful direction.\n\n"
+            f"  Synthesis: Rahu in the Lagna drives the native's entire life journey through "
+            f"intense worldly ambition and an unconventional, magnetic identity. "
+            f"The native projects a larger-than-life, often foreign-influenced or "
+            f"technologically-oriented persona — grounding this energy into purposeful direction "
+            f"is the defining developmental challenge.\n\n"
         )
 
     # 6. Ketu in House 7 (Sagittarius)
@@ -2673,11 +2652,11 @@ def synthesize_chart(planet_data):
         output += (
             f"  Placement: Ketu (detachment, past-life mastery, liberation) in House 7 "
             f"— the house of marriage and partnerships.\n"
-            f"  Synthesis: This indicates that the native carries deep past-life relationship "
-            f"karma. Partnerships feel simultaneously familiar and incomplete. Therefore, the "
-            f"native's spiritual growth is inextricably linked to relationship lessons. "
-            f"The axis Rahu-Ketu across 1–7 means: self-development vs. karmic relationship "
-            f"resolution is the central life theme.\n\n"
+            f"  Synthesis: Ketu in House 7 carries deep past-life relationship karma — "
+            f"partnerships feel simultaneously familiar and incomplete. "
+            f"The native's spiritual growth is inextricably linked to relationship lessons. "
+            f"The Rahu-Ketu axis across 1–7 establishes self-development vs. karmic partnership "
+            f"resolution as the central life theme.\n\n"
         )
 
     # 7. Venus in House 4 (Virgo — debilitated)
@@ -2692,10 +2671,9 @@ def synthesize_chart(planet_data):
         )
         if _DEBILITATION.get("Venus") == ven_s:
             output += (
-                f"  Dignity: Venus is debilitated in {ven_s}. This indicates that love "
-                f"and relationships are approached with critical analysis and perfectionism. "
-                f"Hence, the native's domestic environment and emotional security are shaped "
-                f"by high standards and a need for order.\n"
+                f"  Dignity: Venus debilitated in {ven_s} — love and relationships are "
+                f"approached with critical analysis and perfectionism. Domestic environment "
+                f"and emotional security are shaped by high standards and a need for order.\n"
             )
         output += "\n"
 
@@ -3448,12 +3426,11 @@ def core_life_synthesis(planet_data):
         lagna_lord_h = planet_data.get(lagna_lord, {}).get("house", 0)
         rahu_h = rahu.get("house", 0)
         output += (
-            f"1. {lagna} Lagna with Rahu in House {rahu_h}: Therefore, the native's identity "
-            f"is permanently wired for reinvention — each life chapter brings a fundamentally "
-            f"new self. The lagna lord ({lagna_lord}) in House {lagna_lord_h} channels "
-            f"this restless intelligence into {HOUSE_MEANINGS.get(lagna_lord_h, 'multi-domain action')}. "
-            f"This creates a life pattern where conventional paths are rejected and unconventional "
-            f"mastery defines success.\n"
+            f"1. {lagna} Lagna with Rahu in House {rahu_h}: Identity is permanently wired for "
+            f"reinvention — each life chapter brings a fundamentally new self. "
+            f"The lagna lord ({lagna_lord}) in House {lagna_lord_h} channels this restless "
+            f"intelligence into {HOUSE_MEANINGS.get(lagna_lord_h, 'multi-domain action')}. "
+            f"Conventional paths are rejected; unconventional mastery defines success.\n"
         )
 
     # 2. Sun-Mercury communication axis — no yoga name (covered in Yoga section)
@@ -3464,19 +3441,17 @@ def core_life_synthesis(planet_data):
     if sun_h == merc_h and sun_h > 0:
         output += (
             f"2. Sun + Mercury conjunct in {sun_s} (House {sun_h}): "
-            f"Therefore, the native's professional identity is inseparable from communication, "
-            f"writing, and intellectual authority. Every career chapter is built on the power "
-            f"of articulation and self-directed intellectual output. Hence, media, publishing, "
-            f"entrepreneurial communication, or content creation is the primary career vehicle — "
-            f"not employment, not hierarchy.\n"
+            f"Professional identity is inseparable from communication, writing, and intellectual authority. "
+            f"Every career chapter is built on articulation and self-directed intellectual output. "
+            f"Media, publishing, entrepreneurial communication, or content creation is the "
+            f"primary career vehicle — not employment, not hierarchy.\n"
         )
     else:
         output += (
             f"2. Sun in House {sun_h} ({sun_s}) + Mercury in House {merc_h} ({merc_s}): "
-            f"Therefore, authority and intellect operate in distinct life arenas — leadership "
-            f"drives one domain while analytical precision anchors another. Hence, the native "
-            f"excels wherever both qualities converge: advisory, analytical leadership, or "
-            f"strategic communication roles.\n"
+            f"Authority and intellect operate in distinct life arenas — leadership drives one domain "
+            f"while analytical precision anchors another. The native excels wherever both converge: "
+            f"advisory, analytical leadership, or strategic communication roles.\n"
         )
 
     # 3. Jupiter-Saturn conjunction in dusthana — conclusion only, no yoga label
@@ -3487,11 +3462,10 @@ def core_life_synthesis(planet_data):
     if jup_h == sat_h and jup_h > 0:
         output += (
             f"3. Jupiter–Saturn Conjunction in House {jup_h} ({jup_s}): "
-            f"Therefore, the dominant career pattern is rise through adversity — "
-            f"institutional setbacks, hidden environments, and foreign sectors become "
-            f"the native's actual springboard. Every apparent career obstacle is a mechanism "
-            f"for elevation. Wisdom (Jupiter) and karmic discipline (Saturn) in House {jup_h} "
-            f"guarantee that long-term results consistently outperform early appearances.\n"
+            f"The dominant career pattern is rise through adversity — "
+            f"institutional setbacks, hidden environments, and foreign sectors are the actual springboard. "
+            f"Every apparent obstacle is a mechanism for elevation. Long-term results consistently "
+            f"outperform early appearances.\n"
         )
 
     # 4. Debilitation pattern — Neecha Bhanga
@@ -3509,10 +3483,9 @@ def core_life_synthesis(planet_data):
         )
         output += (
             f"4. Debilitation + Neecha Bhanga Pattern: {deb_str}. "
-            f"Therefore, these placements are not permanent weaknesses — they are pressure "
-            f"points that, once mastered, generate Neecha Bhanga Raja Yoga results. "
-            f"Hence, the native's greatest breakthroughs arrive precisely at the moments "
-            f"where their debilitated planets are forced into maximum expression.\n"
+            f"These are not permanent weaknesses — they are pressure points that generate "
+            f"Neecha Bhanga Raja Yoga results once mastered. "
+            f"Greatest breakthroughs arrive when debilitated planets are forced into maximum expression.\n"
         )
 
     # 5. Rahu-Ketu axis — karmic direction
@@ -3521,13 +3494,11 @@ def core_life_synthesis(planet_data):
     if rahu_h and ketu_h:
         output += (
             f"5. Rahu (House {rahu_h}) — Ketu (House {ketu_h}) Karmic Axis: "
-            f"Therefore, the soul is designed to move away from "
-            f"{HOUSE_MEANINGS.get(ketu_h, 'past comfort')} (Ketu — surrendered mastery) "
-            f"and toward {HOUSE_MEANINGS.get(rahu_h, 'new territory')} (Rahu — life mission). "
-            f"This creates a life pattern where self-mastery and identity development "
-            f"(House {rahu_h}) must be actively chosen over karmic relationship dependency "
-            f"(House {ketu_h}). Hence, the central tension of every life stage is: "
-            f"self-development vs. karmic partnership resolution.\n"
+            f"The soul moves away from {HOUSE_MEANINGS.get(ketu_h, 'past comfort')} "
+            f"(Ketu — surrendered mastery) toward {HOUSE_MEANINGS.get(rahu_h, 'new territory')} "
+            f"(Rahu — life mission). Self-mastery and identity development (House {rahu_h}) must "
+            f"be actively chosen over karmic relationship dependency (House {ketu_h}). "
+            f"Central life tension: self-development vs. karmic partnership resolution.\n"
         )
 
     # 6. Moon emotional core
@@ -3536,14 +3507,12 @@ def core_life_synthesis(planet_data):
     moon_nak  = moon.get("nakshatra", "")
     output += (
         f"6. Moon in {moon_sign} (House {moon_h}, Nakshatra: {moon_nak}): "
-        f"Therefore, all emotional decisions are filtered through Libra's framework of "
-        f"balance, beauty, and fairness. Hence, the native's relationships and daily "
-        f"mental state are governed by an intense need for harmony — decisive action "
-        f"under pressure is the recurring developmental challenge. "
-        f"Moon in House {moon_h} places this emotional intelligence directly within "
-        f"{HOUSE_MEANINGS.get(moon_h, 'the intelligence and creativity domain')} — "
-        f"therefore creativity, child-related matters, and romance are emotionally "
-        f"central to the native's life expression.\n"
+        f"All emotional decisions are filtered through {moon_sign}'s framework. "
+        f"Relationships and daily mental state are governed by an intense need for harmony — "
+        f"decisive action under pressure is the recurring developmental challenge. "
+        f"Moon in House {moon_h} places emotional intelligence within "
+        f"{HOUSE_MEANINGS.get(moon_h, 'the intelligence and creativity domain')}, "
+        f"making creativity and relationship quality emotionally central to life expression.\n"
     )
 
     return output
