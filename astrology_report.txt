@@ -18,8 +18,8 @@ Powered by Multi-Layer Jyotish Reasoning Engine
 12. Lagna Lord | 10th Lord | 7th Lord
 13. Career Deep Analysis
 14. Marriage Deep Analysis
-15. Dasha Timeline — Time | Event | Reason
-16. Mahadasha + Antardasha + Timeline
+15. Dasha + Antardasha Timeline (Deterministic Predictions)
+16. Dasha Supplementary — Themes + Antardasha Analysis
 17. Aspects (Drishti)
 18. Navamsa (D9)
 19. Shadbala (Planetary Strength)
@@ -442,114 +442,326 @@ Saturn in 12th: Spiritual and karmic bonds in relationships. Foreign spouse or s
 Ketu in 7th: Deep past-life connection with the partner. The relationship feels simultaneously familiar and complex. Spiritual growth through marriage is strongly indicated; detachment tendencies must be consciously managed.
 
 ============================================================
-SECTION 15 — DASHA TIMELINE (TIME | EVENT | REASON)
+SECTION 15 — DASHA + ANTARDASHA TIMELINE (PREDICTIONS)
 ============================================================
 
-=== DASHA TIMELINE — TIME | EVENT | REASON ===
-Each Mahadasha period is analysed with its time window, predicted life events, and the astrological reason drawn from the chart's unique planetary placements.
-
-=======================================================
-  RAHU MAHADASHA   03/09/2000 → 26/01/2010   (18 years)
-=======================================================
-  Theme:      Ambition, foreign connections, and unconventional breakthroughs
-  Time:       03/09/2000 to 26/01/2010
-  Events:     Rapid material rise, foreign travel or settlement, unconventional career success, sudden fame or notoriety
-  Challenges: Illusion, obsession, deception, scattered focus, sudden reversals
-  Reason:     Rahu amplifies desire and drives the native toward obsessive ambition — results are dramatic but volatile
-  Placement:  Rahu is placed in House 1 (Gemini)
-  Chart note: Rahu in House 1 (trikona) — dharmic grace and fortunate results from this Mahadasha are strongly supported.
-
-=======================================================
-  JUPITER MAHADASHA   26/01/2010 → 26/01/2026   (16 years)
-=======================================================
-  Theme:      Wisdom, expansion, spirituality, and fortune
-  Time:       26/01/2010 to 26/01/2026
-  Events:     Marriage, children, higher education, career expansion, spiritual initiation, financial growth
-  Challenges: Overconfidence, excessive optimism, weight gain, legal matters
-  Reason:     Jupiter governs dharma, wisdom, and abundance — its period is among the most auspicious in Vedic astrology
-  Placement:  Jupiter is placed in House 12 (Taurus)
-  Chart note: Jupiter in 12th house — events lean toward foreign lands, spiritual pursuits, research, or behind-the-scenes institutional work. As a natural benefic in the 12th, Jupiter supports spiritual and foreign connections rather than material accumulation.
-
-=======================================================
-  SATURN MAHADASHA   26/01/2026 → 26/01/2045   (19 years)
-=======================================================
-  Theme:      Discipline, karma, hard work, and long-term building
-  Time:       26/01/2026 to 26/01/2045
-  Events:     Career restructuring, relocation, karmic relationship events, professional authority, property through hard work
-  Challenges: Delays, health burdens, loneliness, isolation, losses, heavy responsibilities
-  Reason:     Saturn governs karma and discipline — its long 19-year period is the most transformative and character-building
-  Placement:  Saturn is placed in House 12 (Taurus)
-  Chart note: Saturn in 12th house — events lean toward foreign lands, spiritual pursuits, research, or behind-the-scenes institutional work. Vipreet Raj Yoga is active: Saturn is a natural malefic in a dusthana, giving unexpected rise and success through adversity.
-
-=======================================================
-  MERCURY MAHADASHA   26/01/2045 → 26/01/2062   (17 years)
-=======================================================
-  Theme:      Intellect, communication, business, and education
-  Time:       26/01/2045 to 26/01/2062
-  Events:     Career in communication/technology/business, educational achievements, writing, networking successes
-  Challenges: Indecisiveness, nervous energy, information overload, contractual disputes
-  Reason:     Mercury governs the analytical mind and commerce — its period favours intellectual and business pursuits
-  Placement:  Mercury is placed in House 3 (Leo)
-
-=======================================================
-  KETU MAHADASHA   26/01/2062 → 26/01/2069   (7 years)
-=======================================================
-  Theme:      Spirituality, detachment, and past-life resolution
-  Time:       26/01/2062 to 26/01/2069
-  Events:     Spiritual awakening, withdrawal from worldly pursuits, psychic experiences, losses that lead to liberation
-  Challenges: Isolation, purposelessness, health issues, worldly disorientation
-  Reason:     Ketu governs liberation and past-life karma — its period dissolves worldly attachments in favour of inner growth
-  Placement:  Ketu is placed in House 7 (Sagittarius)
-  Chart note: Ketu in House 7 (kendra) — this Mahadasha brings decisive, tangible results in career, relationships, or domestic life.
-
-=======================================================
-  VENUS MAHADASHA   26/01/2069 → 26/01/2089   (20 years)
-=======================================================
-  Theme:      Relationships, beauty, luxury, and creative expression
-  Time:       26/01/2069 to 26/01/2089
-  Events:     Marriage/romantic union, artistic career growth, financial gains, social expansion, comforts and pleasures
-  Challenges: Overindulgence, relationship complications, material attachment
-  Reason:     Venus governs love, beauty, and material comfort — its period activates relationships and creative life
-  Placement:  Venus is placed in House 4 (Virgo)
-  Chart note: Venus in House 4 (kendra) — this Mahadasha brings decisive, tangible results in career, relationships, or domestic life.
-
-=======================================================
-  SUN MAHADASHA   26/01/2089 → 26/01/2095   (6 years)
-=======================================================
-  Theme:      Authority, identity, and professional recognition
-  Time:       26/01/2089 to 26/01/2095
-  Events:     Career advancement, government connections, clarity of life purpose, recognition from superiors
-  Challenges: Ego conflicts, authority clashes, health issues (heart/eyes), father-related events
-  Reason:     Sun governs the soul, ego, authority, and the father — its period activates these themes centrally
-  Placement:  Sun is placed in House 3 (Leo)
-
-=======================================================
-  MOON MAHADASHA   26/01/2095 → 26/01/2105   (10 years)
-=======================================================
-  Theme:      Mind, emotions, public life, and the mother
-  Time:       26/01/2095 to 26/01/2105
-  Events:     Social popularity, career in public-facing roles, emotional growth, travel, mother-related events
-  Challenges: Emotional instability, mental anxiety, wavering decisions, sensitivity to criticism
-  Reason:     Moon governs the mind and emotional field — its period heightens sensitivity, intuition, and public dealings
-  Placement:  Moon is placed in House 5 (Libra)
-  Chart note: Moon in House 5 (trikona) — dharmic grace and fortunate results from this Mahadasha are strongly supported.
-
-=======================================================
-  MARS MAHADASHA   26/01/2105 → 26/01/2112   (7 years)
-=======================================================
-  Theme:      Energy, action, property, and ambition
-  Time:       26/01/2105 to 26/01/2112
-  Events:     Property transactions, competitive success, sibling-related events, physical ventures, bold career moves
-  Challenges: Impulsiveness, accidents, conflicts, short-temper, disputes over land or siblings
-  Reason:     Mars governs drive, courage, and real estate — its period is dynamic, action-oriented, and competitive
-  Placement:  Mars is placed in House 2 (Cancer)
-
+=== DASHA + ANTARDASHA TIMELINE — DETERMINISTIC PREDICTIONS ===
+Each prediction below follows the strict format:
+  TIME → EVENT → REASON (derived from kundali logic only)
+Language: all predictions are deterministic. No weak modals used.
 
 ============================================================
-SECTION 16 — TIMING ANALYSIS (DASHA SYSTEM)
+  MAHADASHA: RAHU   03/09/2000 → 26/01/2010   (18 years)
+============================================================
+  Overview: The Rahu Mahadasha (18 years) activates sudden rise, foreign connections, unconventional breakthroughs, and ambition.
+  Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu — this forms the overarching karmic thread of the entire period.
+
+  ANTARDASHA PREDICTIONS:
+
+  [Rahu–Rahu]  Sep 2000 → May 2003  (2.7 yrs)
+  Between 2000–2003, self-development and identity transformation themes intensify — because Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu activates as Mahadasha lord while Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Rahu–Jupiter]  May 2003 → Oct 2005  (2.4 yrs)
+  Between 2003–2005, foreign connections, spiritual growth, and behind-the-scenes success manifests — because Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu activates as Mahadasha lord while Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Rahu–Saturn]  Oct 2005 → Aug 2008  (2.85 yrs)
+  Between 2005–2008, foreign connections, spiritual growth, and behind-the-scenes success leads to — because Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu activates as Mahadasha lord while Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Rahu–Mercury]  Aug 2008 → Jan 2010  (2.55 yrs)
+  Between 2008–2010, competitive action, communication, and overcoming challenges occurs — because Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu activates as Mahadasha lord while Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun operates as Antardasha lord, activating Budha-Aditya Yoga. Mercury's Antardasha is infused with solar authority (Budha-Aditya Yoga), making communication and intellectual work exceptionally productive.
+
+============================================================
+  MAHADASHA: JUPITER   26/01/2010 → 26/01/2026   (16 years)
+============================================================
+  Overview: The Jupiter Mahadasha (16 years) activates wealth expansion, wisdom, children, marriage, and higher education.
+  Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus — this forms the overarching karmic thread of the entire period.
+
+  ANTARDASHA PREDICTIONS:
+
+  [Jupiter–Jupiter]  Jan 2010 → Mar 2012  (2.13 yrs)
+  Between 2010–2012, foreign travel/settlement, spiritual growth, and institutional work themes intensify — because Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus activates as Mahadasha lord while Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Jupiter–Saturn]  Mar 2012 → Sep 2014  (2.53 yrs)
+  Between 2012–2014, foreign travel/settlement, spiritual growth, and institutional work themes intensify — because Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus activates as Mahadasha lord while Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Jupiter–Mercury]  Sep 2014 → Jan 2017  (2.27 yrs)
+  Between 2014–2017, competitive action, communication, and overcoming challenges occurs — because Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus activates as Mahadasha lord while Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun operates as Antardasha lord, activating Budha-Aditya Yoga. Mercury's Antardasha is infused with solar authority (Budha-Aditya Yoga), making communication and intellectual work exceptionally productive.
+
+  [Jupiter–Ketu]  Jan 2017 → Dec 2017  (0.93 yrs)
+  Between 2017–2017, significant relationship and partnership events manifests — because Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus activates as Mahadasha lord while Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Jupiter–Venus]  Dec 2017 → Aug 2020  (2.67 yrs)
+  Between 2017–2020, home, property, and emotional stability events occurs — because Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus activates as Mahadasha lord while Venus (5th, 12th lord) in House 4 (Virgo) operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Jupiter–Sun]  Aug 2020 → May 2021  (0.8 yrs)
+  Between 2020–2021, competitive action, communication, and overcoming challenges occurs — because Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus activates as Mahadasha lord while Sun (3rd lord) in House 3 (Leo) conjunct Mercury operates as Antardasha lord, activating Budha-Aditya Yoga.
+
+  [Jupiter–Moon]  May 2021 → Sep 2022  (1.33 yrs)
+  Between 2021–2022, creative, romantic, and intellectual breakthroughs manifests — because Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus activates as Mahadasha lord while Moon (2nd lord) in House 5 (Libra) operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Jupiter–Mars]  Sep 2022 → Sep 2023  (0.93 yrs)
+  Between 2022–2023, wealth growth and family developments happens — because Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus activates as Mahadasha lord while Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Jupiter–Rahu]  Sep 2023 → Jan 2026  (2.4 yrs)
+  Between 2023–2026, personal reinvention and identity-defining events happens — because Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus activates as Mahadasha lord while Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu operates as Antardasha lord, activating Graha Malika Yoga.
+
+============================================================
+  MAHADASHA: SATURN   26/01/2026 → 26/01/2045   (19 years)
+============================================================
+  Overview: The Saturn Mahadasha (19 years) activates career structure, karmic discipline, longevity, and long-term gains.
+  Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars — this forms the overarching karmic thread of the entire period.
+
+  ANTARDASHA PREDICTIONS:
+
+  [Saturn–Saturn]  Jan 2026 → Jan 2029  (3.01 yrs)
+  Between 2026–2029, foreign travel/settlement, spiritual growth, and institutional work themes intensify — because Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars activates as Mahadasha lord while Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Saturn–Mercury]  Jan 2029 → Oct 2031  (2.69 yrs)
+  Between 2029–2031, competitive action, communication, and overcoming challenges occurs — because Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars activates as Mahadasha lord while Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun operates as Antardasha lord, activating Budha-Aditya Yoga. Mercury's Antardasha is infused with solar authority (Budha-Aditya Yoga), making communication and intellectual work exceptionally productive.
+
+  [Saturn–Ketu]  Oct 2031 → Nov 2032  (1.11 yrs)
+  Between 2031–2032, significant relationship and partnership events manifests — because Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars activates as Mahadasha lord while Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Saturn–Venus]  Nov 2032 → Jan 2036  (3.17 yrs)
+  Between 2032–2036, home, property, and emotional stability events occurs — because Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars activates as Mahadasha lord while Venus (5th, 12th lord) in House 4 (Virgo) operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Saturn–Sun]  Jan 2036 → Dec 2036  (0.95 yrs)
+  Between 2036–2036, competitive action, communication, and overcoming challenges occurs — because Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars activates as Mahadasha lord while Sun (3rd lord) in House 3 (Leo) conjunct Mercury operates as Antardasha lord, activating Budha-Aditya Yoga.
+
+  [Saturn–Moon]  Dec 2036 → Jul 2038  (1.58 yrs)
+  Between 2036–2038, creative, romantic, and intellectual breakthroughs manifests — because Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars activates as Mahadasha lord while Moon (2nd lord) in House 5 (Libra) operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Saturn–Mars]  Jul 2038 → Sep 2039  (1.11 yrs)
+  Between 2038–2039, wealth growth and family developments happens — because Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars activates as Mahadasha lord while Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Saturn–Rahu]  Sep 2039 → Jul 2042  (2.85 yrs)
+  Between 2039–2042, personal reinvention and identity-defining events happens — because Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars activates as Mahadasha lord while Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Saturn–Jupiter]  Jul 2042 → Jan 2045  (2.53 yrs)
+  Between 2042–2045, foreign travel/settlement, spiritual growth, and institutional work themes intensify — because Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars activates as Mahadasha lord while Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+============================================================
+  MAHADASHA: MERCURY   26/01/2045 → 26/01/2062   (17 years)
+============================================================
+  Overview: The Mercury Mahadasha (17 years) activates intellect, business, communication, education, and analytical career.
+  Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun — this forms the overarching karmic thread of the entire period.
+
+  ANTARDASHA PREDICTIONS:
+
+  [Mercury–Mercury]  Jan 2045 → Jun 2047  (2.41 yrs)
+  Between 2045–2047, communication, courage, and sibling-related events themes intensify — because Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun activates as Mahadasha lord while Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun operates as Antardasha lord, activating Budha-Aditya Yoga. Mercury's Antardasha is infused with solar authority (Budha-Aditya Yoga), making communication and intellectual work exceptionally productive.
+
+  [Mercury–Ketu]  Jun 2047 → Jun 2048  (0.99 yrs)
+  Between 2047–2048, significant relationship and partnership events manifests — because Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun activates as Mahadasha lord while Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Mercury–Venus]  Jun 2048 → Apr 2051  (2.83 yrs)
+  Between 2048–2051, home, property, and emotional stability events occurs — because Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun activates as Mahadasha lord while Venus (5th, 12th lord) in House 4 (Virgo) operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Mercury–Sun]  Apr 2051 → Feb 2052  (0.85 yrs)
+  Between 2051–2052, communication, courage, and sibling-related events themes intensify — because Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun activates as Mahadasha lord while Sun (3rd lord) in House 3 (Leo) conjunct Mercury operates as Antardasha lord, activating Budha-Aditya Yoga.
+
+  [Mercury–Moon]  Feb 2052 → Jul 2053  (1.42 yrs)
+  Between 2052–2053, creative, romantic, and intellectual breakthroughs manifests — because Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun activates as Mahadasha lord while Moon (2nd lord) in House 5 (Libra) operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Mercury–Mars]  Jul 2053 → Jul 2054  (0.99 yrs)
+  Between 2053–2054, wealth growth and family developments happens — because Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun activates as Mahadasha lord while Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Mercury–Rahu]  Jul 2054 → Feb 2057  (2.55 yrs)
+  Between 2054–2057, personal reinvention and identity-defining events happens — because Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun activates as Mahadasha lord while Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Mercury–Jupiter]  Feb 2057 → May 2059  (2.27 yrs)
+  Between 2057–2059, foreign connections, spiritual growth, and behind-the-scenes success manifests — because Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun activates as Mahadasha lord while Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Mercury–Saturn]  May 2059 → Jan 2062  (2.69 yrs)
+  Between 2059–2062, foreign connections, spiritual growth, and behind-the-scenes success leads to — because Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun activates as Mahadasha lord while Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+============================================================
+  MAHADASHA: KETU   26/01/2062 → 26/01/2069   (7 years)
+============================================================
+  Overview: The Ketu Mahadasha (7 years) activates spiritual deepening, detachment, past-life resolution, and hidden insights.
+  Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu — this forms the overarching karmic thread of the entire period.
+
+  ANTARDASHA PREDICTIONS:
+
+  [Ketu–Ketu]  Jan 2062 → Jun 2062  (0.41 yrs)
+  Between 2062–2062, marriage, business partnerships, and legal matters themes intensify — because Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu activates as Mahadasha lord while Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Ketu–Venus]  Jun 2062 → Aug 2063  (1.17 yrs)
+  Between 2062–2063, home, property, and emotional stability events occurs — because Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu activates as Mahadasha lord while Venus (5th, 12th lord) in House 4 (Virgo) operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Ketu–Sun]  Aug 2063 → Dec 2063  (0.35 yrs)
+  Between 2063–2063, competitive action, communication, and overcoming challenges occurs — because Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu activates as Mahadasha lord while Sun (3rd lord) in House 3 (Leo) conjunct Mercury operates as Antardasha lord, activating Budha-Aditya Yoga.
+
+  [Ketu–Moon]  Dec 2063 → Jul 2064  (0.58 yrs)
+  Between 2063–2064, creative, romantic, and intellectual breakthroughs manifests — because Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu activates as Mahadasha lord while Moon (2nd lord) in House 5 (Libra) operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Ketu–Mars]  Jul 2064 → Dec 2064  (0.41 yrs)
+  Between 2064–2064, wealth growth and family developments happens — because Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu activates as Mahadasha lord while Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Ketu–Rahu]  Dec 2064 → Jan 2066  (1.05 yrs)
+  Between 2064–2066, personal reinvention and identity-defining events happens — because Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu activates as Mahadasha lord while Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Ketu–Jupiter]  Jan 2066 → Dec 2066  (0.93 yrs)
+  Between 2066–2066, foreign connections, spiritual growth, and behind-the-scenes success manifests — because Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu activates as Mahadasha lord while Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Ketu–Saturn]  Dec 2066 → Jan 2068  (1.11 yrs)
+  Between 2066–2068, foreign connections, spiritual growth, and behind-the-scenes success leads to — because Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu activates as Mahadasha lord while Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Ketu–Mercury]  Jan 2068 → Jan 2069  (0.99 yrs)
+  Between 2068–2069, competitive action, communication, and overcoming challenges occurs — because Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu activates as Mahadasha lord while Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun operates as Antardasha lord, activating Budha-Aditya Yoga. Mercury's Antardasha is infused with solar authority (Budha-Aditya Yoga), making communication and intellectual work exceptionally productive.
+
+============================================================
+  MAHADASHA: VENUS   26/01/2069 → 26/01/2089   (20 years)
+============================================================
+  Overview: The Venus Mahadasha (20 years) activates marriage, relationships, luxury, artistic career, and material gains.
+  Venus (5th, 12th lord) in House 4 (Virgo) — this forms the overarching karmic thread of the entire period.
+
+  ANTARDASHA PREDICTIONS:
+
+  [Venus–Venus]  Jan 2069 → May 2072  (3.33 yrs)
+  Between 2069–2072, home, emotional foundation, and maternal themes themes intensify — because Venus (5th, 12th lord) in House 4 (Virgo) activates as Mahadasha lord while Venus (5th, 12th lord) in House 4 (Virgo) operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Venus–Sun]  May 2072 → May 2073  (1.0 yrs)
+  Between 2072–2073, competitive action, communication, and overcoming challenges occurs — because Venus (5th, 12th lord) in House 4 (Virgo) activates as Mahadasha lord while Sun (3rd lord) in House 3 (Leo) conjunct Mercury operates as Antardasha lord, activating Budha-Aditya Yoga.
+
+  [Venus–Moon]  May 2073 → Jan 2075  (1.67 yrs)
+  Between 2073–2075, creative, romantic, and intellectual breakthroughs manifests — because Venus (5th, 12th lord) in House 4 (Virgo) activates as Mahadasha lord while Moon (2nd lord) in House 5 (Libra) operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Venus–Mars]  Jan 2075 → Mar 2076  (1.17 yrs)
+  Between 2075–2076, wealth growth and family developments happens — because Venus (5th, 12th lord) in House 4 (Virgo) activates as Mahadasha lord while Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Venus–Rahu]  Mar 2076 → Mar 2079  (3.0 yrs)
+  Between 2076–2079, personal reinvention and identity-defining events happens — because Venus (5th, 12th lord) in House 4 (Virgo) activates as Mahadasha lord while Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Venus–Jupiter]  Mar 2079 → Nov 2081  (2.67 yrs)
+  Between 2079–2081, foreign connections, spiritual growth, and behind-the-scenes success manifests — because Venus (5th, 12th lord) in House 4 (Virgo) activates as Mahadasha lord while Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Venus–Saturn]  Nov 2081 → Jan 2085  (3.17 yrs)
+  Between 2081–2085, foreign connections, spiritual growth, and behind-the-scenes success leads to — because Venus (5th, 12th lord) in House 4 (Virgo) activates as Mahadasha lord while Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Venus–Mercury]  Jan 2085 → Nov 2087  (2.83 yrs)
+  Between 2085–2087, competitive action, communication, and overcoming challenges occurs — because Venus (5th, 12th lord) in House 4 (Virgo) activates as Mahadasha lord while Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun operates as Antardasha lord, activating Budha-Aditya Yoga. Mercury's Antardasha is infused with solar authority (Budha-Aditya Yoga), making communication and intellectual work exceptionally productive.
+
+  [Venus–Ketu]  Nov 2087 → Jan 2089  (1.17 yrs)
+  Between 2087–2089, significant relationship and partnership events manifests — because Venus (5th, 12th lord) in House 4 (Virgo) activates as Mahadasha lord while Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu operates as Antardasha lord, activating Graha Malika Yoga.
+
+============================================================
+  MAHADASHA: SUN   26/01/2089 → 26/01/2095   (6 years)
+============================================================
+  Overview: The Sun Mahadasha (6 years) activates authority, career recognition, and government connections.
+  Sun (3rd lord) in House 3 (Leo) conjunct Mercury — this forms the overarching karmic thread of the entire period.
+
+  ANTARDASHA PREDICTIONS:
+
+  [Sun–Sun]  Jan 2089 → May 2089  (0.3 yrs)
+  Between 2089–2089, communication, courage, and sibling-related events themes intensify — because Sun (3rd lord) in House 3 (Leo) conjunct Mercury activates as Mahadasha lord while Sun (3rd lord) in House 3 (Leo) conjunct Mercury operates as Antardasha lord, activating Budha-Aditya Yoga.
+
+  [Sun–Moon]  May 2089 → Nov 2089  (0.5 yrs)
+  Between 2089–2089, creative, romantic, and intellectual breakthroughs manifests — because Sun (3rd lord) in House 3 (Leo) conjunct Mercury activates as Mahadasha lord while Moon (2nd lord) in House 5 (Libra) operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Sun–Mars]  Nov 2089 → Mar 2090  (0.35 yrs)
+  Between 2089–2090, wealth growth and family developments happens — because Sun (3rd lord) in House 3 (Leo) conjunct Mercury activates as Mahadasha lord while Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Sun–Rahu]  Mar 2090 → Feb 2091  (0.9 yrs)
+  Between 2090–2091, personal reinvention and identity-defining events happens — because Sun (3rd lord) in House 3 (Leo) conjunct Mercury activates as Mahadasha lord while Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Sun–Jupiter]  Feb 2091 → Dec 2091  (0.8 yrs)
+  Between 2091–2091, foreign connections, spiritual growth, and behind-the-scenes success manifests — because Sun (3rd lord) in House 3 (Leo) conjunct Mercury activates as Mahadasha lord while Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Sun–Saturn]  Dec 2091 → Nov 2092  (0.95 yrs)
+  Between 2091–2092, foreign connections, spiritual growth, and behind-the-scenes success leads to — because Sun (3rd lord) in House 3 (Leo) conjunct Mercury activates as Mahadasha lord while Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Sun–Mercury]  Nov 2092 → Sep 2093  (0.85 yrs)
+  Between 2092–2093, communication, courage, and sibling-related events themes intensify — because Sun (3rd lord) in House 3 (Leo) conjunct Mercury activates as Mahadasha lord while Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun operates as Antardasha lord, activating Budha-Aditya Yoga. Mercury's Antardasha is infused with solar authority (Budha-Aditya Yoga), making communication and intellectual work exceptionally productive.
+
+  [Sun–Ketu]  Sep 2093 → Jan 2094  (0.35 yrs)
+  Between 2093–2094, significant relationship and partnership events manifests — because Sun (3rd lord) in House 3 (Leo) conjunct Mercury activates as Mahadasha lord while Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Sun–Venus]  Jan 2094 → Jan 2095  (1.0 yrs)
+  Between 2094–2095, home, property, and emotional stability events occurs — because Sun (3rd lord) in House 3 (Leo) conjunct Mercury activates as Mahadasha lord while Venus (5th, 12th lord) in House 4 (Virgo) operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+============================================================
+  MAHADASHA: MOON   26/01/2095 → 26/01/2105   (10 years)
+============================================================
+  Overview: The Moon Mahadasha (10 years) activates emotional life, home, public dealings, and the mother.
+  Moon (2nd lord) in House 5 (Libra) — this forms the overarching karmic thread of the entire period.
+
+  ANTARDASHA PREDICTIONS:
+
+  [Moon–Moon]  Jan 2095 → Nov 2095  (0.83 yrs)
+  Between 2095–2095, intelligence, creativity, romantic relationships, and children themes intensify — because Moon (2nd lord) in House 5 (Libra) activates as Mahadasha lord while Moon (2nd lord) in House 5 (Libra) operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Moon–Mars]  Nov 2095 → Jun 2096  (0.58 yrs)
+  Between 2095–2096, wealth growth and family developments happens — because Moon (2nd lord) in House 5 (Libra) activates as Mahadasha lord while Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Moon–Rahu]  Jun 2096 → Dec 2097  (1.5 yrs)
+  Between 2096–2097, personal reinvention and identity-defining events happens — because Moon (2nd lord) in House 5 (Libra) activates as Mahadasha lord while Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Moon–Jupiter]  Dec 2097 → Apr 2099  (1.33 yrs)
+  Between 2097–2099, foreign connections, spiritual growth, and behind-the-scenes success manifests — because Moon (2nd lord) in House 5 (Libra) activates as Mahadasha lord while Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Moon–Saturn]  Apr 2099 → Nov 2100  (1.58 yrs)
+  Between 2099–2100, foreign connections, spiritual growth, and behind-the-scenes success leads to — because Moon (2nd lord) in House 5 (Libra) activates as Mahadasha lord while Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Moon–Mercury]  Nov 2100 → Apr 2102  (1.42 yrs)
+  Between 2100–2102, competitive action, communication, and overcoming challenges occurs — because Moon (2nd lord) in House 5 (Libra) activates as Mahadasha lord while Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun operates as Antardasha lord, activating Budha-Aditya Yoga. Mercury's Antardasha is infused with solar authority (Budha-Aditya Yoga), making communication and intellectual work exceptionally productive.
+
+  [Moon–Ketu]  Apr 2102 → Nov 2102  (0.58 yrs)
+  Between 2102–2102, significant relationship and partnership events manifests — because Moon (2nd lord) in House 5 (Libra) activates as Mahadasha lord while Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Moon–Venus]  Nov 2102 → Jul 2104  (1.67 yrs)
+  Between 2102–2104, home, property, and emotional stability events occurs — because Moon (2nd lord) in House 5 (Libra) activates as Mahadasha lord while Venus (5th, 12th lord) in House 4 (Virgo) operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Moon–Sun]  Jul 2104 → Jan 2105  (0.5 yrs)
+  Between 2104–2105, competitive action, communication, and overcoming challenges occurs — because Moon (2nd lord) in House 5 (Libra) activates as Mahadasha lord while Sun (3rd lord) in House 3 (Leo) conjunct Mercury operates as Antardasha lord, activating Budha-Aditya Yoga.
+
+============================================================
+  MAHADASHA: MARS   26/01/2105 → 26/01/2112   (7 years)
+============================================================
+  Overview: The Mars Mahadasha (7 years) activates property, action, siblings, competitive drive, and physical ventures.
+  Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon — this forms the overarching karmic thread of the entire period.
+
+  ANTARDASHA PREDICTIONS:
+
+  [Mars–Mars]  Jan 2105 → Jun 2105  (0.41 yrs)
+  Between 2105–2105, wealth accumulation and family growth themes intensify — because Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon activates as Mahadasha lord while Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Mars–Rahu]  Jun 2105 → Jul 2106  (1.05 yrs)
+  Between 2105–2106, personal reinvention and identity-defining events happens — because Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon activates as Mahadasha lord while Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Mars–Jupiter]  Jul 2106 → Jun 2107  (0.93 yrs)
+  Between 2106–2107, foreign connections, spiritual growth, and behind-the-scenes success manifests — because Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon activates as Mahadasha lord while Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Mars–Saturn]  Jun 2107 → Jul 2108  (1.11 yrs)
+  Between 2107–2108, foreign connections, spiritual growth, and behind-the-scenes success leads to — because Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon activates as Mahadasha lord while Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars operates as Antardasha lord, activating Vipreet Raj Yoga.
+
+  [Mars–Mercury]  Jul 2108 → Jul 2109  (0.99 yrs)
+  Between 2108–2109, competitive action, communication, and overcoming challenges occurs — because Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon activates as Mahadasha lord while Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun operates as Antardasha lord, activating Budha-Aditya Yoga. Mercury's Antardasha is infused with solar authority (Budha-Aditya Yoga), making communication and intellectual work exceptionally productive.
+
+  [Mars–Ketu]  Jul 2109 → Dec 2109  (0.41 yrs)
+  Between 2109–2109, significant relationship and partnership events manifests — because Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon activates as Mahadasha lord while Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu operates as Antardasha lord, activating Graha Malika Yoga.
+
+  [Mars–Venus]  Dec 2109 → Feb 2111  (1.17 yrs)
+  Between 2109–2111, home, property, and emotional stability events occurs — because Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon activates as Mahadasha lord while Venus (5th, 12th lord) in House 4 (Virgo) operates as Antardasha lord, activating Neecha Bhanga Raja Yoga.
+
+  [Mars–Sun]  Feb 2111 → Jun 2111  (0.35 yrs)
+  Between 2111–2111, competitive action, communication, and overcoming challenges occurs — because Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon activates as Mahadasha lord while Sun (3rd lord) in House 3 (Leo) conjunct Mercury operates as Antardasha lord, activating Budha-Aditya Yoga.
+
+  [Mars–Moon]  Jun 2111 → Jan 2112  (0.58 yrs)
+  Between 2111–2112, creative, romantic, and intellectual breakthroughs manifests — because Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon activates as Mahadasha lord while Moon (2nd lord) in House 5 (Libra) operates as Antardasha lord, activating Graha Malika Yoga.
+
+
+────────────────────────────────────────────────────────────
+  Total predictions generated: 76
+
+  AUTO-VALIDATION:
+  ✔ All predictions verified — TIME ✔  EVENT ✔  REASON ✔  No weak language ✔
+
+============================================================
+SECTION 16 — DASHA SUPPLEMENTARY ANALYSIS
 ============================================================
 
-⏳ TIMING ANALYSIS (DASHA SYSTEM) ⏳
+⏳ DASHA SUPPLEMENTARY (THEMES + ANTARDASHA) ⏳
 
 
 === MAHADASHA ANALYSIS ===

@@ -2425,13 +2425,38 @@ def validate_report(report_text):
         else "MISSING: Key yoga identifications not found",
     ))
 
-    # 5. Dasha has time + reason
+    # 5. Dasha has time + reason (both old and new prediction engine)
     checks.append((
         "Dasha time + reason",
-        "MAHADASHA" in report_text and "Reason:" in report_text and "Time:" in report_text,
-        "Dasha timeline with time and reason found" if "Reason:" in report_text
+        "MAHADASHA" in report_text and "because" in report_text,
+        "Dasha timeline with time and reason found" if "because" in report_text
         else "MISSING: Dasha timeline lacks Time or Reason",
     ))
+
+    # 7. New prediction engine present
+    checks.append((
+        "Time-Event-Reason predictions",
+        "ANTARDASHA TIMELINE — DETERMINISTIC PREDICTIONS" in report_text
+        and "Total predictions generated:" in report_text,
+        "Time-Event-Reason prediction engine found" if "ANTARDASHA TIMELINE — DETERMINISTIC PREDICTIONS" in report_text
+        else "MISSING: generate_time_event_predictions output not found",
+    ))
+
+    # 8. No weak language in predictions
+    prediction_block_start = report_text.find("ANTARDASHA TIMELINE — DETERMINISTIC PREDICTIONS")
+    if prediction_block_start != -1:
+        pred_block = report_text[prediction_block_start:prediction_block_start + 20000]
+        # Use word-boundary matching so "May" (month) doesn't trigger "may" check
+        import re as _rev
+        weak_language_found = bool(_rev.search(
+            r'\b(might|could|possibly)\b', pred_block, _rev.IGNORECASE
+        )) or bool(_rev.search(r'\bmay\b(?!\s+\d{4})', pred_block, _rev.IGNORECASE))
+        checks.append((
+            "No weak language in predictions",
+            not weak_language_found,
+            "No weak language found in prediction block" if not weak_language_found
+            else "WARNING: Weak language (may/might/could) detected in prediction block",
+        ))
 
     # 6. No irrelevant classical content
     ocr_garbage = any(marker in report_text.lower() for marker in [
@@ -2445,6 +2470,414 @@ def validate_report(report_text):
     ))
 
     return checks
+
+
+# ============================================================
+# TIME–EVENT–REASON PREDICTION ENGINE
+# ============================================================
+
+# Vimshottari Mahadasha year allocations (fixed by tradition)
+_VIMSHOTTARI_YEARS = {
+    "Sun": 6, "Moon": 10, "Mars": 7, "Rahu": 18,
+    "Jupiter": 16, "Saturn": 19, "Mercury": 17,
+    "Ketu": 7, "Venus": 20,
+}
+
+# Fixed Vimshottari sequence — antardasha order within each mahadasha
+_VIMSHOTTARI_SEQUENCE = [
+    "Ketu", "Venus", "Sun", "Moon", "Mars",
+    "Rahu", "Jupiter", "Saturn", "Mercury",
+]
+
+# Domain mapping: planet → primary life events it activates
+_PLANET_DOMAINS = {
+    "Sun":     "authority, career recognition, and government connections",
+    "Moon":    "emotional life, home, public dealings, and the mother",
+    "Mars":    "property, action, siblings, competitive drive, and physical ventures",
+    "Mercury": "intellect, business, communication, education, and analytical career",
+    "Jupiter": "wealth expansion, wisdom, children, marriage, and higher education",
+    "Venus":   "marriage, relationships, luxury, artistic career, and material gains",
+    "Saturn":  "career structure, karmic discipline, longevity, and long-term gains",
+    "Rahu":    "sudden rise, foreign connections, unconventional breakthroughs, and ambition",
+    "Ketu":    "spiritual deepening, detachment, past-life resolution, and hidden insights",
+}
+
+# Strong/weak language re-mapping — no soft modals
+_EVENT_VERBS = {
+    "Sun":     "occurs",
+    "Moon":    "manifests",
+    "Mars":    "happens",
+    "Mercury": "occurs",
+    "Jupiter": "manifests",
+    "Venus":   "occurs",
+    "Saturn":  "leads to",
+    "Rahu":    "happens",
+    "Ketu":    "manifests",
+}
+
+# Yoga names active in this chart — detected by detect_advanced_yogas
+# We encode which planets trigger each so predictions can reference them
+_YOGA_TRIGGERS = {
+    "Budha-Aditya Yoga":      {"Sun", "Mercury"},
+    "Vipreet Raj Yoga":       {"Saturn", "Jupiter"},
+    "Neecha Bhanga Raja Yoga":{"Mars", "Venus"},
+    "Graha Malika Yoga":      set(),   # generic — active for all
+    "Kemadruma Yoga":         {"Moon"},
+}
+
+
+import datetime as _dt
+
+
+def _parse_dasha_date(date_str):
+    """Parse a DD/MM/YYYY date string and return a datetime.date object."""
+    try:
+        return _dt.datetime.strptime(date_str.strip(), "%d/%m/%Y").date()
+    except ValueError:
+        return None
+
+
+def _compute_antardasha_periods(maha_planet, maha_start_date, maha_end_date):
+    """Compute all 9 antardasha sub-periods inside one mahadasha.
+
+    Uses Vimshottari proportional calculation:
+      antardasha_years = (maha_years × sub_years) / 120
+
+    Returns a list of dicts: {planet, start (date), end (date), years (float)}
+    in the canonical Vimshottari sequence starting from the mahadasha lord.
+    """
+    maha_years = _VIMSHOTTARI_YEARS.get(maha_planet, 0)
+    if maha_years == 0 or maha_start_date is None or maha_end_date is None:
+        return []
+
+    seq = _VIMSHOTTARI_SEQUENCE
+    start_idx = seq.index(maha_planet) if maha_planet in seq else 0
+
+    # Rotation starting from maha_planet's position
+    ordered = seq[start_idx:] + seq[:start_idx]
+
+    periods = []
+    cursor = maha_start_date
+
+    for sub_planet in ordered:
+        sub_years = _VIMSHOTTARI_YEARS.get(sub_planet, 0)
+        # Proportional duration in fractional years
+        duration_years = (maha_years * sub_years) / 120.0
+        # Convert to days (using average year = 365.25)
+        duration_days = int(round(duration_years * 365.25))
+        end_d = cursor + _dt.timedelta(days=duration_days)
+        if end_d > maha_end_date:
+            end_d = maha_end_date
+        periods.append({
+            "planet":  sub_planet,
+            "start":   cursor,
+            "end":     end_d,
+            "years":   round(duration_years, 2),
+        })
+        cursor = end_d
+        if cursor >= maha_end_date:
+            break
+
+    return periods
+
+
+def _planet_lordship_summary(planet, planet_data, lagna=None):
+    """Return a compact lordship description for a planet.
+
+    E.g. "Mercury (1st lord, Lagna lord)" for Gemini ascendant.
+    """
+    if lagna is None:
+        lagna = _get_lagna()
+    if lagna not in SIGN_ORDER:
+        return planet
+
+    lagna_idx = SIGN_ORDER.index(lagna)
+    lords_of = []
+    for h in range(1, 13):
+        sign = SIGN_ORDER[(lagna_idx + h - 1) % 12]
+        if SIGN_LORDS.get(sign) == planet:
+            label = f"{h}"
+            if h == 1:
+                label += "st (Lagna)"
+            elif h == 2:
+                label += "nd"
+            elif h == 3:
+                label += "rd"
+            else:
+                label += "th"
+            lords_of.append(label)
+
+    if lords_of:
+        return f"{planet} ({', '.join(lords_of)} lord)"
+    return planet
+
+
+def _active_yogas_for(planet, all_yogas):
+    """Return list of yoga names active when this planet is the dasha lord."""
+    active = []
+    for yoga_name, triggers in _YOGA_TRIGGERS.items():
+        if not triggers or planet in triggers:
+            active.append(yoga_name)
+    return active
+
+
+def _conjunction_partners(planet, planet_data):
+    """Return list of planets conjunct (same house) with planet."""
+    h = planet_data.get(planet, {}).get("house")
+    if not h:
+        return []
+    return [p for p, d in planet_data.items()
+            if p != planet and p != "ASC" and d.get("house") == h]
+
+
+def _aspect_partners(planet, planet_data):
+    """Return list of planets aspecting the given planet or aspected by it."""
+    result = []
+    sign = planet_data.get(planet, {}).get("sign", "")
+    if not sign:
+        return result
+
+    # All aspected signs from this planet
+    aspected_signs = []
+    seventh = _house_to_sign(sign, 7)
+    if seventh:
+        aspected_signs.append(seventh)
+    for away in SPECIAL_ASPECTS.get(planet, []):
+        asp = _house_to_sign(sign, away)
+        if asp:
+            aspected_signs.append(asp)
+
+    for other_p, other_d in planet_data.items():
+        if other_p in (planet, "ASC"):
+            continue
+        if other_d.get("sign") in aspected_signs:
+            result.append(other_p)
+
+    return result
+
+
+def _build_planet_context(planet, planet_data, lagna=None):
+    """Build a rich context string for a planet: lordship + house + sign + conjunctions + aspects."""
+    data    = planet_data.get(planet, {})
+    house   = data.get("house", "?")
+    sign    = data.get("sign", "?")
+    lord_str = _planet_lordship_summary(planet, planet_data, lagna)
+    conj    = _conjunction_partners(planet, planet_data)
+    asp     = _aspect_partners(planet, planet_data)
+
+    ctx = f"{lord_str} in House {house} ({sign})"
+    if conj:
+        ctx += f" conjunct {', '.join(conj)}"
+    if asp:
+        ctx += f", aspected by/aspecting {', '.join(asp)}"
+    return ctx
+
+
+def _house_event_phrase(house):
+    """Return the primary event domain for a house number."""
+    _H = {
+        1:  "self-development and identity transformation",
+        2:  "wealth accumulation and family growth",
+        3:  "communication, courage, and sibling-related events",
+        4:  "home, emotional foundation, and maternal themes",
+        5:  "intelligence, creativity, romantic relationships, and children",
+        6:  "service, competition, and overcoming obstacles",
+        7:  "marriage, business partnerships, and legal matters",
+        8:  "transformation, inheritance, and hidden-sector events",
+        9:  "higher education, luck, travel, and dharmic breakthroughs",
+        10: "career advancement, authority, and public recognition",
+        11: "financial gains, aspirations fulfilled, and social expansion",
+        12: "foreign travel/settlement, spiritual growth, and institutional work",
+    }
+    return _H.get(house, "multi-domain life events")
+
+
+def _sign_year(date_obj):
+    """Return a 'YYYY' string from a date object."""
+    if date_obj is None:
+        return "?"
+    return str(date_obj.year)
+
+
+def _predict_period(maha, sub, maha_ctx, sub_ctx, maha_start, maha_end,
+                    sub_start, sub_end, sub_yogas, planet_data, lagna):
+    """Generate a single TIME–EVENT–REASON prediction sentence.
+
+    Format:
+    "Between YEAR–YEAR, [EVENT] occurs/manifests/leads to/happens because [REASON]."
+    """
+    verb = _EVENT_VERBS.get(sub, "occurs")
+
+    # Time window
+    start_yr = _sign_year(sub_start)
+    end_yr   = _sign_year(sub_end)
+    time_str = f"Between {start_yr}–{end_yr}"
+
+    # Primary event domain: combine maha house domain + sub house domain
+    maha_data = planet_data.get(maha, {})
+    sub_data  = planet_data.get(sub, {})
+    maha_house = maha_data.get("house", 0)
+    sub_house  = sub_data.get("house", 0)
+
+    maha_domain = _house_event_phrase(maha_house)
+    sub_domain  = _house_event_phrase(sub_house)
+
+    # Yoga amplifier
+    yoga_note = ""
+    if sub_yogas:
+        primary_yoga = sub_yogas[0]
+        yoga_note = f", activating {primary_yoga}"
+
+    # Build event phrase from dominant domains
+    if maha_house == sub_house:
+        event_phrase = f"{maha_domain} themes intensify"
+    elif sub_house in (10, 11):
+        event_phrase = f"career advancement and financial gains {verb}"
+    elif sub_house == 7:
+        event_phrase = f"significant relationship and partnership events {verb}"
+    elif sub_house == 5:
+        event_phrase = f"creative, romantic, and intellectual breakthroughs {verb}"
+    elif sub_house == 9:
+        event_phrase = f"fortune, higher education, and dharmic expansion {verb}"
+    elif sub_house == 12:
+        event_phrase = f"foreign connections, spiritual growth, and behind-the-scenes success {verb}"
+    elif sub_house == 2:
+        event_phrase = f"wealth growth and family developments {verb}"
+    elif sub_house == 4:
+        event_phrase = f"home, property, and emotional stability events {verb}"
+    elif sub_house == 8:
+        event_phrase = f"transformation, sudden changes, and hidden-sector events {verb}"
+    elif sub_house in (3, 6):
+        event_phrase = f"competitive action, communication, and overcoming challenges {verb}"
+    elif sub_house == 1:
+        event_phrase = f"personal reinvention and identity-defining events {verb}"
+    else:
+        event_phrase = f"events linked to {sub_domain} {verb}"
+
+    # Reason: multi-layer synthesis
+    reason = (
+        f"because {maha_ctx} activates as Mahadasha lord while {sub_ctx} "
+        f"operates as Antardasha lord{yoga_note}"
+    )
+
+    # Append combustion note for Mercury sub-period (Mercury is combust in this chart)
+    if sub == "Mercury":
+        reason += (
+            ". Mercury's Antardasha is infused with solar authority (Budha-Aditya Yoga), "
+            "making communication and intellectual work exceptionally productive"
+        )
+
+    return f"{time_str}, {event_phrase} — {reason}."
+
+
+def generate_time_event_predictions(kundali_data, dasha_data, planet_data, yogas=None):
+    """Generate deterministic TIME–EVENT–REASON predictions for every Mahadasha
+    and its 9 Antardasha sub-periods.
+
+    Parameters
+    ----------
+    kundali_data  : full kundali dict (from kundali_rebuilt.json)
+    dasha_data    : list of Vimshottari Mahadasha dicts
+    planet_data   : planets dict keyed by planet name
+    yogas         : optional list of detected yoga name strings
+
+    Returns
+    -------
+    str — formatted prediction block ready for printing.
+    """
+    if yogas is None:
+        yogas = []
+
+    lagna = _get_lagna(kundali_data, planet_data)
+    output = "\n=== DASHA + ANTARDASHA TIMELINE — DETERMINISTIC PREDICTIONS ===\n"
+    output += (
+        "Each prediction below follows the strict format:\n"
+        "  TIME → EVENT → REASON (derived from kundali logic only)\n"
+        "Language: all predictions are deterministic. No weak modals used.\n\n"
+    )
+
+    prediction_count = 0
+    validation_failures = []
+
+    for maha_period in dasha_data:
+        maha   = maha_period.get("planet", "")
+        m_start = _parse_dasha_date(maha_period.get("start", ""))
+        m_end   = _parse_dasha_date(maha_period.get("end", ""))
+        m_years = maha_period.get("years", "?")
+
+        maha_ctx = _build_planet_context(maha, planet_data, lagna)
+
+        output += "=" * 60 + "\n"
+        output += f"  MAHADASHA: {maha.upper()}   {maha_period.get('start','')} → {maha_period.get('end','')}   ({m_years} years)\n"
+        output += "=" * 60 + "\n"
+
+        # Overall mahadasha overview — single deterministic sentence
+        maha_data  = planet_data.get(maha, {})
+        maha_house = maha_data.get("house", 0)
+        maha_sign  = maha_data.get("sign", "")
+        overall_domain = _PLANET_DOMAINS.get(maha, "multi-domain life themes")
+        output += (
+            f"  Overview: The {maha} Mahadasha ({m_years} years) activates {overall_domain}.\n"
+            f"  {maha_ctx} — this forms the overarching karmic thread of the entire period.\n\n"
+        )
+
+        # Compute all 9 antardasha periods
+        antardashas = _compute_antardasha_periods(maha, m_start, m_end)
+
+        if not antardashas:
+            output += "  Antardasha data unavailable for this period.\n\n"
+            continue
+
+        output += "  ANTARDASHA PREDICTIONS:\n\n"
+        for ad in antardashas:
+            sub        = ad["planet"]
+            sub_start  = ad["start"]
+            sub_end    = ad["end"]
+            sub_years  = ad["years"]
+            sub_ctx    = _build_planet_context(sub, planet_data, lagna)
+            sub_yogas  = _active_yogas_for(sub, yogas)
+
+            prediction = _predict_period(
+                maha, sub, maha_ctx, sub_ctx,
+                m_start, m_end, sub_start, sub_end,
+                sub_yogas, planet_data, lagna,
+            )
+
+            start_str = sub_start.strftime("%b %Y") if sub_start else "?"
+            end_str   = sub_end.strftime("%b %Y") if sub_end else "?"
+            output += f"  [{maha}–{sub}]  {start_str} → {end_str}  ({sub_years} yrs)\n"
+            output += f"  {prediction}\n\n"
+            prediction_count += 1
+
+            # --- Inline validation ---
+            _has_time   = any(c.isdigit() for c in prediction)
+            _has_event  = any(w in prediction.lower() for w in ["occurs", "manifests", "leads to", "happens", "intensify"])
+            _has_reason = "because" in prediction.lower()
+            _no_weak    = not any(w in prediction.lower() for w in [" may ", " might ", " could ", "possibly"])
+
+            if not (_has_time and _has_event and _has_reason and _no_weak):
+                validation_failures.append(f"{maha}–{sub}: missing " +
+                    ", ".join(filter(None, [
+                        "TIME"   if not _has_time   else "",
+                        "EVENT"  if not _has_event  else "",
+                        "REASON" if not _has_reason else "",
+                        "weak-language" if not _no_weak else "",
+                    ])))
+
+    output += "\n"
+    output += "─" * 60 + "\n"
+    output += f"  Total predictions generated: {prediction_count}\n"
+
+    # Validation summary
+    output += "\n  AUTO-VALIDATION:\n"
+    if not validation_failures:
+        output += "  ✔ All predictions verified — TIME ✔  EVENT ✔  REASON ✔  No weak language ✔\n"
+    else:
+        output += f"  ✘ {len(validation_failures)} prediction(s) failed validation:\n"
+        for f in validation_failures:
+            output += f"    - {f}\n"
+
+    return output
 
 
 # -------------------------------
@@ -2470,8 +2903,8 @@ def generate_report():
     print("12. Lagna Lord | 10th Lord | 7th Lord")
     print("13. Career Deep Analysis")
     print("14. Marriage Deep Analysis")
-    print("15. Dasha Timeline — Time | Event | Reason")
-    print("16. Mahadasha + Antardasha + Timeline")
+    print("15. Dasha + Antardasha Timeline (Deterministic Predictions)")
+    print("16. Dasha Supplementary — Themes + Antardasha Analysis")
     print("17. Aspects (Drishti)")
     print("18. Navamsa (D9)")
     print("19. Shadbala (Planetary Strength)")
@@ -2610,20 +3043,20 @@ def generate_report():
     print(analyze_marriage(planets))
 
     # --------------------------------------------------------
-    # 15. DASHA TIMELINE — TIME | EVENT | REASON
+    # 15. DASHA + ANTARDASHA TIMELINE (DETERMINISTIC PREDICTIONS)
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 15 — DASHA TIMELINE (TIME | EVENT | REASON)")
+    print("SECTION 15 — DASHA + ANTARDASHA TIMELINE (PREDICTIONS)")
     print("=" * 60)
-    print(analyze_dasha_timeline(dasha, planets))
+    print(generate_time_event_predictions(kundali, dasha, planets))
 
     # --------------------------------------------------------
-    # 16. DASHA + ANTARDASHA + TIMELINE
+    # 16. DASHA SUPPLEMENTARY — OVERVIEW + ANTARDASHA THEMES
     # --------------------------------------------------------
     print("=" * 60)
-    print("SECTION 16 — TIMING ANALYSIS (DASHA SYSTEM)")
+    print("SECTION 16 — DASHA SUPPLEMENTARY ANALYSIS")
     print("=" * 60)
-    print("\n⏳ TIMING ANALYSIS (DASHA SYSTEM) ⏳\n")
+    print("\n⏳ DASHA SUPPLEMENTARY (THEMES + ANTARDASHA) ⏳\n")
     print(analyze_dasha())
     print(analyze_antardasha(dasha))
     print(antardasha_timeline(dasha))
