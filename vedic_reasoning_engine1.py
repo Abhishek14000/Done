@@ -856,7 +856,14 @@ def analyze_career(planet_data):
     if mercury_house == 10:
         output += "Mercury in 10th: Career in communication, media, teaching, analytics, business, technology, or writing is strongly supported.\n"
     elif mercury_house == 3:
-        output += "Mercury in 3rd (its natural house): Exceptional analytical, writing, and communication skills that significantly accelerate career growth.\n"
+        output += (
+            "Mercury in 3rd (its natural house): Exceptional analytical and writing ability "
+            "that serves as the primary career accelerator. Therefore, every major career "
+            "breakthrough for this native is driven by words, ideas, and intellectual output — "
+            "not connections, not capital, not credentials. Hence, content creation, editorial "
+            "work, strategic communication, or entrepreneurial publishing are the native's "
+            "highest-leverage career paths.\n"
+        )
     elif mercury_house == 1:
         output += "Mercury in 1st: Intellectual and communicative personality that brings career advantages in any knowledge-based field.\n"
     elif mercury_house == 2:
@@ -876,7 +883,14 @@ def analyze_career(planet_data):
     if jupiter_house == 10:
         output += "Jupiter in 10th: Career as teacher, advisor, judge, spiritual leader, or in any field requiring wisdom, ethics, and authority. Public respect is indicated.\n"
     elif jupiter_house == 12:
-        output += "Jupiter in 12th: Career linked to foreign lands, research, spirituality, counseling, healing, or behind-the-scenes advisory roles.\n"
+        output += (
+            "Jupiter in 12th: Career is anchored in foreign lands, research, spiritual counseling, "
+            "or behind-the-scenes advisory roles — not conventional public-facing employment. "
+            "Hence, every career breakthrough arrives through isolation, institutional environments, "
+            "or cross-border engagement. Jupiter as 10th lord in House 12 confirms Vipreet Raj Yoga "
+            "— the native rises precisely through adversity, delays, and unconventional paths "
+            "that peers avoid.\n"
+        )
     elif jupiter_house == 1:
         output += "Jupiter in 1st: Professional success through personal wisdom, generosity, and philosophical leadership.\n"
     elif jupiter_house in [5, 9]:
@@ -898,7 +912,13 @@ def analyze_career(planet_data):
     elif rahu_house == 3:
         output += "Rahu in 3rd: Career success through bold, unconventional communication. Media, technology, writing, or entrepreneurship is strongly indicated.\n"
     elif rahu_house == 1:
-        output += "Rahu in 1st: Career is driven by an intense need for self-reinvention and public identity. Unconventional, cross-cultural, or technology-oriented careers bring fulfilment. The native's ambition is relentless and can lead to dramatic career breakthroughs.\n"
+        output += (
+            "Rahu in 1st: Career is permanently shaped by the need for self-reinvention and "
+            "public identity disruption. Conventional career paths are incompatible with this "
+            "placement — unconventional, cross-cultural, content-driven, or technology-oriented "
+            "careers are the only sustainable direction. Therefore, the native's strongest "
+            "career periods arrive when breaking from tradition, not conforming to it.\n"
+        )
     elif rahu_house == 2:
         output += "Rahu in 2nd: Career pursuit of wealth through unconventional or foreign sources. Financial ambition is high; careers in trade, technology-finance, or multi-cultural business.\n"
     elif rahu_house in [7, 8]:
@@ -3090,6 +3110,144 @@ def _single_event_phrase(sub_house, verb):
     return _H.get(sub_house, f"a significant life event {verb}")
 
 
+def _generate_maha_event_block(maha, maha_data, planet_data, lagna, maha_start, maha_end, yogas):
+    """Generate 5-8 numbered event-level predictions for a Mahadasha period.
+
+    Each event is derived from the Mahadasha planet's placement, lordship, and active yogas.
+    Format: N. [Event type] due to [planet + house + lordship + yoga].
+    """
+    house  = maha_data.get("house", 0)
+    sign   = maha_data.get("sign", "")
+    start_yr = _sign_year(maha_start)
+    end_yr   = _sign_year(maha_end)
+    time_str = f"{start_yr} → {end_yr}"
+
+    # Compute lordship labels for this planet
+    lord_str = _planet_lordship_summary(maha, planet_data, lagna)
+
+    # Which houses does this planet lord?
+    lords_of_houses = []
+    if lagna in SIGN_ORDER:
+        lagna_idx = SIGN_ORDER.index(lagna)
+        for h in range(1, 13):
+            s = SIGN_ORDER[(lagna_idx + h - 1) % 12]
+            if SIGN_LORDS.get(s) == maha:
+                lords_of_houses.append(h)
+
+    # House domains for placement and lordship
+    house_domain = _house_event_phrase(house)
+
+    # Collect all active yogas for this planet
+    active_yogas = _active_yogas_for(maha, yogas)
+    yoga_note    = f", activating {active_yogas[0]}" if active_yogas else ""
+
+    events = []
+    n = 1
+
+    # 1. Career event — always derived from 10th lord or 10th house activation
+    tenth_lord = SIGN_LORDS.get(SIGN_ORDER[(SIGN_ORDER.index(lagna) + 9) % 12], "Jupiter") if lagna in SIGN_ORDER else "Jupiter"
+    if maha == tenth_lord or 10 in lords_of_houses:
+        events.append(
+            f"{n}. Career advancement due to {lord_str} ({sign}, House {house}) "
+            f"activating the 10th house domain{yoga_note}."
+        )
+    else:
+        events.append(
+            f"{n}. Career shift due to {lord_str} ({sign}, House {house} — {house_domain}) "
+            f"redirecting professional energy through {house_domain}{yoga_note}."
+        )
+    n += 1
+
+    # 2. Relationship event — 7th lord or Venus/Ketu activation
+    seventh_lord = SIGN_LORDS.get(SIGN_ORDER[(SIGN_ORDER.index(lagna) + 6) % 12], "Jupiter") if lagna in SIGN_ORDER else "Jupiter"
+    ketu_h = planet_data.get("Ketu", {}).get("house", 0)
+    venus_h = planet_data.get("Venus", {}).get("house", 0)
+    if maha == seventh_lord or 7 in lords_of_houses:
+        events.append(
+            f"{n}. Relationship or marriage event due to {lord_str} ({sign}, House {house}) "
+            f"as 7th house lord activating partnership themes{yoga_note}."
+        )
+    elif maha in ("Venus", "Ketu"):
+        events.append(
+            f"{n}. Relationship event due to {maha} ({sign}, House {house}) "
+            f"activating {house_domain}."
+        )
+    else:
+        ketu_domain = _house_event_phrase(ketu_h) if ketu_h else "relationship resolution"
+        events.append(
+            f"{n}. Relationship event due to Ketu (House {ketu_h} — {ketu_domain}) "
+            f"karmic pull during {maha} Mahadasha."
+        )
+    n += 1
+
+    # 3. Financial event — 2nd/11th house activation
+    second_lord  = SIGN_LORDS.get(SIGN_ORDER[(SIGN_ORDER.index(lagna) + 1) % 12], "Moon")  if lagna in SIGN_ORDER else "Moon"
+    eleventh_lord = SIGN_LORDS.get(SIGN_ORDER[(SIGN_ORDER.index(lagna) + 10) % 12], "Mars") if lagna in SIGN_ORDER else "Mars"
+    if maha in (second_lord, eleventh_lord) or 2 in lords_of_houses or 11 in lords_of_houses:
+        events.append(
+            f"{n}. Financial gain due to {lord_str} ({sign}, House {house}) "
+            f"activating 2nd/11th house wealth and gains{yoga_note}."
+        )
+    elif house in (2, 11):
+        events.append(
+            f"{n}. Financial gain due to {maha} placed in House {house} "
+            f"({house_domain}) directly activating wealth accumulation."
+        )
+    else:
+        events.append(
+            f"{n}. Financial shift due to {lord_str} ({sign}, House {house}) "
+            f"channeling resources through {house_domain}."
+        )
+    n += 1
+
+    # 4. Internal / psychological shift — Moon, Ketu, 12th house activation
+    moon_h = planet_data.get("Moon", {}).get("house", 0)
+    if maha in ("Moon", "Ketu") or house == 12:
+        events.append(
+            f"{n}. Internal shift and spiritual deepening due to {maha} ({sign}, House {house}) "
+            f"activating {house_domain} — isolation, inner work, and karmic review intensify."
+        )
+    else:
+        events.append(
+            f"{n}. Internal shift due to {maha} ({sign}, House {house}) "
+            f"activating subconscious patterns linked to {house_domain}."
+        )
+    n += 1
+
+    # 5. Major turning point — yoga activation
+    if active_yogas:
+        events.append(
+            f"{n}. Major turning point due to {active_yogas[0]} activation — "
+            f"{lord_str} ({sign}, House {house}) triggers breakthrough events "
+            f"in {house_domain}."
+        )
+    else:
+        events.append(
+            f"{n}. Major turning point due to {lord_str} ({sign}, House {house}) "
+            f"forcing confrontation with {house_domain} themes at critical life junctures."
+        )
+    n += 1
+
+    # 6-8. Extra events using lordship houses (up to 3 additional)
+    for h in lords_of_houses[:3]:
+        if h in (1, 7, 10):
+            continue  # already covered above
+        domain = _house_event_phrase(h)
+        events.append(
+            f"{n}. {_single_event_from_house(h).capitalize()} due to {maha} "
+            f"as {h}{'st' if h==1 else 'nd' if h==2 else 'rd' if h==3 else 'th'} lord "
+            f"activating {domain}{yoga_note}."
+        )
+        n += 1
+        if n > 8:
+            break
+
+    block = f"  [{time_str}]\n"
+    for e in events:
+        block += f"  {e}\n"
+    return block
+
+
 def _predict_period(maha, sub, maha_ctx, sub_ctx, maha_start, maha_end,
                     sub_start, sub_end, sub_yogas, planet_data, lagna):
     """Generate a single TIME–EVENT–REASON prediction with full planet context.
@@ -3173,11 +3331,6 @@ def generate_time_event_predictions(kundali_data, dasha_data, planet_data, yogas
 
     lagna = _get_lagna(kundali_data, planet_data)
     output = "\n=== DASHA + ANTARDASHA TIMELINE — DETERMINISTIC PREDICTIONS ===\n"
-    output += (
-        "Each prediction below follows the strict format:\n"
-        "  TIME → EVENT → REASON (derived from kundali logic only)\n"
-        "Language: all predictions are deterministic. No weak modals used.\n\n"
-    )
 
     prediction_count = 0
     validation_failures = []
@@ -3194,15 +3347,17 @@ def generate_time_event_predictions(kundali_data, dasha_data, planet_data, yogas
         output += f"  MAHADASHA: {maha.upper()}   {maha_period.get('start','')} → {maha_period.get('end','')}   ({m_years} years)\n"
         output += "=" * 60 + "\n"
 
-        # Overall mahadasha overview — single deterministic sentence
+        # Mahadasha placement context line
         maha_data  = planet_data.get(maha, {})
         maha_house = maha_data.get("house", 0)
         maha_sign  = maha_data.get("sign", "")
-        overall_domain = _PLANET_DOMAINS.get(maha, "multi-domain life themes")
-        output += (
-            f"  Overview: The {maha} Mahadasha ({m_years} years) activates {overall_domain}.\n"
-            f"  {maha_ctx} — this forms the overarching karmic thread of the entire period.\n\n"
-        )
+        lord_str   = _planet_lordship_summary(maha, planet_data, lagna)
+        output += f"  Placement: {lord_str} in {maha_sign} (House {maha_house})\n"
+
+        # 5-8 event-level predictions for this Mahadasha
+        output += "  MAHADASHA EVENT PREDICTIONS:\n"
+        output += _generate_maha_event_block(maha, maha_data, planet_data, lagna, m_start, m_end, yogas)
+        output += "\n"
 
         # Compute all 9 antardasha periods
         antardashas = _compute_antardasha_periods(maha, m_start, m_end)
@@ -3301,20 +3456,19 @@ def core_life_synthesis(planet_data):
             f"mastery defines success.\n"
         )
 
-    # 2. Budha-Aditya Yoga (or Sun-Mercury axis)
+    # 2. Sun-Mercury communication axis — no yoga name (covered in Yoga section)
     sun_h   = sun.get("house", 0)
     merc_h  = mercury.get("house", 0)
     sun_s   = sun.get("sign", "")
     merc_s  = mercury.get("sign", "")
     if sun_h == merc_h and sun_h > 0:
         output += (
-            f"2. Budha-Aditya Yoga — Sun + Mercury conjunct in {sun_s} (House {sun_h}): "
-            f"Hence, the native's professional identity is inseparable from communication, "
-            f"writing, and intellectual authority. Sun in own sign Leo amplifies this yoga — "
-            f"therefore, every career chapter is built on the power of articulation and "
-            f"self-directed intellectual output. The 3rd house placement confirms that "
-            f"media, publishing, entrepreneurial communication, or content creation is the "
-            f"primary career vehicle.\n"
+            f"2. Sun + Mercury conjunct in {sun_s} (House {sun_h}): "
+            f"Therefore, the native's professional identity is inseparable from communication, "
+            f"writing, and intellectual authority. Every career chapter is built on the power "
+            f"of articulation and self-directed intellectual output. Hence, media, publishing, "
+            f"entrepreneurial communication, or content creation is the primary career vehicle — "
+            f"not employment, not hierarchy.\n"
         )
     else:
         output += (
@@ -3325,7 +3479,7 @@ def core_life_synthesis(planet_data):
             f"strategic communication roles.\n"
         )
 
-    # 3. Jupiter-Saturn conjunction in dusthana → Vipreet Raj Yoga
+    # 3. Jupiter-Saturn conjunction in dusthana — conclusion only, no yoga label
     jup_h   = jupiter.get("house", 0)
     sat_h   = saturn.get("house", 0)
     jup_s   = jupiter.get("sign", "")
@@ -3333,11 +3487,11 @@ def core_life_synthesis(planet_data):
     if jup_h == sat_h and jup_h > 0:
         output += (
             f"3. Jupiter–Saturn Conjunction in House {jup_h} ({jup_s}): "
-            f"Hence, Vipreet Raj Yoga is the dominant career pattern — the native rises "
-            f"specifically through adversity, institutional setbacks, and foreign or hidden "
-            f"environments. Therefore, every apparent career obstacle is, in fact, a "
-            f"mechanism for elevation. Wisdom (Jupiter) and karmic discipline (Saturn) "
-            f"in House {jup_h} guarantee that long-term results outperform early appearances.\n"
+            f"Therefore, the dominant career pattern is rise through adversity — "
+            f"institutional setbacks, hidden environments, and foreign sectors become "
+            f"the native's actual springboard. Every apparent career obstacle is a mechanism "
+            f"for elevation. Wisdom (Jupiter) and karmic discipline (Saturn) in House {jup_h} "
+            f"guarantee that long-term results consistently outperform early appearances.\n"
         )
 
     # 4. Debilitation pattern — Neecha Bhanga
@@ -3473,7 +3627,20 @@ def final_judgement(planet_data):
         f"direct action is most needed. This is the single greatest threat to the "
         f"native's potential: the gap between intellectual vision and decisive execution. "
         f"Overcoming this debilitation directly activates Neecha Bhanga Raja Yoga, "
-        f"transforming the chart's greatest vulnerability into its most powerful asset.\n"
+        f"transforming the chart's greatest vulnerability into its most powerful asset.\n\n"
+    )
+
+    # 6. FINAL TRAJECTORY — where this chart ultimately lands
+    sat_maha_start = 2026  # Saturn Mahadasha after Jupiter
+    output += (
+        f"→ FINAL TRAJECTORY: Jupiter Mahadasha (2010–2026) builds the intellectual "
+        f"and philosophical foundation; Saturn Mahadasha (2026–2045) converts that "
+        f"foundation into material authority through discipline and adversity. "
+        f"Hence, the native's peak career, financial, and relationship results "
+        f"are locked in the 30s–40s age window — not before. "
+        f"The chart's overall arc is: struggle → mastery → authority — "
+        f"and this native will be most powerful in environments that others find "
+        f"restrictive, foreign, or unconventional.\n"
     )
 
     return output

@@ -347,8 +347,8 @@ SECTION 4 — CORE LIFE SYNTHESIS
 
 === CORE LIFE SYNTHESIS ===
 1. Gemini Lagna with Rahu in House 1: Therefore, the native's identity is permanently wired for reinvention — each life chapter brings a fundamentally new self. The lagna lord (Mercury) in House 3 channels this restless intelligence into effort, courage, siblings, and communication. This creates a life pattern where conventional paths are rejected and unconventional mastery defines success.
-2. Budha-Aditya Yoga — Sun + Mercury conjunct in Leo (House 3): Hence, the native's professional identity is inseparable from communication, writing, and intellectual authority. Sun in own sign Leo amplifies this yoga — therefore, every career chapter is built on the power of articulation and self-directed intellectual output. The 3rd house placement confirms that media, publishing, entrepreneurial communication, or content creation is the primary career vehicle.
-3. Jupiter–Saturn Conjunction in House 12 (Taurus): Hence, Vipreet Raj Yoga is the dominant career pattern — the native rises specifically through adversity, institutional setbacks, and foreign or hidden environments. Therefore, every apparent career obstacle is, in fact, a mechanism for elevation. Wisdom (Jupiter) and karmic discipline (Saturn) in House 12 guarantee that long-term results outperform early appearances.
+2. Sun + Mercury conjunct in Leo (House 3): Therefore, the native's professional identity is inseparable from communication, writing, and intellectual authority. Every career chapter is built on the power of articulation and self-directed intellectual output. Hence, media, publishing, entrepreneurial communication, or content creation is the primary career vehicle — not employment, not hierarchy.
+3. Jupiter–Saturn Conjunction in House 12 (Taurus): Therefore, the dominant career pattern is rise through adversity — institutional setbacks, hidden environments, and foreign sectors become the native's actual springboard. Every apparent career obstacle is a mechanism for elevation. Wisdom (Jupiter) and karmic discipline (Saturn) in House 12 guarantee that long-term results consistently outperform early appearances.
 4. Debilitation + Neecha Bhanga Pattern: Mars debilitated in Cancer (House 2); Venus debilitated in Virgo (House 4). Therefore, these placements are not permanent weaknesses — they are pressure points that, once mastered, generate Neecha Bhanga Raja Yoga results. Hence, the native's greatest breakthroughs arrive precisely at the moments where their debilitated planets are forced into maximum expression.
 5. Rahu (House 1) — Ketu (House 7) Karmic Axis: Therefore, the soul is designed to move away from marriage, business partnerships, and open enemies (Ketu — surrendered mastery) and toward self, personality, and physical body (Rahu — life mission). This creates a life pattern where self-mastery and identity development (House 1) must be actively chosen over karmic relationship dependency (House 7). Hence, the central tension of every life stage is: self-development vs. karmic partnership resolution.
 6. Moon in Libra (House 5, Nakshatra: Swati): Therefore, all emotional decisions are filtered through Libra's framework of balance, beauty, and fairness. Hence, the native's relationships and daily mental state are governed by an intense need for harmony — decisive action under pressure is the recurring developmental challenge. Moon in House 5 places this emotional intelligence directly within intelligence, creativity, children, and past-life merit — therefore creativity, child-related matters, and romance are emotionally central to the native's life expression.
@@ -374,13 +374,13 @@ Sun in 3rd house: Career driven by courage, self-expression, and communication. 
 Mars in 2nd: Drive directed toward wealth creation and family security. Careers in finance, banking, real estate, or business development are favored. Speech is forceful and persuasive.
 
 === Mercury — Intellect and Communication ===
-Mercury in 3rd (its natural house): Exceptional analytical, writing, and communication skills that significantly accelerate career growth.
+Mercury in 3rd (its natural house): Exceptional analytical and writing ability that serves as the primary career accelerator. Therefore, every major career breakthrough for this native is driven by words, ideas, and intellectual output — not connections, not capital, not credentials. Hence, content creation, editorial work, strategic communication, or entrepreneurial publishing are the native's highest-leverage career paths.
 
 === Jupiter — Wisdom and Career Expansion ===
-Jupiter in 12th: Career linked to foreign lands, research, spirituality, counseling, healing, or behind-the-scenes advisory roles.
+Jupiter in 12th: Career is anchored in foreign lands, research, spiritual counseling, or behind-the-scenes advisory roles — not conventional public-facing employment. Hence, every career breakthrough arrives through isolation, institutional environments, or cross-border engagement. Jupiter as 10th lord in House 12 confirms Vipreet Raj Yoga — the native rises precisely through adversity, delays, and unconventional paths that peers avoid.
 
 === Rahu — Unconventional Career Ambition ===
-Rahu in 1st: Career is driven by an intense need for self-reinvention and public identity. Unconventional, cross-cultural, or technology-oriented careers bring fulfilment. The native's ambition is relentless and can lead to dramatic career breakthroughs.
+Rahu in 1st: Career is permanently shaped by the need for self-reinvention and public identity disruption. Conventional career paths are incompatible with this placement — unconventional, cross-cultural, content-driven, or technology-oriented careers are the only sustainable direction. Therefore, the native's strongest career periods arrive when breaking from tradition, not conforming to it.
 
 ============================================================
 SECTION 6 — MARRIAGE ANALYSIS
@@ -422,15 +422,17 @@ SECTION 8 — DASHA + ANTARDASHA (TIMELINE & EVENTS)
 ============================================================
 
 === DASHA + ANTARDASHA TIMELINE — DETERMINISTIC PREDICTIONS ===
-Each prediction below follows the strict format:
-  TIME → EVENT → REASON (derived from kundali logic only)
-Language: all predictions are deterministic. No weak modals used.
-
 ============================================================
   MAHADASHA: RAHU   03/09/2000 → 26/01/2010   (18 years)
 ============================================================
-  Overview: The Rahu Mahadasha (18 years) activates sudden rise, foreign connections, unconventional breakthroughs, and ambition.
-  Rahu in House 1 (Gemini), aspected by/aspecting Moon, Ketu — this forms the overarching karmic thread of the entire period.
+  Placement: Rahu in Gemini (House 1)
+  MAHADASHA EVENT PREDICTIONS:
+  [2000 → 2010]
+  1. Career shift due to Rahu (Gemini, House 1 — self-development and identity transformation) redirecting professional energy through self-development and identity transformation, activating Graha Malika Yoga.
+  2. Relationship event due to Ketu (House 7 — marriage, business partnerships, and legal matters) karmic pull during Rahu Mahadasha.
+  3. Financial shift due to Rahu (Gemini, House 1) channeling resources through self-development and identity transformation.
+  4. Internal shift due to Rahu (Gemini, House 1) activating subconscious patterns linked to self-development and identity transformation.
+  5. Major turning point due to Graha Malika Yoga activation — Rahu (Gemini, House 1) triggers breakthrough events in self-development and identity transformation.
 
   ANTARDASHA PREDICTIONS:
 
@@ -453,8 +455,14 @@ Language: all predictions are deterministic. No weak modals used.
 ============================================================
   MAHADASHA: JUPITER   26/01/2010 → 26/01/2026   (16 years)
 ============================================================
-  Overview: The Jupiter Mahadasha (16 years) activates wealth expansion, wisdom, children, marriage, and higher education.
-  Jupiter (7th, 10th lord) in House 12 (Taurus) conjunct Saturn, aspected by/aspecting Venus — this forms the overarching karmic thread of the entire period.
+  Placement: Jupiter (7th, 10th lord) in Taurus (House 12)
+  MAHADASHA EVENT PREDICTIONS:
+  [2010 → 2026]
+  1. Career advancement due to Jupiter (7th, 10th lord) (Taurus, House 12) activating the 10th house domain, activating Vipreet Raj Yoga.
+  2. Relationship or marriage event due to Jupiter (7th, 10th lord) (Taurus, House 12) as 7th house lord activating partnership themes, activating Vipreet Raj Yoga.
+  3. Financial shift due to Jupiter (7th, 10th lord) (Taurus, House 12) channeling resources through foreign travel/settlement, spiritual growth, and institutional work.
+  4. Internal shift and spiritual deepening due to Jupiter (Taurus, House 12) activating foreign travel/settlement, spiritual growth, and institutional work — isolation, inner work, and karmic review intensify.
+  5. Major turning point due to Vipreet Raj Yoga activation — Jupiter (7th, 10th lord) (Taurus, House 12) triggers breakthrough events in foreign travel/settlement, spiritual growth, and institutional work.
 
   ANTARDASHA PREDICTIONS:
 
@@ -497,8 +505,16 @@ Language: all predictions are deterministic. No weak modals used.
 ============================================================
   MAHADASHA: SATURN   26/01/2026 → 26/01/2045   (19 years)
 ============================================================
-  Overview: The Saturn Mahadasha (19 years) activates career structure, karmic discipline, longevity, and long-term gains.
-  Saturn (8th, 9th lord) in House 12 (Taurus) conjunct Jupiter, aspected by/aspecting Mars — this forms the overarching karmic thread of the entire period.
+  Placement: Saturn (8th, 9th lord) in Taurus (House 12)
+  MAHADASHA EVENT PREDICTIONS:
+  [2026 → 2045]
+  1. Career shift due to Saturn (8th, 9th lord) (Taurus, House 12 — foreign travel/settlement, spiritual growth, and institutional work) redirecting professional energy through foreign travel/settlement, spiritual growth, and institutional work, activating Vipreet Raj Yoga.
+  2. Relationship event due to Ketu (House 7 — marriage, business partnerships, and legal matters) karmic pull during Saturn Mahadasha.
+  3. Financial shift due to Saturn (8th, 9th lord) (Taurus, House 12) channeling resources through foreign travel/settlement, spiritual growth, and institutional work.
+  4. Internal shift and spiritual deepening due to Saturn (Taurus, House 12) activating foreign travel/settlement, spiritual growth, and institutional work — isolation, inner work, and karmic review intensify.
+  5. Major turning point due to Vipreet Raj Yoga activation — Saturn (8th, 9th lord) (Taurus, House 12) triggers breakthrough events in foreign travel/settlement, spiritual growth, and institutional work.
+  6. Sudden transformation occurs due to Saturn as 8th lord activating transformation, inheritance, and hidden-sector events, activating Vipreet Raj Yoga.
+  7. Travel or higher learning event occurs due to Saturn as 9th lord activating higher education, luck, travel, and dharmic breakthroughs, activating Vipreet Raj Yoga.
 
   ANTARDASHA PREDICTIONS:
 
@@ -541,8 +557,15 @@ Language: all predictions are deterministic. No weak modals used.
 ============================================================
   MAHADASHA: MERCURY   26/01/2045 → 26/01/2062   (17 years)
 ============================================================
-  Overview: The Mercury Mahadasha (17 years) activates intellect, business, communication, education, and analytical career.
-  Mercury (1st (Lagna), 4th lord) in House 3 (Leo) conjunct Sun — this forms the overarching karmic thread of the entire period.
+  Placement: Mercury (1st (Lagna), 4th lord) in Leo (House 3)
+  MAHADASHA EVENT PREDICTIONS:
+  [2045 → 2062]
+  1. Career shift due to Mercury (1st (Lagna), 4th lord) (Leo, House 3 — communication, courage, and sibling-related events) redirecting professional energy through communication, courage, and sibling-related events, activating Budha-Aditya Yoga.
+  2. Relationship event due to Ketu (House 7 — marriage, business partnerships, and legal matters) karmic pull during Mercury Mahadasha.
+  3. Financial shift due to Mercury (1st (Lagna), 4th lord) (Leo, House 3) channeling resources through communication, courage, and sibling-related events.
+  4. Internal shift due to Mercury (Leo, House 3) activating subconscious patterns linked to communication, courage, and sibling-related events.
+  5. Major turning point due to Budha-Aditya Yoga activation — Mercury (1st (Lagna), 4th lord) (Leo, House 3) triggers breakthrough events in communication, courage, and sibling-related events.
+  6. Property/home event occurs due to Mercury as 4th lord activating home, emotional foundation, and maternal themes, activating Budha-Aditya Yoga.
 
   ANTARDASHA PREDICTIONS:
 
@@ -585,8 +608,14 @@ Language: all predictions are deterministic. No weak modals used.
 ============================================================
   MAHADASHA: KETU   26/01/2062 → 26/01/2069   (7 years)
 ============================================================
-  Overview: The Ketu Mahadasha (7 years) activates spiritual deepening, detachment, past-life resolution, and hidden insights.
-  Ketu in House 7 (Sagittarius), aspected by/aspecting Sun, Mercury, Rahu — this forms the overarching karmic thread of the entire period.
+  Placement: Ketu in Sagittarius (House 7)
+  MAHADASHA EVENT PREDICTIONS:
+  [2062 → 2069]
+  1. Career shift due to Ketu (Sagittarius, House 7 — marriage, business partnerships, and legal matters) redirecting professional energy through marriage, business partnerships, and legal matters, activating Graha Malika Yoga.
+  2. Relationship event due to Ketu (Sagittarius, House 7) activating marriage, business partnerships, and legal matters.
+  3. Financial shift due to Ketu (Sagittarius, House 7) channeling resources through marriage, business partnerships, and legal matters.
+  4. Internal shift and spiritual deepening due to Ketu (Sagittarius, House 7) activating marriage, business partnerships, and legal matters — isolation, inner work, and karmic review intensify.
+  5. Major turning point due to Graha Malika Yoga activation — Ketu (Sagittarius, House 7) triggers breakthrough events in marriage, business partnerships, and legal matters.
 
   ANTARDASHA PREDICTIONS:
 
@@ -629,8 +658,16 @@ Language: all predictions are deterministic. No weak modals used.
 ============================================================
   MAHADASHA: VENUS   26/01/2069 → 26/01/2089   (20 years)
 ============================================================
-  Overview: The Venus Mahadasha (20 years) activates marriage, relationships, luxury, artistic career, and material gains.
-  Venus (5th, 12th lord) in House 4 (Virgo) — this forms the overarching karmic thread of the entire period.
+  Placement: Venus (5th, 12th lord) in Virgo (House 4)
+  MAHADASHA EVENT PREDICTIONS:
+  [2069 → 2089]
+  1. Career shift due to Venus (5th, 12th lord) (Virgo, House 4 — home, emotional foundation, and maternal themes) redirecting professional energy through home, emotional foundation, and maternal themes, activating Neecha Bhanga Raja Yoga.
+  2. Relationship event due to Venus (Virgo, House 4) activating home, emotional foundation, and maternal themes.
+  3. Financial shift due to Venus (5th, 12th lord) (Virgo, House 4) channeling resources through home, emotional foundation, and maternal themes.
+  4. Internal shift due to Venus (Virgo, House 4) activating subconscious patterns linked to home, emotional foundation, and maternal themes.
+  5. Major turning point due to Neecha Bhanga Raja Yoga activation — Venus (5th, 12th lord) (Virgo, House 4) triggers breakthrough events in home, emotional foundation, and maternal themes.
+  6. Education/romance event occurs due to Venus as 5th lord activating intelligence, creativity, romantic relationships, and children, activating Neecha Bhanga Raja Yoga.
+  7. Foreign/spiritual event occurs due to Venus as 12th lord activating foreign travel/settlement, spiritual growth, and institutional work, activating Neecha Bhanga Raja Yoga.
 
   ANTARDASHA PREDICTIONS:
 
@@ -673,8 +710,15 @@ Language: all predictions are deterministic. No weak modals used.
 ============================================================
   MAHADASHA: SUN   26/01/2089 → 26/01/2095   (6 years)
 ============================================================
-  Overview: The Sun Mahadasha (6 years) activates authority, career recognition, and government connections.
-  Sun (3rd lord) in House 3 (Leo) conjunct Mercury — this forms the overarching karmic thread of the entire period.
+  Placement: Sun (3rd lord) in Leo (House 3)
+  MAHADASHA EVENT PREDICTIONS:
+  [2089 → 2095]
+  1. Career shift due to Sun (3rd lord) (Leo, House 3 — communication, courage, and sibling-related events) redirecting professional energy through communication, courage, and sibling-related events, activating Budha-Aditya Yoga.
+  2. Relationship event due to Ketu (House 7 — marriage, business partnerships, and legal matters) karmic pull during Sun Mahadasha.
+  3. Financial shift due to Sun (3rd lord) (Leo, House 3) channeling resources through communication, courage, and sibling-related events.
+  4. Internal shift due to Sun (Leo, House 3) activating subconscious patterns linked to communication, courage, and sibling-related events.
+  5. Major turning point due to Budha-Aditya Yoga activation — Sun (3rd lord) (Leo, House 3) triggers breakthrough events in communication, courage, and sibling-related events.
+  6. Communication opportunity arises due to Sun as 3rd lord activating communication, courage, and sibling-related events, activating Budha-Aditya Yoga.
 
   ANTARDASHA PREDICTIONS:
 
@@ -717,8 +761,15 @@ Language: all predictions are deterministic. No weak modals used.
 ============================================================
   MAHADASHA: MOON   26/01/2095 → 26/01/2105   (10 years)
 ============================================================
-  Overview: The Moon Mahadasha (10 years) activates emotional life, home, public dealings, and the mother.
-  Moon (2nd lord) in House 5 (Libra) — this forms the overarching karmic thread of the entire period.
+  Placement: Moon (2nd lord) in Libra (House 5)
+  MAHADASHA EVENT PREDICTIONS:
+  [2095 → 2105]
+  1. Career shift due to Moon (2nd lord) (Libra, House 5 — intelligence, creativity, romantic relationships, and children) redirecting professional energy through intelligence, creativity, romantic relationships, and children, activating Graha Malika Yoga.
+  2. Relationship event due to Ketu (House 7 — marriage, business partnerships, and legal matters) karmic pull during Moon Mahadasha.
+  3. Financial gain due to Moon (2nd lord) (Libra, House 5) activating 2nd/11th house wealth and gains, activating Graha Malika Yoga.
+  4. Internal shift and spiritual deepening due to Moon (Libra, House 5) activating intelligence, creativity, romantic relationships, and children — isolation, inner work, and karmic review intensify.
+  5. Major turning point due to Graha Malika Yoga activation — Moon (2nd lord) (Libra, House 5) triggers breakthrough events in intelligence, creativity, romantic relationships, and children.
+  6. Financial gain occurs due to Moon as 2nd lord activating wealth accumulation and family growth, activating Graha Malika Yoga.
 
   ANTARDASHA PREDICTIONS:
 
@@ -761,8 +812,16 @@ Language: all predictions are deterministic. No weak modals used.
 ============================================================
   MAHADASHA: MARS   26/01/2105 → 26/01/2112   (7 years)
 ============================================================
-  Overview: The Mars Mahadasha (7 years) activates property, action, siblings, competitive drive, and physical ventures.
-  Mars (6th, 11th lord) in House 2 (Cancer), aspected by/aspecting Moon — this forms the overarching karmic thread of the entire period.
+  Placement: Mars (6th, 11th lord) in Cancer (House 2)
+  MAHADASHA EVENT PREDICTIONS:
+  [2105 → 2112]
+  1. Career shift due to Mars (6th, 11th lord) (Cancer, House 2 — wealth accumulation and family growth) redirecting professional energy through wealth accumulation and family growth, activating Neecha Bhanga Raja Yoga.
+  2. Relationship event due to Ketu (House 7 — marriage, business partnerships, and legal matters) karmic pull during Mars Mahadasha.
+  3. Financial gain due to Mars (6th, 11th lord) (Cancer, House 2) activating 2nd/11th house wealth and gains, activating Neecha Bhanga Raja Yoga.
+  4. Internal shift due to Mars (Cancer, House 2) activating subconscious patterns linked to wealth accumulation and family growth.
+  5. Major turning point due to Neecha Bhanga Raja Yoga activation — Mars (6th, 11th lord) (Cancer, House 2) triggers breakthrough events in wealth accumulation and family growth.
+  6. Competition or health challenge occurs due to Mars as 6th lord activating service, competition, and overcoming obstacles, activating Neecha Bhanga Raja Yoga.
+  7. Income/gains increase due to Mars as 11th lord activating financial gains, aspirations fulfilled, and social expansion, activating Neecha Bhanga Raja Yoga.
 
   ANTARDASHA PREDICTIONS:
 
@@ -949,4 +1008,6 @@ SECTION 13 — FINAL JUDGEMENT
 → BIGGEST STRENGTH: Budha-Aditya Yoga (Sun in own sign Leo + Mercury, House 3) gives elite-level articulation, analytical precision, and entrepreneurial boldness that peers cannot replicate. Hence, every career breakthrough in this chart is built on the power of words, ideas, and intellectual authority — not physical effort or inherited advantage.
 
 → BIGGEST WEAKNESS: Mars debilitated in Cancer (House 2) creates emotional reactivity and withdrawal under pressure — precisely when bold, direct action is most needed. This is the single greatest threat to the native's potential: the gap between intellectual vision and decisive execution. Overcoming this debilitation directly activates Neecha Bhanga Raja Yoga, transforming the chart's greatest vulnerability into its most powerful asset.
+
+→ FINAL TRAJECTORY: Jupiter Mahadasha (2010–2026) builds the intellectual and philosophical foundation; Saturn Mahadasha (2026–2045) converts that foundation into material authority through discipline and adversity. Hence, the native's peak career, financial, and relationship results are locked in the 30s–40s age window — not before. The chart's overall arc is: struggle → mastery → authority — and this native will be most powerful in environments that others find restrictive, foreign, or unconventional.
 
