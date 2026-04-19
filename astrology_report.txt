@@ -4,34 +4,22 @@ Powered by Multi-Layer Jyotish Reasoning Engine
 
 
 === REPORT STRUCTURE ===
-1.  Introduction & Kundali Summary
-2.  Planet-by-Planet Deep Synthesis
-3.  Exaltation, Debilitation & Neecha Bhanga
-4.  Combustion (Asta) Analysis
-5.  Conjunction Analysis
-6.  Retrograde Planet Analysis
-7.  Synthesis Engine — Integrated Chart Analysis
-8.  Combination Analysis
-9.  Classical Yogas + Advanced Yogas (20+)
-10. Lordship Analysis — All 12 House Rulers
-11. House Lord Effects Analysis
-12. Lagna Lord | 10th Lord | 7th Lord
-13. Career Deep Analysis
-14. Marriage Deep Analysis
-15. Dasha + Antardasha Timeline (Deterministic Predictions)
-16. Dasha Supplementary — Themes + Antardasha Analysis
-17. Aspects (Drishti)
-18. Navamsa (D9)
-19. Shadbala (Planetary Strength)
-20. Shastra Insights (Classical Texts)
-21. Dosha Analysis
-22. Transit Analysis + Sade Sati
-23. Remedies
-24. Final Prediction
-25. Overall Summary
+1.  Kundali Overview
+2.  Planet-by-Planet Analysis
+3.  Yoga Detection
+4.  Core Life Synthesis
+5.  Career Analysis
+6.  Marriage Analysis
+7.  Doshas
+8.  Dasha + Antardasha (Timeline & Events)
+9.  Aspects (Drishti)
+10. Navamsa (D9)
+11. Shadbala (Planetary Strength)
+12. Transit (Current Period)
+13. Final Judgement
 
 ============================================================
-SECTION 1 — INTRODUCTION & KUNDALI SUMMARY
+SECTION 1 — KUNDALI OVERVIEW
 ============================================================
   Name: Abhishek Singh
   Date Of Birth: 3:9:2000
@@ -54,7 +42,7 @@ SECTION 1 — INTRODUCTION & KUNDALI SUMMARY
   Ketu       | Sign: Sagittarius     | House:  7 | Nakshatra: Uttara Ashadha
 
 ============================================================
-SECTION 2 — PLANET-BY-PLANET DEEP SYNTHESIS
+SECTION 2 — PLANET-BY-PLANET ANALYSIS
 ============================================================
 
 === PLANET-BY-PLANET DEEP SYNTHESIS ===
@@ -99,9 +87,6 @@ Hence, the native experiences: Rahu in the 1st house creates a magnetic, unconve
 Therefore, this placement indicates: Ketu in Sagittarius (House 7) activates the domain of marriage, business partnerships, and open enemies.
 Hence, the native experiences: Ketu in the 7th house indicates karmic relationships with deep soul connections but potential detachment, unusual dynamics, or spiritual orientation in partnerships.
 
-============================================================
-SECTION 3 — EXALTATION, DEBILITATION & NEECHA BHANGA
-============================================================
 
 === EXALTATION, DEBILITATION & NEECHA BHANGA ===
 Planetary dignity determines the quality and strength of results delivered in each life area. Exalted planets perform at peak capacity; debilitated planets face challenges that can be transformed into exceptional strength through Neecha Bhanga (cancellation of debilitation).
@@ -126,9 +111,6 @@ Each debilitated planet is evaluated against all five classical Neecha Bhanga co
   ◑ Venus debilitation is PARTIALLY CANCELLED because Venus itself is placed in House 4 (kendra). Hence, the native experiences controlled weakness — not full damage, but the planet does not deliver peak results without conscious effort.
 
 
-============================================================
-SECTION 4 — COMBUSTION (ASTA) ANALYSIS
-============================================================
 
 === COMBUSTION (ASTA) ANALYSIS ===
 A planet is combust (Asta) when it falls within a critical angular distance of the Sun in the same sign, weakening its independent significations.
@@ -137,9 +119,6 @@ A planet is combust (Asta) when it falls within a critical angular distance of t
    Effect: Mercury's significations are weakened and overshadowed by solar energy. This indicates that independent results of Mercury — intellect, commerce, and communication — are filtered through the Sun's authority. Therefore, the native excels when willpower and solar drive back Mercury's analytical faculties. Writing, speaking, and advisory roles carry strong royal or authoritative quality.
 
 
-============================================================
-SECTION 5 — CONJUNCTION ANALYSIS
-============================================================
 
 === CONJUNCTION ANALYSIS ===
 Conjunctions occur when two or more planets occupy the same house, merging their energies and producing distinctive life themes in that house's domain.
@@ -151,9 +130,6 @@ House 12 (Taurus): Jupiter + Saturn
   → Jupiter-Saturn conjunction — A rare and weighty combination: disciplined wisdom, spiritual ambition, and long-term achievement through patient, principled effort. In a dusthana house this activates Vipreet Raj Yoga potential.
 
 
-============================================================
-SECTION 6 — RETROGRADE PLANET ANALYSIS
-============================================================
 
 === RETROGRADE PLANET ANALYSIS ===
 Retrograde planets (Vakri Graha) redirect their energy inward, deepening internal development while delaying external results. Retrograde flags are not encoded in the source kundali JSON; the following principles apply if any of these planets were retrograde at birth — verify against an ephemeris for the birth date.
@@ -174,88 +150,6 @@ Venus:
   If Venus is retrograde: relationship values are reassessed through deep inner reflection. Artistic ability deepens by revisiting and refining creative works. Past-life romantic patterns may resurface for resolution.
 
 
-============================================================
-SECTION 7 — SYNTHESIS ENGINE (INTEGRATED CHART ANALYSIS)
-============================================================
-
-=== SYNTHESIS ENGINE — INTEGRATED CHART ANALYSIS ===
-This section integrates every layer of analysis: planet + house + lordship + conjunction + aspect into unified, conclusive life-theme statements.
-
-⚡ SUN + MERCURY in House 3 (Leo)
-  Placement: Both Sun (authority, soul) and Mercury (intellect, communication) occupy House 3 — the house of effort, courage, siblings, and communication.
-  Yoga: Budha-Aditya Yoga is active. This indicates that intelligence is charged with solar authority, producing a sharp, articulate, and confident communicator.
-  Dignity: Sun is in its own sign Leo. Therefore, this combination operates at full strength — willpower and communication excellence are the native's defining gifts.
-  Aspects received: Ketu aspect this house, adding their qualities.
-
-⚡ JUPITER + SATURN in House 12 (Taurus)
-  Placement: Jupiter (wisdom, dharma) and Saturn (karma, discipline) both occupy House 12 — the house of loss, foreign lands, moksha, and spirituality.
-  Synthesis: Jupiter's expansive wisdom meets Saturn's disciplined karma in the 12th house of moksha and foreign lands. This indicates that the native builds a life connected to spiritual institutions, foreign environments, or research-oriented, behind-the-scenes roles. Saturn as a natural malefic in the 12th activates Vipreet Raj Yoga — hence, unexpected rise through adversity and isolation is strongly indicated.
-  Lordship (Jupiter): Jupiter lords House(s) 7, 10 from this Lagna. Therefore, the themes of those houses are channelled through the 12th house.
-  Lordship (Saturn): Saturn lords House(s) 8, 9 from this Lagna. Hence, Saturn's karmic discipline over those domains is expressed through spiritual and foreign-land themes.
-
-⚡ MARS in House 2 (Cancer)
-  Placement: Mars (energy, action, property) in House 2 — the house of wealth, speech, and family values.
-  Dignity: Mars is debilitated in Cancer. This indicates that raw aggression is softened into protective, emotionally-driven action. The native's drive is channelled through family, speech, and financial ambition rather than direct confrontation.
-  Aspects received: Saturn.
-
-⚡ MOON in House 5 (Libra)
-  Placement: Moon (mind, emotions, intuition) in House 5 — the house of intelligence, creativity, children, and past-life merit.
-  Lordship: Moon lords House 2 from this Lagna. Therefore, the emotional intelligence and intuitive mind are a primary life driver, linked to the themes of House 2.
-  Aspects received: Mars, Rahu.
-
-⚡ RAHU in House 1 (Gemini) — Lagna
-  Placement: Rahu (worldly ambition, illusion, innovation) in the 1st house of self, personality, and physical identity.
-  Synthesis: This indicates that the native's entire life journey is driven by intense worldly ambition and an unconventional, magnetic personality. The Lagna is amplified by Rahu's obsessive quality. Hence, the native projects a larger-than-life, often foreign-influenced or technologically-oriented identity to the world. The challenge is grounding this energy into purposeful direction.
-
-⚡ KETU in House 7 (Sagittarius)
-  Placement: Ketu (detachment, past-life mastery, liberation) in House 7 — the house of marriage and partnerships.
-  Synthesis: This indicates that the native carries deep past-life relationship karma. Partnerships feel simultaneously familiar and incomplete. Therefore, the native's spiritual growth is inextricably linked to relationship lessons. The axis Rahu-Ketu across 1–7 means: self-development vs. karmic relationship resolution is the central life theme.
-
-⚡ VENUS in House 4 (Virgo)
-  Placement: Venus (love, beauty, comfort, relationships) in House 4 — the house of home, mother, emotional security, and comfort.
-  Dignity: Venus is debilitated in Virgo. This indicates that love and relationships are approached with critical analysis and perfectionism. Hence, the native's domestic environment and emotional security are shaped by high standards and a need for order.
-
-
-============================================================
-SECTION 8 — COMBINATION ANALYSIS
-============================================================
-
-=== COMBINED ANALYSIS ===
-This section looks at planetary combinations in your chart that produce distinctive life themes and outcomes.
-
-With both Saturn and Jupiter placed in the 12th house, your chart carries strong spiritual potential along with meaningful connections to foreign lands or institutions.
-Your Sun in the 3rd house bestows courage and a natural ability to lead through communication, writing, and self-driven effort.
-
-============================================================
-SECTION 9 — YOGA ANALYSIS
-============================================================
-
-🔥 CORE DESTINY FACTORS (YOGAS) 🔥
-
-
-=== CLASSICAL YOGA ANALYSIS ===
-This section identifies important yogas formed in your chart.
-
-🔥 Vipreet Raj Yoga indicates success through adversity and unexpected rise.
-
-
-=== ADVANCED YOGA ANALYSIS (20+ YOGAS) ===
-This section identifies all major classical and advanced yogas present in your chart. Yogas are specific planetary combinations that produce distinctive life outcomes.
-
-1. ☀️ Budh-Aditya Yoga — Sun and Mercury conjunct in the same house. Strong intelligence, articulate communication, and intellectual brilliance. Excellent for writers, speakers, analysts, and diplomats. The combination of soul (Sun) and intellect (Mercury) in one house creates a razor-sharp communicator.
-
-2. 🔥 Vipreet Raj Yoga — Saturn in dusthana (6th, 8th, or 12th house). Success through adversity, unexpected rise, and triumph after hardship. The greater the challenge faced, the greater the eventual reward. This is the yoga of the phoenix — rising from difficulties.
-
-3. ♻️ Neecha Bhanga Raja Yoga potential — Mars is debilitated in Cancer. If the debilitation is cancelled by supporting factors (lord of debilitation sign in kendra, or exaltation lord in kendra), this produces extraordinary strength and unexpected rise in life, especially during the Mars Mahadasha.
-
-4. ♻️ Neecha Bhanga Raja Yoga potential — Venus is debilitated in Virgo. If the debilitation is cancelled by supporting factors (lord of debilitation sign in kendra, or exaltation lord in kendra), this produces extraordinary strength and unexpected rise in life, especially during the Venus Mahadasha.
-
-5. 🔗 Graha Malika Yoga — 5 consecutive houses are occupied by planets, forming a garland of planetary energy. This yoga indicates a life of intense activity, varied experiences, and wide-ranging impact across multiple life domains.
-
-
-============================================================
-SECTION 10 — LORDSHIP ANALYSIS
-============================================================
 
 === LORDSHIP ANALYSIS — ALL 12 HOUSE RULERS ===
 Each house has a ruling lord whose placement in the chart determines how that house's themes manifest. This section maps every house lord to decode the full life blueprint.
@@ -313,9 +207,6 @@ House 12 (Taurus) — Lord: Venus    → placed in House 4 (Virgo)
   Interpretation: The themes of House 12 are channelled through Venus's qualities.
 
 
-============================================================
-SECTION 11 — HOUSE LORD EFFECTS ANALYSIS
-============================================================
 
 === HOUSE LORD EFFECTS ANALYSIS ===
 This section maps each house lord to its placement to decode how the 12 life domains actually express in the chart.
@@ -352,9 +243,6 @@ House 12 lord (Venus   ) placed in House 4 (Virgo)
   ✓ Lord of House 12 in kendra (House 4) — themes of House 12 are supported by angular strength and tangible results.
 
 
-============================================================
-SECTION 12 — LAGNA LORD | 10TH LORD | 7TH LORD
-============================================================
 
 === LAGNA LORD ANALYSIS ===
 
@@ -376,26 +264,109 @@ Jupiter is placed in Taurus (House 12).
 May indicate delays, challenges, or karmic patterns in relationships.
 
 ============================================================
-SECTION 13 — CAREER DEEP ANALYSIS
+SECTION 3 — YOGA DETECTION
+============================================================
+
+🔥 CORE DESTINY FACTORS (YOGAS) 🔥
+
+
+=== CLASSICAL YOGA ANALYSIS ===
+This section identifies important yogas formed in your chart.
+
+🔥 Vipreet Raj Yoga indicates success through adversity and unexpected rise.
+
+
+=== ADVANCED YOGA ANALYSIS (20+ YOGAS) ===
+This section identifies all major classical and advanced yogas present in your chart. Yogas are specific planetary combinations that produce distinctive life outcomes.
+
+1. ☀️ Budh-Aditya Yoga — Sun and Mercury conjunct in the same house. Strong intelligence, articulate communication, and intellectual brilliance. Excellent for writers, speakers, analysts, and diplomats. The combination of soul (Sun) and intellect (Mercury) in one house creates a razor-sharp communicator.
+
+2. 🔥 Vipreet Raj Yoga — Saturn in dusthana (6th, 8th, or 12th house). Success through adversity, unexpected rise, and triumph after hardship. The greater the challenge faced, the greater the eventual reward. This is the yoga of the phoenix — rising from difficulties.
+
+3. ♻️ Neecha Bhanga Raja Yoga potential — Mars is debilitated in Cancer. If the debilitation is cancelled by supporting factors (lord of debilitation sign in kendra, or exaltation lord in kendra), this produces extraordinary strength and unexpected rise in life, especially during the Mars Mahadasha.
+
+4. ♻️ Neecha Bhanga Raja Yoga potential — Venus is debilitated in Virgo. If the debilitation is cancelled by supporting factors (lord of debilitation sign in kendra, or exaltation lord in kendra), this produces extraordinary strength and unexpected rise in life, especially during the Venus Mahadasha.
+
+5. 🔗 Graha Malika Yoga — 5 consecutive houses are occupied by planets, forming a garland of planetary energy. This yoga indicates a life of intense activity, varied experiences, and wide-ranging impact across multiple life domains.
+
+
+
+=== SYNTHESIS ENGINE — INTEGRATED CHART ANALYSIS ===
+This section integrates every layer of analysis: planet + house + lordship + conjunction + aspect into unified, conclusive life-theme statements.
+
+⚡ SUN + MERCURY in House 3 (Leo)
+  Placement: Both Sun (authority, soul) and Mercury (intellect, communication) occupy House 3 — the house of effort, courage, siblings, and communication.
+  Yoga: Budha-Aditya Yoga is active. This indicates that intelligence is charged with solar authority, producing a sharp, articulate, and confident communicator.
+  Dignity: Sun is in its own sign Leo. Therefore, this combination operates at full strength — willpower and communication excellence are the native's defining gifts.
+  Aspects received: Ketu aspect this house, adding their qualities.
+
+⚡ JUPITER + SATURN in House 12 (Taurus)
+  Placement: Jupiter (wisdom, dharma) and Saturn (karma, discipline) both occupy House 12 — the house of loss, foreign lands, moksha, and spirituality.
+  Synthesis: Jupiter's expansive wisdom meets Saturn's disciplined karma in the 12th house of moksha and foreign lands. This indicates that the native builds a life connected to spiritual institutions, foreign environments, or research-oriented, behind-the-scenes roles. Saturn as a natural malefic in the 12th activates Vipreet Raj Yoga — hence, unexpected rise through adversity and isolation is strongly indicated.
+  Lordship (Jupiter): Jupiter lords House(s) 7, 10 from this Lagna. Therefore, the themes of those houses are channelled through the 12th house.
+  Lordship (Saturn): Saturn lords House(s) 8, 9 from this Lagna. Hence, Saturn's karmic discipline over those domains is expressed through spiritual and foreign-land themes.
+
+⚡ MARS in House 2 (Cancer)
+  Placement: Mars (energy, action, property) in House 2 — the house of wealth, speech, and family values.
+  Dignity: Mars is debilitated in Cancer. This indicates that raw aggression is softened into protective, emotionally-driven action. The native's drive is channelled through family, speech, and financial ambition rather than direct confrontation.
+  Aspects received: Saturn.
+
+⚡ MOON in House 5 (Libra)
+  Placement: Moon (mind, emotions, intuition) in House 5 — the house of intelligence, creativity, children, and past-life merit.
+  Lordship: Moon lords House 2 from this Lagna. Therefore, the emotional intelligence and intuitive mind are a primary life driver, linked to the themes of House 2.
+  Aspects received: Mars, Rahu.
+
+⚡ RAHU in House 1 (Gemini) — Lagna
+  Placement: Rahu (worldly ambition, illusion, innovation) in the 1st house of self, personality, and physical identity.
+  Synthesis: This indicates that the native's entire life journey is driven by intense worldly ambition and an unconventional, magnetic personality. The Lagna is amplified by Rahu's obsessive quality. Hence, the native projects a larger-than-life, often foreign-influenced or technologically-oriented identity to the world. The challenge is grounding this energy into purposeful direction.
+
+⚡ KETU in House 7 (Sagittarius)
+  Placement: Ketu (detachment, past-life mastery, liberation) in House 7 — the house of marriage and partnerships.
+  Synthesis: This indicates that the native carries deep past-life relationship karma. Partnerships feel simultaneously familiar and incomplete. Therefore, the native's spiritual growth is inextricably linked to relationship lessons. The axis Rahu-Ketu across 1–7 means: self-development vs. karmic relationship resolution is the central life theme.
+
+⚡ VENUS in House 4 (Virgo)
+  Placement: Venus (love, beauty, comfort, relationships) in House 4 — the house of home, mother, emotional security, and comfort.
+  Dignity: Venus is debilitated in Virgo. This indicates that love and relationships are approached with critical analysis and perfectionism. Hence, the native's domestic environment and emotional security are shaped by high standards and a need for order.
+
+
+
+=== COMBINED ANALYSIS ===
+This section looks at planetary combinations in your chart that produce distinctive life themes and outcomes.
+
+With both Saturn and Jupiter placed in the 12th house, your chart carries strong spiritual potential along with meaningful connections to foreign lands or institutions.
+Your Sun in the 3rd house bestows courage and a natural ability to lead through communication, writing, and self-driven effort.
+
+============================================================
+SECTION 4 — CORE LIFE SYNTHESIS
+============================================================
+
+=== CORE LIFE SYNTHESIS ===
+1. Lagna in Gemini: The native's core personality is shaped by Gemini energy — intellect, communication, trade, adaptability, and analysis. With Rahu also in House 1, self-reinvention is an overriding life theme.
+2. Budha-Aditya Yoga (Sun + Mercury conjunction, House 3): Exceptional communication, writing, and intellectual output define the professional identity. This yoga amplifies self-expression in House 3 — effort, courage, siblings, and communication.
+3. Jupiter–Saturn Conjunction in House 12 (loss, foreign lands, moksha, and spirituality): Vipreet Raj Yoga is active — rise through adversity, foreign connections, or institutional environments. Wisdom (Jupiter) and discipline (Saturn) combine to produce delayed but exceptional results in this house's domain.
+4. Debilitation Pattern: Mars (House 2) — redirects Mars's energy inward, requiring mastery before expression; Venus (House 4) — redirects Venus's energy inward, requiring mastery before expression. These placements carry Neecha Bhanga potential — the native rises precisely through the challenges these planets impose.
+5. Rahu (House 1) — Ketu (House 7) Karmic Axis: The soul is moving from marriage, business partnerships, and open enemies (Ketu — past comfort) toward self, personality, and physical body (Rahu — current life mission). Relationships (House 7) vs. identity (House 1) is the central life tension.
+6. Emotional Core — Moon in Libra (House 5): Decision-making is shaped by Libra's need for balance, diplomacy, and aesthetic harmony. Emotional intelligence and social grace are natural strengths; indecision under pressure is the characteristic challenge to overcome.
+
+============================================================
+SECTION 5 — CAREER ANALYSIS
 ============================================================
 
 === CAREER DEEP ANALYSIS ===
-This section evaluates professional direction, growth, and challenges using multi-layer planetary reasoning.
-
 === 10th House Lord (Primary Career Indicator) ===
 10th house falls in Pisces, ruled by Jupiter.
 Jupiter is placed in House 12 (Taurus).
-Jupiter in House 12 (dusthana) — career may involve transformation, hidden work, service, or foreign sectors. Challenges become stepping stones.
+Jupiter in House 12 (dusthana) — career involves transformation, hidden work, service, or foreign sectors. Challenges become stepping stones.
 Career linked to foreign lands, research, spirituality, hidden sectors, or institutional environments.
 
 === Saturn — Karma Karaka (Lord of Career Karma) ===
-Saturn determines long-term career stability and the karmic lessons embedded in professional life. Whatever Saturn touches matures slowly but solidly.
-Saturn in 6/8/12: Career may involve delays, struggles, or unconventional paths — but Vipreet Raj Yoga potential creates unexpected rise through adversity.
+Saturn in 6/8/12: Career may involve delays or unconventional paths — Vipreet Raj Yoga potential creates unexpected rise through adversity.
 
 === Sun — Authority and Status ===
 Sun in 3rd house: Career driven by courage, self-expression, and communication. Media, writing, entrepreneurship, or broadcasting is indicated.
 
 === Mars — Action, Drive, and Ambition ===
+Mars in 2nd: Drive directed toward wealth creation and family security. Careers in finance, banking, real estate, or business development are favored. Speech is forceful and persuasive.
 
 === Mercury — Intellect and Communication ===
 Mercury in 3rd (its natural house): Exceptional analytical, writing, and communication skills that significantly accelerate career growth.
@@ -404,34 +375,45 @@ Mercury in 3rd (its natural house): Exceptional analytical, writing, and communi
 Jupiter in 12th: Career linked to foreign lands, research, spirituality, counseling, healing, or behind-the-scenes advisory roles.
 
 === Rahu — Unconventional Career Ambition ===
+Rahu in 1st: Career is driven by an intense need for self-reinvention and public identity. Unconventional, cross-cultural, or technology-oriented careers bring fulfilment. The native's ambition is relentless and can lead to dramatic career breakthroughs.
 
 ============================================================
-SECTION 14 — MARRIAGE DEEP ANALYSIS
+SECTION 6 — MARRIAGE ANALYSIS
 ============================================================
 
 === MARRIAGE & RELATIONSHIP DEEP ANALYSIS ===
-This section evaluates partnership dynamics, marital prospects, and relationship karma through multi-layer planetary reasoning.
-
 === 7th House Lord (Primary Marriage Indicator) ===
 7th house falls in Sagittarius, ruled by Jupiter.
 Jupiter is placed in House 12 (Taurus).
 Jupiter in House 12 (dusthana) — karmic lessons in partnerships; relationships require patience and significant personal growth.
 
 === Venus — Love, Relationships, and Harmony ===
+Venus in 4th: Deep attachment to home and domestic comfort shapes relationships. Spouse contributes to creating a beautiful, harmonious home. Emotional security within marriage is a core priority, though perfectionism (Venus debilitated in Virgo) may create friction in domestic expectations.
 
 === Jupiter — Spouse Indicator and Marriage Blessings ===
 Jupiter in 12th: Spouse may be from a different culture, foreign land, or spiritual background. A deeply spiritual and transcendent connection in marriage.
 
 === Mars — Passion, Drive, and Conflict in Relationships ===
+Mars in 2nd: Strong financial drive within the family unit. The native is a fierce provider and protector; however, sharp speech (debilitated Mars in Cancer) requires conscious softening in close relationships.
 
 === Saturn — Karmic Bonds and Long-Term Stability ===
 Saturn in 12th: Spiritual and karmic bonds in relationships. Foreign spouse or spiritual partnership possible. Relationship may involve sacrifice and deep inner growth.
 
 === Rahu & Ketu — Karmic Relationship Patterns ===
 Ketu in 7th: Deep past-life connection with the partner. The relationship feels simultaneously familiar and complex. Spiritual growth through marriage is strongly indicated; detachment tendencies must be consciously managed.
+Rahu in 1st (Ketu in 7th axis): Karmic pull between self-development and relationship commitment defines the life pattern. Partner reflects what the native must learn about surrender and partnership.
 
 ============================================================
-SECTION 15 — DASHA + ANTARDASHA TIMELINE (PREDICTIONS)
+SECTION 7 — DOSHAS
+============================================================
+
+=== DOSHA ANALYSIS ===
+This section identifies key karmic patterns in your chart that may influence important life areas.
+
+A Kaal Sarp pattern is detected in your chart — your life journey may feature dramatic highs and lows, but these experiences ultimately shape profound inner growth.
+
+============================================================
+SECTION 8 — DASHA + ANTARDASHA (TIMELINE & EVENTS)
 ============================================================
 
 === DASHA + ANTARDASHA TIMELINE — DETERMINISTIC PREDICTIONS ===
@@ -822,9 +804,6 @@ Language: all predictions are deterministic. No weak modals used.
   AUTO-VALIDATION:
   ✔ All predictions verified — TIME ✔  EVENT ✔  REASON ✔  No weak language ✔
 
-============================================================
-SECTION 16 — DASHA SUPPLEMENTARY ANALYSIS
-============================================================
 
 ⏳ DASHA SUPPLEMENTARY (THEMES + ANTARDASHA) ⏳
 
@@ -873,7 +852,7 @@ Mercury Antardasha: 26/01/2045 → 26/01/2062
 Ketu Antardasha: 26/01/2062 → 26/01/2069
 
 ============================================================
-SECTION 17 — ASPECTS (DRISHTI)
+SECTION 9 — ASPECTS (DRISHTI)
 ============================================================
 
 === ASPECTS (DRISHTI) ===
@@ -899,7 +878,7 @@ SECTION 17 — ASPECTS (DRISHTI)
   Ketu (Sagittarius) aspects Leo (house-9 drishti) — aspecting Sun, Mercury
 
 ============================================================
-SECTION 18 — NAVAMSA (D9)
+SECTION 10 — NAVAMSA (D9)
 ============================================================
 
 === NAVAMSA (D9) ===
@@ -915,12 +894,10 @@ SECTION 18 — NAVAMSA (D9)
   Ketu       → Navamsa sign: Sagittarius
 
 ============================================================
-SECTION 19 — SHADBALA (PLANETARY STRENGTH)
+SECTION 11 — SHADBALA (PLANETARY STRENGTH)
 ============================================================
 
 === SHADBALA (PLANETARY STRENGTH) ===
-This section evaluates the strength of planets and their capacity to deliver results.
-
   ASC: Shadbala score = 20 [Moderate] (kendra)
   Sun: Shadbala score = 45 [Moderate] (own sign)
   Moon: Shadbala score = 30 [Moderate] (partial dik-bala, trikona)
@@ -931,32 +908,9 @@ This section evaluates the strength of planets and their capacity to deliver res
   Saturn: Shadbala score = -20 [Weak] (dusthana)
   Rahu: Shadbala score = 20 [Moderate] (kendra)
   Ketu: Shadbala score = 20 [Moderate] (kendra)
-
 ============================================================
-SECTION 20 — SHASTRA INSIGHTS (CLASSICAL TEXTS)
+SECTION 12 — TRANSIT (CURRENT PERIOD)
 ============================================================
-
-=== SHASTRA INSIGHTS ===
-The following classical principles are derived from traditional Vedic texts and are directly relevant to the planetary placements in this chart. Raw source text has been discarded; only the core astrological principle is shown.
-
-Classical text validation confirms chart analysis. All yogas and dignities verified against classical principles.
-
-============================================================
-SECTION 21 — DOSHA ANALYSIS
-============================================================
-
-=== DOSHA ANALYSIS ===
-This section identifies key karmic patterns in your chart that may influence important life areas.
-
-A Kaal Sarp pattern is detected in your chart — your life journey may feature dramatic highs and lows, but these experiences ultimately shape profound inner growth.
-
-============================================================
-SECTION 22 — TRANSIT ANALYSIS + SADE SATI
-============================================================
-
-=== TRANSIT ANALYSIS ===
-This section examines current planetary transit interactions with the natal chart.
-
   Saturn transiting Taurus, natal Moon in Libra (Saturn in 8th from Moon).
 ⚠  ASHTAMA SHANI active — pressure on health, finances, and stability.
 
@@ -977,35 +931,17 @@ Setting Phase (03/11/2014 → 26/01/2017) — Scorpio:
 
 
 ============================================================
-SECTION 23 — REMEDIES
+SECTION 13 — FINAL JUDGEMENT
 ============================================================
 
-=== CLASSICAL REMEDIES ===
-These remedies are based on traditional Vedic practices.
+=== FINAL JUDGEMENT ===
+LIFE THEME: A Gemini ascendant native with Rahu in House 1 and Budha-Aditya Yoga in House 3 — life is fundamentally driven by the mastery of communication, self-expression, and intellectual identity. The Rahu–Ketu axis (House 1–7) makes personal transformation vs. karmic relationship resolution the central tension across all life stages.
 
-- Chant 'Om Sham Shanicharaya Namah' on Saturdays.
-- Donate black sesame seeds or mustard oil.
-- Chant 'Om Angarakaya Namah'.
-- Visit Hanuman temple on Tuesdays.
-- Chant 'Om Rahave Namah'.
-- Chant 'Om Ketave Namah'.
+CAREER DIRECTION: The 10th lord (Jupiter) placed in House 12 points toward careers in communication, foreign sectors, spiritual advisory, or hidden institutional environments. Saturn and Jupiter in House 12 confirm Vipreet Raj Yoga — significant career rise occurs through adversity, likely after age 28–32. The Jupiter Mahadasha (2010–2026) is the peak window for education, expansion, and career foundation-building.
 
-============================================================
-SECTION 24 — FINAL PREDICTION
-============================================================
+RELATIONSHIP PATTERN: The 7th lord (Jupiter) in House 12 and Ketu in House 7 indicate a partner with a spiritual, foreign, or philosophically unconventional background. Karmic depth defines the bond. Venus debilitated in House 4 introduces perfectionism into domestic life — conscious effort to appreciate imperfection in relationships is essential.
 
-=== FINAL PREDICTION ===
-Based on the full analysis of your chart, here is a synthesised view of what lies ahead.
+MAJOR STRENGTH: Budha-Aditya Yoga (Sun + Mercury, House 3) gives exceptional articulation, analytical depth, and entrepreneurial boldness. This native can communicate and persuade at an elite level — the chart's single greatest asset and the foundation of all career success.
 
-Your chart suggests possible career delays and struggles, but long-term stability is very much attainable with patience and consistent effort.
-Your emotional tendencies are influenced by Libra, shaping the way you process and make important decisions in life.
-The current Mahadasha of Rahu is set to dominate key life events and themes during this period.
-Saturn transiting Taurus, natal Moon in Libra (Saturn in 8th from Moon).
-⚠  ASHTAMA SHANI active — pressure on health, finances, and stability.
+MAJOR WEAKNESS: Mars debilitated in Cancer (House 2) creates emotional reactivity and indirect action under pressure. The native's greatest threat is inaction or defensive withdrawal when assertive decision-making is needed most. Mastering this weakness directly unlocks Neecha Bhanga Raja Yoga results.
 
-============================================================
-SECTION 25 — OVERALL SUMMARY
-============================================================
-
-=== OVERALL SUMMARY ===
-This chart belongs to a native with a Gemini ascendant and Moon in Libra. The Budha-Aditya Yoga in House 3 establishes exceptional communication and intellectual ability as the primary life gift. The Jupiter-Saturn conjunction in the 12th activates Vipreet Raj Yoga, indicating rise through adversity and strong spiritual or foreign connections. Mars debilitated in Cancer (House 2) redirects drive into family protection and financial building. Venus debilitated in Virgo (House 4) brings perfectionism to domestic life and relationships. The Rahu-Ketu axis across 1-7 marks self-development vs. karmic relationship resolution as the central life theme. The current Jupiter Mahadasha (2010–2026) is the most auspicious period — expansion, marriage, children, education, and spiritual growth are the dominant themes. The Saturn Mahadasha that follows (2026–2045) will test character and build a lasting legacy through discipline and principled effort.
