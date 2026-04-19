@@ -1,3 +1,4 @@
+import itertools
 import json
 
 # -------------------------------
@@ -12,25 +13,29 @@ with open("filtered_chunks.json", "r") as f:
 
 # all_books_chunked.json — dict keyed by book title; each value has
 # {"total_chunks": N, "chunks": [str, str, ...]}
-# Normalize to {"text": ...} dicts so all sources share one format.
+# Normalize to {"text": ..., "book": ...} dicts so all sources share one format.
 with open("all_books_chunked.json", "r") as f:
     _all_books_chunked_raw = json.load(f)
 
 _all_books_chunked_normalized = []
 for _book_title, _book_data in _all_books_chunked_raw.items():
-    for _chunk_text in _book_data.get("chunks", []):
-        if isinstance(_chunk_text, str):
-            _all_books_chunked_normalized.append({"text": _chunk_text, "book": _book_title})
-        elif isinstance(_chunk_text, dict):
-            _all_books_chunked_normalized.append(_chunk_text)
+    for _chunk_item in _book_data.get("chunks", []):
+        if isinstance(_chunk_item, str):
+            _all_books_chunked_normalized.append({"text": _chunk_item, "book": _book_title})
+        elif isinstance(_chunk_item, dict):
+            # Ensure the book field is present for consistency across all sources.
+            entry = dict(_chunk_item)
+            entry.setdefault("book", _book_title)
+            _all_books_chunked_normalized.append(entry)
 
 # all_books_chunks.json — list of {"text": ..., "page": ..., "book": ...}
 with open("all_books_chunks.json", "r") as f:
     _all_books_chunks = json.load(f)
 
 # Combined pool used by retrieve_insights for full-dataset coverage.
+# itertools.chain avoids creating intermediate list copies for large datasets.
 # Order: filtered_chunks first (highest quality), then both large datasets.
-all_chunks = chunks + _all_books_chunked_normalized + _all_books_chunks
+all_chunks = list(itertools.chain(chunks, _all_books_chunked_normalized, _all_books_chunks))
 
 planets = kundali["planets"]
 dasha = kundali.get("Vimshottari_Dasha", [])
