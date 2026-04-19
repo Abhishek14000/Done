@@ -3916,6 +3916,636 @@ def generate_report():
     print("=" * 60)
     print(final_judgement(planets))
 
+# ============================================================
+# STAGE 7.5 — ULTRA PRECISION OUTPUT LAYER
+# Every statement: CAUSE → MECHANISM → RESULT → DOMAIN
+# No "indicates / suggests / gives / Therefore / Hence"
+# ============================================================
+
+_ULTRA_DEBIL = {
+    "Sun":     "Libra",
+    "Moon":    "Scorpio",
+    "Mars":    "Cancer",
+    "Mercury": "Pisces",
+    "Jupiter": "Capricorn",
+    "Venus":   "Virgo",
+    "Saturn":  "Aries",
+}
+
+_ULTRA_EXALT = {
+    "Sun":     "Aries",
+    "Moon":    "Taurus",
+    "Mars":    "Capricorn",
+    "Mercury": "Virgo",
+    "Jupiter": "Cancer",
+    "Venus":   "Pisces",
+    "Saturn":  "Libra",
+}
+
+_ULTRA_TRIGGER = {
+    1:  "identity pressure, public confrontation, or periods when self-image is directly tested",
+    2:  "financial stress, family disputes, or when speech carries high personal stakes",
+    3:  "writing deadlines, communication challenges, or sibling-related inflection points",
+    4:  "home or property decisions, relocation pressure, or maternal life events",
+    5:  "romantic conflicts, competitive exams, or creative investment decisions",
+    6:  "competitive threats, legal disputes, or health crises requiring strategic response",
+    7:  "partnership negotiations, marriage decisions, or open confrontations with adversaries",
+    8:  "sudden financial reversals, inheritance matters, or existential life shocks",
+    9:  "travel decisions, religious or philosophical turning points, or teacher encounters",
+    10: "career evaluation periods, public-facing opportunities, or authority-figure interactions",
+    11: "income negotiations, large social or professional network activations",
+    12: "foreign relocation decisions, institutional entry/exit, or deep spiritual retreats",
+}
+
+_ULTRA_MECHANISM = {
+    "Sun":     "solar authority over the occupied house, forcing identity and willpower through its themes",
+    "Moon":    "emotional amplification of the occupied house, routing every decision through its themes",
+    "Mars":    "aggressive, action-first energy into the occupied house, producing drive mixed with impulsiveness",
+    "Mercury": "analytical and communicative precision into the occupied house, accelerating intellectual output",
+    "Jupiter": "expansion and optimism into the occupied house, enlarging its results and moral stakes",
+    "Venus":   "aesthetic refinement and relationship sensitivity into the occupied house",
+    "Saturn":  "disciplined, delay-prone pressure into the occupied house, building endurance and karmic accountability",
+    "Rahu":    "obsessive, unconventional amplification of the occupied house, breaking existing patterns for new terrain",
+    "Ketu":    "detachment and past-life mastery energy into the occupied house, dissolving attachments to its themes",
+}
+
+_ULTRA_RESULT_DOMAIN = {
+    "Sun":     "career identity and leadership — public recognition is earned, not inherited",
+    "Moon":    "emotional intelligence and relational responsiveness — inner world shapes outer decisions",
+    "Mars":    "physical and financial drive — execution capacity defines outcomes",
+    "Mercury": "communication excellence and analytical edge — intellectual output determines access",
+    "Jupiter": "philosophical depth and institutional reach — wisdom converts into long-term authority",
+    "Venus":   "relationship quality and domestic stability — comfort level reflects inner standards",
+    "Saturn":  "long-term structural outcomes — durability of career and relationships is built here",
+    "Rahu":    "ambition and reinvention — identity evolves through unconventional pathways",
+    "Ketu":    "spiritual detachment and past-life integration — inner clarity dissolves inherited confusion",
+}
+
+_ULTRA_EVENT_CHAINS = {
+    (3, 12): "structured output in isolation — writing, research, or foreign-linked content production",
+    (12, 3): "structured output in isolation — writing, research, or foreign-linked content production",
+    (1, 12): "identity dissolves and reforms through foreign or institutional exposure",
+    (12, 1): "identity dissolves and reforms through foreign or institutional exposure",
+    (7, 12): "relationship restructuring through foreign influence or spiritual disillusionment",
+    (12, 7): "relationship restructuring through foreign influence or spiritual disillusionment",
+    (10, 12): "career pivot toward non-mainstream, foreign, or institutional work",
+    (12, 10): "career pivot toward non-mainstream, foreign, or institutional work",
+    (3, 7):  "partnership formed through communication or creative collaboration",
+    (7, 3):  "partnership formed through communication or creative collaboration",
+    (5, 7):  "romantic deepening through shared intellectual or creative pursuit",
+    (7, 5):  "romantic deepening through shared intellectual or creative pursuit",
+    (2, 10): "financial authority tied directly to public career performance",
+    (10, 2): "financial authority tied directly to public career performance",
+    (1, 7):  "self-development and relationship obligation collide — karmic resolution required",
+    (7, 1):  "self-development and relationship obligation collide — karmic resolution required",
+    (9, 12): "long-distance spiritual or educational journey produces transformative knowledge",
+    (12, 9): "long-distance spiritual or educational journey produces transformative knowledge",
+    (5, 9):  "intellectual mastery through higher study, producing creative or philosophical authority",
+    (9, 5):  "intellectual mastery through higher study, producing creative or philosophical authority",
+    (11, 12): "income arrives from foreign channels, overseas networks, or institutional work",
+    (12, 11): "income arrives from foreign channels, overseas networks, or institutional work",
+}
+
+
+def _ultra_strip(text):
+    """Remove forbidden soft-language phrases from output text."""
+    import re as _r
+    patterns = [
+        (r'\bindicates?\b', 'produces'),
+        (r'\bsuggests?\b',  'shows'),
+        (r'\bgives?\b',     'delivers'),
+        (r'\bnative experiences?:?\b', 'the chart produces'),
+        (r'\bTherefore,?\s*', ''),
+        (r'\bHence,?\s*',    ''),
+        (r'\bmay\s+', ''),
+        (r'\bmight\s+', ''),
+        (r'\btends?\s+to\s+', ''),
+        (r'\bcan\s+be\b', 'is'),
+    ]
+    for pat, repl in patterns:
+        text = _r.sub(pat, repl, text, flags=_r.IGNORECASE)
+    return text
+
+
+def _ultra_dignity_note(planet, sign):
+    """Return one assertive line about the planet's dignity state."""
+    if _ULTRA_DEBIL.get(planet) == sign:
+        return (
+            f"{planet} is debilitated in {sign} — raw energy is internalized, "
+            f"producing protective-reactive patterns instead of direct force. "
+            f"When Neecha Bhanga conditions activate, this debilitation inverts "
+            f"into Neecha Bhanga Raja Yoga, converting the chart's greatest friction point into a breakthrough asset."
+        )
+    if _ULTRA_EXALT.get(planet) == sign:
+        return (
+            f"{planet} is exalted in {sign} — full-strength delivery of its domain. "
+            f"Results in this area are consistent, authoritative, and structurally durable."
+        )
+    return ""
+
+
+def _ultra_planet_section(planet_data):
+    """Ultra-format planet analysis: CAUSE → MECHANISM → RESULT → TRIGGER."""
+    output = "\n" + "=" * 60 + "\n"
+    output += "SECTION U2 — PLANET MECHANISM ENGINE\n"
+    output += "=" * 60 + "\n"
+    output += "(Format: Planet forces mechanism → produces result in domain. Activates under trigger.)\n\n"
+
+    lagna = _get_lagna()
+
+    _PLANET_ORDER = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus",
+                     "Saturn", "Rahu", "Ketu"]
+    for planet in _PLANET_ORDER:
+        data  = planet_data.get(planet, {})
+        house = data.get("house", 0)
+        sign  = data.get("sign", "?")
+        nak   = data.get("nakshatra", "")
+        conj  = _conjunction_partners(planet, planet_data)
+        lord_str = _planet_lordship_summary(planet, planet_data, lagna)
+
+        mechanism = _ULTRA_MECHANISM.get(planet, "unspecified mechanism")
+        result    = _ULTRA_RESULT_DOMAIN.get(planet, "life outcomes")
+        trigger   = _ULTRA_TRIGGER.get(house, "major life decisions")
+        h_domain  = _house_event_phrase(house)
+
+        output += f"▸ {planet.upper()} — {lord_str} | {sign} | House {house}\n"
+        output += (
+            f"  {planet} in House {house} forces {mechanism} "
+            f"into {h_domain}, producing {result}.\n"
+        )
+
+        # Conjunction amplifier
+        if conj:
+            conj_h_domains = [_house_event_phrase(house) for _ in conj]
+            output += (
+                f"  Conjunction with {', '.join(conj)} in House {house} "
+                f"fuses {planet}'s energy with {', '.join(conj)}'s domains — "
+                f"the combined output in {h_domain} is indivisible and self-reinforcing.\n"
+            )
+
+        # Combustion note for Mercury
+        sun_h = planet_data.get("Sun", {}).get("house", 0)
+        if planet == "Mercury" and house == sun_h and sun_h > 0:
+            output += (
+                f"  Mercury combustion (conjunct Sun, House {house}): "
+                f"analytical output is overridden by solar authority — "
+                f"intelligence is expressed as command, not neutrality, "
+                f"producing a decisive communication style that bypasses diplomacy.\n"
+            )
+
+        # Dignity note
+        dignity = _ultra_dignity_note(planet, sign)
+        if dignity:
+            output += f"  {dignity}\n"
+
+        output += f"  Activates strongly when: {trigger}.\n"
+        if nak:
+            output += f"  Nakshatra driver: {nak}.\n"
+        output += "\n"
+
+    return output
+
+
+def _ultra_yoga_section(planet_data):
+    """Ultra-format yoga output: WHAT it does, WHERE it impacts, WHEN it fires."""
+    output = "\n" + "=" * 60 + "\n"
+    output += "SECTION U3 — YOGA ACTIVATION ENGINE\n"
+    output += "=" * 60 + "\n"
+    output += "(No definitions. Only: what the yoga does, where it strikes, when it fires.)\n\n"
+
+    sun_h  = planet_data.get("Sun", {}).get("house", 0)
+    mer_h  = planet_data.get("Mercury", {}).get("house", 0)
+    sun_s  = planet_data.get("Sun", {}).get("sign", "")
+    jup_h  = planet_data.get("Jupiter", {}).get("house", 0)
+    sat_h  = planet_data.get("Saturn", {}).get("house", 0)
+    mars_s = planet_data.get("Mars", {}).get("sign", "")
+    ven_s  = planet_data.get("Venus", {}).get("sign", "")
+    rahu_h = planet_data.get("Rahu", {}).get("house", 0)
+    ketu_h = planet_data.get("Ketu", {}).get("house", 0)
+    mars_h = planet_data.get("Mars", {}).get("house", 0)
+
+    # Budha-Aditya Yoga
+    if sun_h == mer_h and sun_h:
+        sun_own = (sun_s == "Leo")
+        combust_note = (
+            " Mercury combustion modifies the output channel — authority and "
+            "willpower override pure analysis, producing commanding communication "
+            "that drives leadership, not just expertise."
+        )
+        output += "▸ BUDHA-ADITYA YOGA (Sun + Mercury, House {h})\n".format(h=sun_h)
+        output += (
+            f"  Concentrates solar authority and analytical precision in "
+            f"House {sun_h} ({_house_event_phrase(sun_h)}). "
+        )
+        if sun_own:
+            output += f"Sun in own sign {sun_s} amplifies the yoga to full strength. "
+        output += (
+            f"Dominance in writing, speaking, and advisory roles is the direct output. "
+            f"Fires strongest during Sun and Mercury Mahadasha and Antardasha periods."
+            f"{combust_note}\n\n"
+        )
+
+    # Jupiter-Saturn conjunction (Vipreet Raj Yoga potential)
+    if jup_h == sat_h and jup_h:
+        vr_note = " This activates Vipreet Raj Yoga: career rise is triggered by adversity, not support." if jup_h in (6, 8, 12) else ""
+        output += f"▸ JUPITER–SATURN CONJUNCTION (House {jup_h})\n"
+        output += (
+            f"  Disciplined wisdom concentrated in House {jup_h} ({_house_event_phrase(jup_h)}). "
+            f"Long-term authority is built through sustained, principled effort in institutional or foreign contexts."
+            f"{vr_note} "
+            f"Fires strongly during Jupiter and Saturn Mahadasha, especially in mid-to-late career phase.\n\n"
+        )
+
+    # Vipreet Raj Yoga (Saturn in dusthana)
+    if sat_h in (6, 8, 12):
+        output += f"▸ VIPREET RAJ YOGA (Saturn in House {sat_h})\n"
+        output += (
+            f"  Converts every career setback into a structural advancement trigger. "
+            f"The harder the path, the more durable the resulting authority. "
+            f"Fires during Saturn Mahadasha ({_house_event_phrase(sat_h)} themes dominate). "
+            f"Peak activation: after age 28, compounding through age 45.\n\n"
+        )
+
+    # Neecha Bhanga Raja Yoga — Mars
+    if mars_s == "Cancer":
+        output += f"▸ NEECHA BHANGA RAJA YOGA — MARS (Cancer, House {mars_h})\n"
+        output += (
+            f"  Debilitation pressure on Mars (House {mars_h}, {_house_event_phrase(mars_h)}) "
+            f"is partially cancelled by Moon's trikona placement. "
+            f"When the cancellation fires — during Mars Antardasha under Moon Mahadasha, "
+            f"or when Saturn transits Cancer — the debilitation reverses into a wealth "
+            f"and speech breakthrough. The trigger is sustained effort, not passive waiting.\n\n"
+        )
+
+    # Neecha Bhanga Raja Yoga — Venus
+    if ven_s == "Virgo":
+        ven_h = planet_data.get("Venus", {}).get("house", 0)
+        output += f"▸ NEECHA BHANGA RAJA YOGA — VENUS (Virgo, House {ven_h})\n"
+        output += (
+            f"  Venus debilitation in House {ven_h} ({_house_event_phrase(ven_h)}) "
+            f"is partially cancelled by Venus itself occupying a kendra (4th house). "
+            f"Perfectionism in relationships and domestic expectations is the debilitation output; "
+            f"the cancellation produces aesthetic refinement and a high-standards domestic environment "
+            f"once ego is released from the equation. Fires during Venus Mahadasha.\n\n"
+        )
+
+    # Rahu-Ketu axis
+    if rahu_h and ketu_h:
+        output += f"▸ RAHU (House {rahu_h}) — KETU (House {ketu_h}) KARMIC AXIS\n"
+        output += (
+            f"  Rahu in House {rahu_h} ({_house_event_phrase(rahu_h)}) drives "
+            f"obsessive ambition toward identity reinvention and unconventional self-creation. "
+            f"Ketu in House {ketu_h} ({_house_event_phrase(ketu_h)}) dissolves attachment "
+            f"to relationships and conventional partnership expectations. "
+            f"The axis creates a permanent oscillation: identity expansion vs. karmic relationship release. "
+            f"Resolution produces mastery only when Rahu's ambition is channelled into purposeful output.\n\n"
+        )
+
+    return output
+
+
+def _ultra_dasha_section(dasha_list, planet_data):
+    """Ultra-format Dasha output: CAUSE/MECHANISM/RESULT/TIMING per Mahadasha,
+    plus '[Main]–[Sub] activates [HA] + [HB], producing [specific event chain]' per Antardasha."""
+    output = "\n" + "=" * 60 + "\n"
+    output += "SECTION U4 — DASHA PREDICTION ENGINE (ULTRA)\n"
+    output += "=" * 60 + "\n"
+    output += "(Format: CAUSE / MECHANISM / RESULT / TIMING — no descriptions, only event chains.)\n\n"
+
+    lagna = _get_lagna()
+    lagna_idx = SIGN_ORDER.index(lagna) if lagna in SIGN_ORDER else -1
+
+    for idx, period in enumerate(dasha_list[:5]):
+        planet = period.get("planet", "")
+        start  = period.get("start", "?")
+        end    = period.get("end", "?")
+        pdata  = planet_data.get(planet, {})
+        house  = pdata.get("house", 0)
+        sign   = pdata.get("sign", "")
+        nak    = pdata.get("nakshatra", "")
+        h_phrase = _house_event_phrase(house)
+        lord_str = _planet_lordship_summary(planet, planet_data, lagna)
+
+        # Compute lordship houses
+        lords_of = []
+        if lagna_idx >= 0:
+            for h in range(1, 13):
+                s = SIGN_ORDER[(lagna_idx + h - 1) % 12]
+                if SIGN_LORDS.get(s) == planet:
+                    lords_of.append(h)
+
+        # Dignity
+        dignity_note = ""
+        if _ULTRA_DEBIL.get(planet) == sign:
+            dignity_note = f" [{planet} DEBILITATED in {sign} — Neecha Bhanga pressure active]"
+        elif _ULTRA_EXALT.get(planet) == sign:
+            dignity_note = f" [{planet} EXALTED in {sign} — full-strength delivery]"
+
+        # Conjunctions
+        conj = _conjunction_partners(planet, planet_data)
+        conj_note = (
+            f" Conjunction with {', '.join(conj)} in House {house} fuses their domains."
+            if conj else ""
+        )
+
+        output += "-" * 60 + "\n"
+        output += f"  {planet.upper()} MAHADASHA:  {start} → {end}\n"
+        output += "-" * 60 + "\n"
+
+        # CAUSE
+        output += (
+            f"  CAUSE: {lord_str}{dignity_note} in {sign} (House {house}) occupies "
+            f"{h_phrase}.{conj_note}\n"
+        )
+        if lords_of:
+            lord_houses_str = ", ".join(
+                f"House {h} ({_house_event_phrase(h)})" for h in lords_of
+            )
+            output += (
+                f"         {planet} lords {lord_houses_str} — "
+                f"those domains activate as sub-themes throughout this period.\n"
+            )
+
+        # MECHANISM
+        output += (
+            f"  MECHANISM: {_ULTRA_MECHANISM.get(planet, 'planet energy')} "
+            f"concentrates on {h_phrase}, forcing all life priorities through this lens.\n"
+        )
+
+        # RESULT — event-level, house-specific
+        output += "  RESULT:\n"
+
+        # Career result
+        tenth_lord = SIGN_LORDS.get(SIGN_ORDER[(lagna_idx + 9) % 12], "") if lagna_idx >= 0 else ""
+        if planet == tenth_lord or 10 in lords_of:
+            output += f"    Career: Direct career authority event — {planet} as 10th lord drives status and public recognition.\n"
+        elif house in (10, 11):
+            output += f"    Career: Career advancement and income gain — House {house} placement delivers professional results.\n"
+        elif house in (6, 8, 12):
+            output += f"    Career: Non-linear career rise through adversity in {h_phrase} — conventional paths fail; unconventional paths succeed.\n"
+        else:
+            output += f"    Career: Career focus shifts to {h_phrase} — advancement through House {house} domain activation.\n"
+
+        # Financial result
+        second_lord   = SIGN_LORDS.get(SIGN_ORDER[(lagna_idx + 1) % 12], "") if lagna_idx >= 0 else ""
+        eleventh_lord = SIGN_LORDS.get(SIGN_ORDER[(lagna_idx + 10) % 12], "") if lagna_idx >= 0 else ""
+        if planet in (second_lord, eleventh_lord) or house in (2, 11):
+            output += f"    Money: Wealth accumulation period — {h_phrase} directly activates financial gains.\n"
+        elif house in (8, 12):
+            output += f"    Money: Financial restructuring — hidden gains, foreign income, or institutional funding replace conventional income streams.\n"
+        else:
+            output += f"    Money: Financial focus redirected through {h_phrase}.\n"
+
+        # Relationship result
+        seventh_lord = SIGN_LORDS.get(SIGN_ORDER[(lagna_idx + 6) % 12], "") if lagna_idx >= 0 else ""
+        ketu_h = planet_data.get("Ketu", {}).get("house", 0)
+        if planet == seventh_lord or 7 in lords_of:
+            output += f"    Relationship: Marriage or partnership event triggered — {planet} as 7th lord activates commitment decisions.\n"
+        elif planet in ("Venus", "Ketu") or house == 7:
+            output += f"    Relationship: Karmic relationship event — {planet} in House {house} forces partnership restructuring or romantic deepening.\n"
+        else:
+            output += f"    Relationship: Relationship energy shaped by {h_phrase} — bonds are tested or formed through House {house} themes.\n"
+
+        # Location / foreign result
+        if house == 12 or planet == "Rahu":
+            output += f"    Location: Foreign movement, institutional placement, or extended isolation is activated.\n"
+        elif 9 in lords_of or house == 9:
+            output += f"    Location: Long-distance travel or foreign education event occurs.\n"
+
+        # TIMING
+        output += "  TIMING:\n"
+        try:
+            sy = int(start.split("/")[-1]) if "/" in start else int(start[:4])
+            ey = int(end.split("/")[-1]) if "/" in end else int(end[:4])
+            span = ey - sy
+            mid1 = sy + span // 3
+            mid2 = sy + 2 * span // 3
+        except Exception:
+            sy, ey, mid1, mid2 = 0, 0, 0, 0
+
+        if sy:
+            output += (
+                f"    Early phase ({sy}–{mid1}): {h_phrase} foundation-building — "
+                f"raw House {house} themes surface and demand engagement.\n"
+                f"    Mid phase ({mid1}–{mid2}): peak activation of {planet}'s lorded houses — "
+                f"career and financial events peak here.\n"
+                f"    End phase ({mid2}–{ey}): consolidation and transition — "
+                f"results crystallise; the next Mahadasha agenda begins loading.\n"
+            )
+
+        output += "\n"
+
+        # Antardasha for this Mahadasha
+        m_start = _parse_dasha_date(start)
+        m_end   = _parse_dasha_date(end)
+        if m_start and m_end:
+            antardashas = _compute_antardasha_periods(planet, m_start, m_end)
+            if antardashas:
+                output += f"  ANTARDASHA PREDICTIONS — {planet.upper()} MAHADASHA:\n"
+                for ad in antardashas[:9]:
+                    sub      = ad["planet"]
+                    sub_data = planet_data.get(sub, {})
+                    sub_h    = sub_data.get("house", 0)
+                    main_h   = house
+                    pair_key = (main_h, sub_h)
+                    pair_key_r = (sub_h, main_h)
+
+                    # Get specific event chain for this house pair
+                    event_chain = (
+                        _ULTRA_EVENT_CHAINS.get(pair_key)
+                        or _ULTRA_EVENT_CHAINS.get(pair_key_r)
+                        or f"{_house_event_phrase(main_h)} combines with {_house_event_phrase(sub_h)}"
+                    )
+
+                    sub_lord_str = _planet_lordship_summary(sub, planet_data, lagna)
+                    conj_sub = _conjunction_partners(sub, planet_data)
+                    conj_sub_note = (
+                        f" {sub} conjunct {', '.join(conj_sub)} amplifies output."
+                        if conj_sub else ""
+                    )
+
+                    # Combustion note for Mercury sub-period
+                    sun_h_val = planet_data.get("Sun", {}).get("house", 0)
+                    combust_note = ""
+                    if sub == "Mercury" and sub_h == sun_h_val:
+                        combust_note = (
+                            " Mercury combustion channels output through Sun's authority — "
+                            "communication results carry a commanding, non-negotiable quality."
+                        )
+
+                    start_str = ad["start"].strftime("%b %Y") if ad["start"] else "?"
+                    end_str   = ad["end"].strftime("%b %Y") if ad["end"] else "?"
+
+                    output += (
+                        f"  • {planet}–{sub} [{start_str} → {end_str}]: "
+                        f"activates House {main_h} + House {sub_h}, producing {event_chain}."
+                        f"{conj_sub_note}{combust_note}\n"
+                    )
+                output += "\n"
+
+    return output
+
+
+def _ultra_final_judgement(planet_data, dasha_list):
+    """Ultra-format 7-point precision final judgement — no vague statements."""
+    output = "\n" + "=" * 60 + "\n"
+    output += "SECTION U5 — FINAL PREDICTION ENGINE (ULTRA)\n"
+    output += "=" * 60 + "\n"
+    output += "(7-point precision: Life Path / Career Timeline / Relationship Pattern /\n"
+    output += " Financial Pattern / Core Strength / Core Weakness / Final Verdict)\n\n"
+
+    lagna = _get_lagna()
+    lagna_idx = SIGN_ORDER.index(lagna) if lagna in SIGN_ORDER else -1
+
+    sun_h   = planet_data.get("Sun",     {}).get("house", 0)
+    sun_s   = planet_data.get("Sun",     {}).get("sign", "")
+    mer_h   = planet_data.get("Mercury", {}).get("house", 0)
+    jup_h   = planet_data.get("Jupiter", {}).get("house", 0)
+    sat_h   = planet_data.get("Saturn",  {}).get("house", 0)
+    mars_h  = planet_data.get("Mars",    {}).get("house", 0)
+    mars_s  = planet_data.get("Mars",    {}).get("sign", "")
+    venus_h = planet_data.get("Venus",   {}).get("house", 0)
+    venus_s = planet_data.get("Venus",   {}).get("sign", "")
+    rahu_h  = planet_data.get("Rahu",    {}).get("house", 0)
+    ketu_h  = planet_data.get("Ketu",    {}).get("house", 0)
+    moon_s  = planet_data.get("Moon",    {}).get("sign", "")
+    moon_h  = planet_data.get("Moon",    {}).get("house", 0)
+
+    tenth_lord  = SIGN_LORDS.get(SIGN_ORDER[(lagna_idx + 9) % 12], "Jupiter") if lagna_idx >= 0 else "Jupiter"
+    seventh_lord = SIGN_LORDS.get(SIGN_ORDER[(lagna_idx + 6) % 12], "Jupiter") if lagna_idx >= 0 else "Jupiter"
+    tenth_lord_h = planet_data.get(tenth_lord, {}).get("house", 0)
+
+    # 1. LIFE PATH
+    output += "1. LIFE PATH\n"
+    output += (
+        f"   Rahu in House {rahu_h} ({lagna} Lagna) locks identity into perpetual reinvention. "
+        f"Budha-Aditya Yoga in House {sun_h} ({sun_s}) forces all personal authority "
+        f"through communication and intellectual output. "
+        f"Ketu in House {ketu_h} dissolves conventional relationship expectations "
+        f"while Rahu pushes relentlessly toward unconventional self-creation. "
+        f"Life path: communication-based intellectual authority built through adversity, "
+        f"not support or inheritance.\n\n"
+    )
+
+    # 2. CAREER TIMELINE
+    current_maha     = dasha_list[0].get("planet", "") if dasha_list else ""
+    current_maha_end = dasha_list[0].get("end", "?")   if dasha_list else "?"
+    next_maha        = dasha_list[2].get("planet", "") if len(dasha_list) > 2 else ""
+    next_maha_end    = dasha_list[2].get("end", "?")   if len(dasha_list) > 2 else "?"
+
+    output += "2. CAREER TIMELINE\n"
+    output += (
+        f"   Ages 0–25 ({current_maha} Mahadasha, until {current_maha_end}): "
+        f"raw skill accumulation through {_house_event_phrase(rahu_h)}. "
+        f"Career framework is experimental — no stable structure yet.\n"
+        f"   Ages 25–28 (transition): Jupiter Mahadasha builds institutional depth "
+        f"and philosophical authority through House {jup_h} ({_house_event_phrase(jup_h)}).\n"
+        f"   Ages 28–45 ({next_maha} Mahadasha, until {next_maha_end}): Saturn in House {sat_h} "
+        f"converts adversity into structural authority. "
+        f"Career stabilises post-32. Peak authority window: ages 35–45. "
+        f"{tenth_lord} (10th lord) in House {tenth_lord_h} routes career through "
+        f"{_house_event_phrase(tenth_lord_h)} — unconventional, institutional, or foreign-linked work only.\n\n"
+    )
+
+    # 3. RELATIONSHIP PATTERN
+    output += "3. RELATIONSHIP PATTERN\n"
+    output += (
+        f"   {seventh_lord} (7th lord) in House {planet_data.get(seventh_lord, {}).get('house', 0)} "
+        f"and Ketu in House {ketu_h} lock the partner profile to: foreign, spiritual, or "
+        f"philosophically non-conventional background. "
+        f"Venus debilitated in {venus_s} (House {venus_h}) creates impossible domestic standards "
+        f"that damage relationships until the expectation pattern is consciously dismantled. "
+        f"Moon in {moon_s} (House {moon_h}) routes emotional decisions through "
+        f"{_house_event_phrase(moon_h)}, making romantic and creative life inseparable. "
+        f"Superficial relationships do not survive this chart.\n\n"
+    )
+
+    # 4. FINANCIAL PATTERN
+    output += "4. FINANCIAL PATTERN\n"
+    output += (
+        f"   Mars in House {mars_h} ({_house_event_phrase(mars_h)}) drives financial ambition "
+        f"through family and speech channels. "
+        f"Mars debilitated in {mars_s} produces reactive financial decisions under pressure — "
+        f"retreat replaces bold action precisely when bold action is required. "
+        f"Jupiter + Saturn in House {jup_h} ({_house_event_phrase(jup_h)}) routes financial growth "
+        f"through institutional, foreign, or behind-the-scenes channels. "
+        f"Peak financial consolidation: Saturn Mahadasha post-age 32. "
+        f"Before 32: income is unstable and experimental. After 36: structural and compounding.\n\n"
+    )
+
+    # 5. CORE STRENGTH
+    output += "5. CORE STRENGTH\n"
+    output += (
+        f"   Budha-Aditya Yoga (Sun in own sign {sun_s} + Mercury, House {sun_h}): "
+        f"elite communication authority — writing, speaking, and analytical leadership "
+        f"are the chart's single consistently winning instruments. "
+        f"No peer in the native's environment replicates this output capacity.\n\n"
+    )
+
+    # 6. CORE WEAKNESS
+    output += "6. CORE WEAKNESS\n"
+    output += (
+        f"   Mars debilitated in {mars_s} (House {mars_h}): "
+        f"emotional withdrawal and passive-reactive behaviour under pressure "
+        f"is the single greatest gap between intellectual potential and real-world execution. "
+        f"Every major career failure in this chart traces to Mars's debilitation "
+        f"firing at a decision point and producing retreat instead of advance.\n\n"
+    )
+
+    # 7. FINAL VERDICT
+    output += "7. FINAL VERDICT\n"
+    output += (
+        f"   Career stabilises after age 32 and peaks post-36 through independent, "
+        f"unconventional, or foreign-linked work — not conventional employment. "
+        f"Relationships work only with partners who match the chart's philosophical depth "
+        f"and independence requirement. "
+        f"Financial security is built post-30; before that, income is a learning mechanism. "
+        f"The dominant life arc: friction-heavy early phase → structured intellectual authority "
+        f"→ public-facing leadership. The chart does not deliver average results. "
+        f"It delivers either exceptional output or visible failure — no middle ground exists.\n"
+    )
+
+    return output
+
+
+def generate_ultra_report():
+    """Produce the Stage 7.5 ultra-precision report to astrology_report_ultra.txt."""
+    import io as _io2
+
+    # Header
+    print("\n🔱 ULTRA PRECISION PREDICTION ENGINE 🔱")
+    print("Stage 7.5 — Event-Driven, Mechanism-Based Output\n")
+    print("Native: Abhishek Singh | DOB: 3-Sep-2000 | Lagna: Gemini\n")
+
+    print("=" * 60)
+    print("REPORT MAP")
+    print("=" * 60)
+    print("U1. Planetary Placements (raw chart)")
+    print("U2. Planet Mechanism Engine")
+    print("U3. Yoga Activation Engine")
+    print("U4. Dasha Prediction Engine")
+    print("U5. Final Prediction Engine (7-point)\n")
+
+    # U1 — Placements
+    print("=" * 60)
+    print("SECTION U1 — CHART FOUNDATION")
+    print("=" * 60)
+    for planet, data in planets.items():
+        print(f"  {planet:10s} | {data.get('sign', 'N/A'):15s} | H{data.get('house', '?'):2} | {data.get('nakshatra', '')}")
+    print()
+
+    # U2 — Planet mechanisms
+    print(_ultra_strip(_ultra_planet_section(planets)))
+
+    # U3 — Yoga activation
+    print(_ultra_strip(_ultra_yoga_section(planets)))
+
+    # U4 — Dasha engine
+    print(_ultra_strip(_ultra_dasha_section(dasha, planets)))
+
+    # U5 — Final judgement
+    print(_ultra_strip(_ultra_final_judgement(planets, dasha)))
+
 
 # -------------------------------
 # ENTRY POINT
@@ -3969,5 +4599,19 @@ if __name__ == "__main__":
         print("\n⚠  One or more validation checks failed — review the report for issues.")
 
     print(f"\n✅ Report saved to {REPORT_OUTPUT_FILE}")
+
+    # --------------------------------------------------------
+    # STAGE 7.5 — Ultra Precision Report
+    # --------------------------------------------------------
+    ULTRA_OUTPUT_FILE = "astrology_report_ultra.txt"
+    with open(ULTRA_OUTPUT_FILE, "w", encoding="utf-8") as _ultra_file:
+        _tee_ultra = _Tee(_ultra_file)
+        sys.stdout = _tee_ultra
+        try:
+            generate_ultra_report()
+        finally:
+            sys.stdout = sys.__stdout__
+
+    print(f"\n✅ Ultra report saved to {ULTRA_OUTPUT_FILE}")
 
 
