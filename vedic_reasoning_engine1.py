@@ -257,6 +257,19 @@ def analyze_dasha():
     output = "\n=== MAHADASHA ANALYSIS ===\n"
     lagna_sign = _get_lagna()
 
+    # Chart-wide Neecha Bhanga note — debilitated planets affect ALL Mahadasha results
+    _DEBIL_MAP = {"Sun": "Libra", "Moon": "Scorpio", "Mars": "Cancer",
+                  "Mercury": "Pisces", "Jupiter": "Capricorn", "Venus": "Virgo", "Saturn": "Aries"}
+    debil_planets = [(p, planets[p].get("sign",""), planets[p].get("house",0))
+                     for p in planets if _DEBIL_MAP.get(p) == planets[p].get("sign","")]
+    if debil_planets:
+        debil_str = "; ".join(f"{p} debilitated in {s} (House {h})" for p, s, h in debil_planets)
+        output += (
+            f"Neecha Bhanga alert — {debil_str}: during any Mahadasha where these planets are "
+            f"conjunct, aspecting, or activating the same house, debilitation results can be "
+            f"cancelled (Neecha Bhanga Raja Yoga), producing unexpected breakthroughs.\n\n"
+        )
+
     for period in dasha[:3]:
         planet = period.get("planet", "Unknown")
         start  = period.get("start", "?")
@@ -270,7 +283,7 @@ def analyze_dasha():
         # Lordship
         lord_str = _planet_lordship_summary(planet, planets, lagna_sign) if lagna_sign else planet
 
-        # Dignity flag
+        # Dignity flag + Neecha Bhanga note
         _EXALT = {"Sun": "Aries", "Moon": "Taurus", "Mars": "Capricorn",
                   "Mercury": "Virgo", "Jupiter": "Cancer", "Venus": "Pisces", "Saturn": "Libra"}
         _DEBIL = {"Sun": "Libra", "Moon": "Scorpio", "Mars": "Cancer",
@@ -278,7 +291,7 @@ def analyze_dasha():
         if _EXALT.get(planet) == sign:
             dignity = "exalted — peak strength"
         elif _DEBIL.get(planet) == sign:
-            dignity = "debilitated — transformation pressure applies"
+            dignity = "debilitated — transformation pressure applies; Neecha Bhanga conditions may activate"
         else:
             dignity = f"in {sign}"
 
@@ -675,7 +688,25 @@ def analyze_antardasha(dasha_list):
 
     output += f"Active period: {main}–{sub} Mahadasha–Antardasha\n"
     output += f"  {main}: {main_lord_str} in {main_s} (House {main_h} — {main_domain})\n"
-    output += f"  {sub}:  {sub_lord_str} in {sub_s} (House {sub_h} — {sub_domain})\n\n"
+    output += f"  {sub}:  {sub_lord_str} in {sub_s} (House {sub_h} — {sub_domain})\n"
+
+    # Chart-wide combustion note relevant to this period
+    sun_h_val = planets.get("Sun", {}).get("house", 0)
+    combust_planets_in_chart = [
+        p for p in planets
+        if p not in ("Sun", "Rahu", "Ketu")
+        and planets[p].get("house", 0) == sun_h_val
+        and sun_h_val > 0
+    ]
+    if combust_planets_in_chart:
+        cp_str = ", ".join(combust_planets_in_chart)
+        cp_h   = sun_h_val
+        output += (
+            f"  Combustion note: {cp_str} is combust (conjunct Sun, House {cp_h}) — "
+            f"during this period, {cp_str}'s domain output is filtered through solar authority, "
+            f"giving a commanding quality to results in House {cp_h} themes.\n"
+        )
+    output += "\n"
 
     output += f"=== {main}–{sub} Interaction Predictions ===\n"
 
@@ -732,14 +763,30 @@ def analyze_antardasha(dasha_list):
         )
         n += 1
 
-    # 6. Combustion note — include if Sun is main or sub
+    # 6. Combustion note — include if Sun is main or sub, OR if either planet is combust
+    sun_h_val = planets.get("Sun", {}).get("house", 0)
     if main == "Sun" or sub == "Sun":
         combust_partner = sub if main == "Sun" else main
-        if planets.get(combust_partner, {}).get("house") == planets.get("Sun", {}).get("house"):
+        if planets.get(combust_partner, {}).get("house") == sun_h_val:
             output += (
                 f"{n}. Combustion factor: {combust_partner} conjunct Sun — its significations are "
                 f"under solar pressure during this period; results are channeled through Sun's domains.\n"
             )
+            n += 1
+    else:
+        # Check if either planet is combust (conjunct Sun by house proximity)
+        for check_planet in (main, sub):
+            if check_planet not in ("Sun", "Rahu", "Ketu"):
+                p_h = planets.get(check_planet, {}).get("house", 0)
+                if p_h and p_h == sun_h_val:
+                    output += (
+                        f"{n}. Combustion factor: {check_planet} occupies the same house as Sun — "
+                        f"during this period its significations are filtered through solar authority. "
+                        f"Career output from {check_planet}'s domains carries a commanding, "
+                        f"authoritative quality rather than an independent one.\n"
+                    )
+                    n += 1
+                    break  # only note once
 
     return output
 
@@ -924,8 +971,9 @@ def analyze_career(planet_data):
     if mars_debil:
         output += (
             f" Mars debilitated in {mars_s} (House {mars_h}) creates execution gaps — "
-            f"the native must consciously overcome the tendency to retreat under pressure, "
-            f"as this is the single greatest threat to the career potential described above."
+            f"the native must consciously overcome the tendency to retreat under pressure. "
+            f"Mastering this debilitation activates Neecha Bhanga Raja Yoga, converting the "
+            f"chart's greatest execution weakness into its most durable career asset."
         )
     output += "\n"
 
@@ -3599,17 +3647,32 @@ def final_judgement(planet_data):
         f"transforming the chart's greatest vulnerability into its most powerful asset.\n\n"
     )
 
-    # 6. FINAL TRAJECTORY — where this chart ultimately lands
-    sat_maha_start = 2026  # Saturn Mahadasha after Jupiter
+    # 6. FINAL TRAJECTORY — where this chart ultimately lands, anchored to current Dasha
+    current_maha = dasha[0].get("planet", "Jupiter") if dasha else "Jupiter"
+    current_maha_start = dasha[0].get("start", "2010") if dasha else "2010"
+    current_maha_end   = dasha[0].get("end", "2026")   if dasha else "2026"
+    current_anta = dasha[1].get("planet", "Jupiter") if len(dasha) > 1 else ""
+    current_anta_end = dasha[1].get("end", "2026")    if len(dasha) > 1 else ""
+    next_maha    = dasha[2].get("planet", "Saturn")   if len(dasha) > 2 else "Saturn"
+    next_maha_end = dasha[2].get("end", "2045")       if len(dasha) > 2 else "2045"
+
+    anta_clause = (
+        f" The active {current_maha}–{current_anta} Antardasha (through {current_anta_end}) "
+        f"accelerates this foundation-building: {current_anta} in House "
+        f"{planet_data.get(current_anta, {}).get('house', '?')} activates "
+        f"{_house_event_phrase(planet_data.get(current_anta, {}).get('house', 0))} "
+        f"alongside {current_maha}'s institutional and philosophical influence."
+        if current_anta else ""
+    )
+
     output += (
-        f"→ FINAL TRAJECTORY: Jupiter Mahadasha (2010–2026) builds the intellectual "
-        f"and philosophical foundation; Saturn Mahadasha (2026–2045) converts that "
-        f"foundation into material authority through discipline and adversity. "
-        f"Hence, the native's peak career, financial, and relationship results "
-        f"are locked in the 30s–40s age window — not before. "
-        f"The chart's overall arc is: struggle → mastery → authority — "
-        f"and this native will be most powerful in environments that others find "
-        f"restrictive, foreign, or unconventional.\n"
+        f"→ FINAL TRAJECTORY: {current_maha} Mahadasha ({current_maha_start}–{current_maha_end}) "
+        f"builds the intellectual and philosophical foundation.{anta_clause} "
+        f"{next_maha} Mahadasha (through {next_maha_end}) converts that foundation into "
+        f"material authority through discipline and adversity. "
+        f"Peak career, financial, and relationship results are locked in the 30s–40s age window — not before. "
+        f"Chart arc: struggle → mastery → authority. "
+        f"Strongest in environments others find restrictive, foreign, or unconventional.\n"
     )
 
     return output
