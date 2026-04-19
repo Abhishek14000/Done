@@ -1,7 +1,7 @@
+from collections import defaultdict
 import itertools
 import json
 import sys
-from collections import defaultdict
 
 # -------------------------------
 # LOAD FILES
@@ -1485,7 +1485,7 @@ def detect_combustion(planet_data):
             continue
         if data.get("sign") == sun_sign:
             diff = abs(data.get("degree", 0) - sun_deg)
-            if diff <= orb:
+            if diff < orb:
                 combust_found = True
                 output += (
                     f"⚠  {planet} is COMBUST — {diff:.2f}° from Sun "
@@ -1727,6 +1727,9 @@ _DASHA_PROFILES = {
 }
 
 
+_NATURAL_MALEFICS = {"Sun", "Mars", "Saturn", "Rahu", "Ketu"}
+
+
 def _house_lord_context(planet, planet_data):
     """Return a brief house-placement context string for a planet."""
     data = planet_data.get(planet, {})
@@ -1773,11 +1776,20 @@ def analyze_dasha_timeline(dasha_list, planet_data):
         sign  = pdata.get("sign", "")
 
         if house == 12:
-            output += (
-                f"  Chart note: {planet} in 12th house — events lean toward foreign lands, "
-                f"spiritual pursuits, research, or behind-the-scenes institutional work. "
-                f"Vipreet Raj Yoga may activate if {planet} is a natural malefic.\n"
-            )
+            if planet in _NATURAL_MALEFICS:
+                output += (
+                    f"  Chart note: {planet} in 12th house — events lean toward foreign lands, "
+                    f"spiritual pursuits, research, or behind-the-scenes institutional work. "
+                    f"Vipreet Raj Yoga is active: {planet} is a natural malefic in a dusthana, "
+                    f"giving unexpected rise and success through adversity.\n"
+                )
+            else:
+                output += (
+                    f"  Chart note: {planet} in 12th house — events lean toward foreign lands, "
+                    f"spiritual pursuits, research, or behind-the-scenes institutional work. "
+                    f"As a natural benefic in the 12th, {planet} supports spiritual and foreign "
+                    f"connections rather than material accumulation.\n"
+                )
         elif house in (1, 5, 9):
             output += (
                 f"  Chart note: {planet} in House {house} (trikona) — dharmic grace and "
@@ -2151,7 +2163,7 @@ def generate_report():
 # ENTRY POINT
 # -------------------------------
 if __name__ == "__main__":
-    _OUTPUT_FILE = "astrology_report.txt"
+    REPORT_OUTPUT_FILE = "astrology_report.txt"
 
     class _Tee:
         """Write to both the report file and the real stdout simultaneously."""
@@ -2167,12 +2179,12 @@ if __name__ == "__main__":
             self._stdout.flush()
             self._file.flush()
 
-    with open(_OUTPUT_FILE, "w", encoding="utf-8") as _report_file:
+    with open(REPORT_OUTPUT_FILE, "w", encoding="utf-8") as _report_file:
         sys.stdout = _Tee(_report_file)
         try:
             generate_report()
         finally:
             sys.stdout = sys.__stdout__
 
-    print(f"\n✅ Report saved to {_OUTPUT_FILE}")
+    print(f"\n✅ Report saved to {REPORT_OUTPUT_FILE}")
 
