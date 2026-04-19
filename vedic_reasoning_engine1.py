@@ -199,14 +199,22 @@ def interpret_text(raw_text):
     into clean Jyotish language, and discards all OCR garbage, case studies,
     chart references, and unrelated content.  Returns None when the chunk
     cannot yield a usable principle.
+
+    Output format alternates between two natural Jyotish framings:
+      "Therefore, this placement indicates ..."
+      "Hence, the native experiences ..."
     """
     principle = _extract_clean_principle(raw_text)
     if not principle:
         return None
 
-    # Capitalise first letter and wrap in standard interpretive framing.
     sentence = principle[0].upper() + principle[1:]
-    return f"Therefore, classical texts confirm: {sentence}"
+
+    # Choose framing based on whether the sentence is planet/sign-forward or effect-forward
+    sentence_lower = sentence.lower()
+    if any(sentence_lower.startswith(s) for s in ("the native", "one born", "such a person")):
+        return f"Hence, the native experiences: {sentence}"
+    return f"Therefore, this placement indicates: {sentence}"
 
 
 # -------------------------------
@@ -2090,6 +2098,132 @@ _NEECHA_BHANGA_CONDITIONS = {
     "Moon":    ("The lord of Scorpio (Mars) in a kendra, or the exaltation lord of Moon (Venus) in a kendra, cancels Moon's debilitation.",),
 }
 
+# Exaltation lords — planet → sign in which it is exalted → lord of that sign
+_EXALTATION_LORDS = {
+    "Sun":     "Mars",     # exalted in Aries, lord Mars
+    "Moon":    "Venus",    # exalted in Taurus, lord Venus
+    "Mars":    "Saturn",   # exalted in Capricorn, lord Saturn
+    "Mercury": "Sun",      # exalted in Virgo, lord Mercury — exaltation lord is Sun
+    "Jupiter": "Moon",     # exalted in Cancer, lord Moon
+    "Venus":   "Jupiter",  # exalted in Pisces, lord Jupiter
+    "Saturn":  "Venus",    # exalted in Libra, lord Venus
+}
+
+
+def evaluate_neecha_bhanga(planet_data):
+    """Evaluate Neecha Bhanga (cancellation of debilitation) for each debilitated planet.
+
+    Applies all five classical conditions and returns a formatted verdict string.
+
+    Conditions checked:
+      1. Sign lord (lord of debilitation sign) in kendra (1,4,7,10)  → STRONG cancellation
+      2. Exaltation lord in kendra                                     → STRONG cancellation
+      3. The debilitated planet itself in a kendra                     → PARTIAL cancellation
+      4. Conjunction with the sign lord                                → STRONG cancellation
+      5. Aspect from the sign lord (7th house aspect)                  → PARTIAL cancellation
+    """
+    kendra_houses   = {1, 4, 7, 10}
+    trikona_houses  = {1, 5, 9}
+    output          = "\n=== NEECHA BHANGA (DEBILITATION CANCELLATION) EVALUATION ===\n"
+    output += (
+        "Each debilitated planet is evaluated against all five classical Neecha Bhanga conditions. "
+        "Verdicts are derived strictly from chart placement — no generic rules are applied.\n\n"
+    )
+
+    debilitated_planets = [
+        p for p, d in planet_data.items()
+        if _DEBILITATION.get(p) == d.get("sign", "")
+    ]
+
+    if not debilitated_planets:
+        output += "No debilitated planets found in this chart.\n"
+        return output
+
+    for planet in debilitated_planets:
+        data         = planet_data.get(planet, {})
+        debil_sign   = _DEBILITATION.get(planet, "")
+        planet_house = data.get("house", 0)
+        planet_sign  = data.get("sign", "")
+
+        sign_lord     = SIGN_LORDS.get(debil_sign, "")
+        exalt_lord    = _EXALTATION_LORDS.get(planet, "")
+        sign_lord_house  = planet_data.get(sign_lord, {}).get("house") if sign_lord else None
+        exalt_lord_house = planet_data.get(exalt_lord, {}).get("house") if exalt_lord else None
+
+        # Aspect: does sign lord's 7th house aspect fall on the debilitated planet's sign?
+        sign_lord_sign = planet_data.get(sign_lord, {}).get("sign", "") if sign_lord else ""
+        seventh_from_sign_lord = _house_to_sign(sign_lord_sign, 7) if sign_lord_sign else None
+        sign_lord_aspects_planet = (seventh_from_sign_lord == planet_sign)
+
+        cancellations_strong  = []
+        cancellations_partial = []
+
+        # Condition 1: sign lord in kendra
+        if sign_lord_house in kendra_houses:
+            cancellations_strong.append(
+                f"{sign_lord} (lord of {debil_sign}) is in House {sign_lord_house} (kendra)"
+            )
+
+        # Condition 2: exaltation lord in kendra
+        if exalt_lord_house in kendra_houses:
+            cancellations_strong.append(
+                f"{exalt_lord} (exaltation lord of {planet}) is in House {exalt_lord_house} (kendra)"
+            )
+
+        # Condition 3: debilitated planet itself in kendra
+        if planet_house in kendra_houses:
+            cancellations_partial.append(
+                f"{planet} itself is placed in House {planet_house} (kendra)"
+            )
+
+        # Condition 4: conjunction with sign lord
+        if sign_lord and sign_lord_house == planet_house and planet_house:
+            cancellations_strong.append(
+                f"{sign_lord} (sign lord) is conjunct {planet} in House {planet_house}"
+            )
+
+        # Condition 5: aspect from sign lord
+        if sign_lord_aspects_planet and sign_lord_sign and sign_lord_sign != planet_sign:
+            cancellations_partial.append(
+                f"{sign_lord} aspects {planet} by 7th house drishti from {sign_lord_sign}"
+            )
+
+        # Also check trikona for partial (not kendra but trikona)
+        if sign_lord_house in trikona_houses and sign_lord_house not in kendra_houses:
+            cancellations_partial.append(
+                f"{sign_lord} (lord of {debil_sign}) is in House {sign_lord_house} (trikona, not kendra)"
+            )
+
+        # Build verdict
+        output += f"  ▶ {planet.upper()} debilitated in {debil_sign} (House {planet_house})\n"
+
+        if cancellations_strong:
+            verdict = "STRONGLY CANCELLED"
+            reasons = "; ".join(cancellations_strong)
+            if cancellations_partial:
+                reasons += "; additionally — " + "; ".join(cancellations_partial)
+            output += (
+                f"  ✔ {planet} debilitation is {verdict} because {reasons}. "
+                f"Hence, this planet delivers exceptional results — particularly during the "
+                f"{planet} Mahadasha — rising from apparent weakness to pronounced strength.\n\n"
+            )
+        elif cancellations_partial:
+            verdict = "PARTIALLY CANCELLED"
+            reasons = "; ".join(cancellations_partial)
+            output += (
+                f"  ◑ {planet} debilitation is {verdict} because {reasons}. "
+                f"Hence, the native experiences controlled weakness — not full damage, "
+                f"but the planet does not deliver peak results without conscious effort.\n\n"
+            )
+        else:
+            output += (
+                f"  ✘ {planet} debilitation is NOT CANCELLED — no classical Neecha Bhanga "
+                f"conditions satisfied. Hence, {planet}'s significations face genuine strain "
+                f"until worked through discipline and remediation.\n\n"
+            )
+
+    return output
+
 
 def detect_exaltation_debilitation(planet_data):
     """Dedicated exaltation, debilitation, and Neecha Bhanga analysis."""
@@ -2124,25 +2258,12 @@ def detect_exaltation_debilitation(planet_data):
         output += "DEBILITATED PLANETS (Neecha — Transformation Potential):\n"
         for planet, sign, house in debilitated_found:
             output += f"  ⚑ {planet} debilitated in {sign} (House {house})\n"
-            output += f"    {_DEBIL_EFFECTS.get(planet, '')}\n"
-            # Check Neecha Bhanga condition
-            cond = _NEECHA_BHANGA_CONDITIONS.get(planet)
-            if cond:
-                output += f"    Neecha Bhanga condition: {cond[0]}\n"
-            # Check if debilitation lord is in kendra → partial NBY
-            debil_sign = _DEBILITATION.get(planet, "")
-            debil_lord = SIGN_LORDS.get(debil_sign, "")
-            debil_lord_house = planet_data.get(debil_lord, {}).get("house")
-            if debil_lord_house in kendra_houses:
-                output += (
-                    f"    ✔ Neecha Bhanga ACTIVE — {debil_lord} (lord of {debil_sign}) "
-                    f"is in kendra (House {debil_lord_house}). This indicates that "
-                    f"{planet}'s debilitation is cancelled, producing exceptional strength "
-                    f"and an unexpected rise — particularly during the {planet} Mahadasha.\n"
-                )
-            output += "\n"
+            output += f"    {_DEBIL_EFFECTS.get(planet, '')}\n\n"
     else:
-        output += "No planets are debilitated in this chart.\n"
+        output += "No planets are debilitated in this chart.\n\n"
+
+    # Full Neecha Bhanga evaluation (all 5 classical conditions)
+    output += evaluate_neecha_bhanga(planet_data)
 
     return output
 
@@ -2469,6 +2590,35 @@ def validate_report(report_text):
         else "WARNING: Irrelevant classical case-study content detected",
     ))
 
+    # 9. Neecha Bhanga evaluation present
+    neecha_present = (
+        "NEECHA BHANGA (DEBILITATION CANCELLATION) EVALUATION" in report_text
+        and ("STRONGLY CANCELLED" in report_text or "PARTIALLY CANCELLED" in report_text
+             or "NOT CANCELLED" in report_text)
+    )
+    checks.append((
+        "Neecha Bhanga evaluated",
+        neecha_present,
+        "Neecha Bhanga evaluation found with verdicts" if neecha_present
+        else "MISSING: evaluate_neecha_bhanga() output or verdicts not found",
+    ))
+
+    # 10. Event priority tags present in prediction block
+    if prediction_block_start != -1:
+        pred_block2 = report_text[prediction_block_start:prediction_block_start + 20000]
+        tags_present = any(
+            t in pred_block2 for t in [
+                "[MAJOR CAREER EVENT]", "[RELATIONSHIP EVENT]",
+                "[TRANSFORMATION EVENT]", "[FOREIGN/SPIRITUAL EVENT]",
+            ]
+        )
+        checks.append((
+            "Event priority tags present",
+            tags_present,
+            "Event priority tags found in prediction block" if tags_present
+            else "MISSING: Event priority tags not found in predictions",
+        ))
+
     return checks
 
 
@@ -2699,12 +2849,44 @@ def _sign_year(date_obj):
     return str(date_obj.year)
 
 
+def _event_priority_tag(sub_house):
+    """Return an event priority tag based on the Antardasha lord's house."""
+    _TAGS = {
+        10: "[MAJOR CAREER EVENT]",
+        11: "[MAJOR CAREER EVENT]",
+        7:  "[RELATIONSHIP EVENT]",
+        8:  "[TRANSFORMATION EVENT]",
+        12: "[FOREIGN/SPIRITUAL EVENT]",
+        9:  "[FOREIGN/SPIRITUAL EVENT]",
+    }
+    return _TAGS.get(sub_house, "")
+
+
+def _single_event_phrase(sub_house, verb):
+    """Return a single, clean event phrase for the Antardasha house — no chaining."""
+    _H = {
+        1:  f"an identity shift {verb}",
+        2:  f"wealth gain {verb}",
+        3:  f"a communication or business breakthrough {verb}",
+        4:  f"a home or property development {verb}",
+        5:  f"a romantic or educational breakthrough {verb}",
+        6:  f"competitive victory {verb}",
+        7:  f"a marriage or partnership event {verb}",
+        8:  f"a sudden and transformative change {verb}",
+        9:  f"fortune and higher-learning expansion {verb}",
+        10: f"career advancement {verb}",
+        11: f"financial gain {verb}",
+        12: f"foreign connection or spiritual deepening {verb}",
+    }
+    return _H.get(sub_house, f"a significant life event {verb}")
+
+
 def _predict_period(maha, sub, maha_ctx, sub_ctx, maha_start, maha_end,
                     sub_start, sub_end, sub_yogas, planet_data, lagna):
-    """Generate a single TIME–EVENT–REASON prediction sentence.
+    """Generate a single TIME–EVENT–REASON prediction (max 2 lines).
 
     Format:
-    "Between YEAR–YEAR, [EVENT] occurs/manifests/leads to/happens because [REASON]."
+    "Between YEAR–YEAR, [SINGLE EVENT] [verb] because [ANTARDASHA TRIGGER] — [MAHADASHA BACKGROUND]. [TAG]"
     """
     verb = _EVENT_VERBS.get(sub, "occurs")
 
@@ -2713,61 +2895,51 @@ def _predict_period(maha, sub, maha_ctx, sub_ctx, maha_start, maha_end,
     end_yr   = _sign_year(sub_end)
     time_str = f"Between {start_yr}–{end_yr}"
 
-    # Primary event domain: combine maha house domain + sub house domain
-    maha_data = planet_data.get(maha, {})
-    sub_data  = planet_data.get(sub, {})
-    maha_house = maha_data.get("house", 0)
+    sub_data   = planet_data.get(sub, {})
+    maha_data  = planet_data.get(maha, {})
     sub_house  = sub_data.get("house", 0)
+    maha_house = maha_data.get("house", 0)
 
-    maha_domain = _house_event_phrase(maha_house)
-    sub_domain  = _house_event_phrase(sub_house)
+    # Single clean event phrase (Antardasha = trigger)
+    event_phrase = _single_event_phrase(sub_house, verb)
 
-    # Yoga amplifier
+    # Priority tag
+    tag = _event_priority_tag(sub_house)
+
+    # Yoga amplifier (one yoga only)
     yoga_note = ""
     if sub_yogas:
-        primary_yoga = sub_yogas[0]
-        yoga_note = f", activating {primary_yoga}"
+        yoga_note = f", activating {sub_yogas[0]}"
 
-    # Build event phrase from dominant domains
-    if maha_house == sub_house:
-        event_phrase = f"{maha_domain} themes intensify"
-    elif sub_house in (10, 11):
-        event_phrase = f"career advancement and financial gains {verb}"
-    elif sub_house == 7:
-        event_phrase = f"significant relationship and partnership events {verb}"
-    elif sub_house == 5:
-        event_phrase = f"creative, romantic, and intellectual breakthroughs {verb}"
-    elif sub_house == 9:
-        event_phrase = f"fortune, higher education, and dharmic expansion {verb}"
-    elif sub_house == 12:
-        event_phrase = f"foreign connections, spiritual growth, and behind-the-scenes success {verb}"
-    elif sub_house == 2:
-        event_phrase = f"wealth growth and family developments {verb}"
-    elif sub_house == 4:
-        event_phrase = f"home, property, and emotional stability events {verb}"
-    elif sub_house == 8:
-        event_phrase = f"transformation, sudden changes, and hidden-sector events {verb}"
-    elif sub_house in (3, 6):
-        event_phrase = f"competitive action, communication, and overcoming challenges {verb}"
-    elif sub_house == 1:
-        event_phrase = f"personal reinvention and identity-defining events {verb}"
-    else:
-        event_phrase = f"events linked to {sub_domain} {verb}"
-
-    # Reason: multi-layer synthesis
-    reason = (
-        f"because {maha_ctx} activates as Mahadasha lord while {sub_ctx} "
-        f"operates as Antardasha lord{yoga_note}"
+    # Antardasha = trigger (reason)
+    # Strip repeated planet name by building compact sub context
+    sub_lord_str = _planet_lordship_summary(sub, planet_data, lagna)
+    sub_conj     = _conjunction_partners(sub, planet_data)
+    sub_conj_str = f" conjunct {', '.join(sub_conj)}" if sub_conj else ""
+    trigger = (
+        f"{sub_lord_str} (Antardasha) placed in House {sub_house}"
+        f"{sub_conj_str}{yoga_note} acts as the direct trigger"
     )
 
-    # Append combustion note for Mercury sub-period (Mercury is combust in this chart)
+    # Mahadasha = background context (compact)
+    maha_lord_str = _planet_lordship_summary(maha, planet_data, lagna)
+    background = (
+        f"the {maha} Mahadasha (House {maha_house}) provides the overarching theme"
+    )
+
+    # Special note for Mercury (Budha-Aditya Yoga)
+    combustion_note = ""
     if sub == "Mercury":
-        reason += (
-            ". Mercury's Antardasha is infused with solar authority (Budha-Aditya Yoga), "
-            "making communication and intellectual work exceptionally productive"
+        combustion_note = (
+            " Mercury's sub-period channels Budha-Aditya Yoga energy, "
+            "making intellectual and communication work highly productive."
         )
 
-    return f"{time_str}, {event_phrase} — {reason}."
+    line = f"{time_str}, {event_phrase} — because {trigger}, while {background}.{combustion_note}"
+    if tag:
+        line += f"  {tag}"
+
+    return line
 
 
 def generate_time_event_predictions(kundali_data, dasha_data, planet_data, yogas=None):
