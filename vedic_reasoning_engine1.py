@@ -232,6 +232,7 @@ def analyze_planets():
         ]
 
         insights = retrieve_insights(keywords)
+        insights = insights[:2]  # max 2 insights per planet
 
         section = f"\n=== {planet.upper()} ===\n"
         section += f"{planet} in {data.get('sign', 'N/A')} (House {data.get('house', 'N/A')}, {data.get('nakshatra', 'N/A')})\n"
@@ -1227,21 +1228,24 @@ PLANET_DEEP_LOGIC = {
 
 
 def synthesize_planet(planet, data, all_planets):
-    """Return a deeply reasoned analysis string for one planet."""
+    """Return a chart-specific synthesis string for one planet.
+
+    Only placement-specific logic is shown — no generic textbook descriptions.
+    """
     sign = data.get("sign", "Unknown")
     house = data.get("house", 0)
     nakshatra = data.get("nakshatra", "Unknown")
 
     text = f"\n--- {planet} in {sign} (House {house}, Nakshatra: {nakshatra}) ---\n"
-    text += f"{planet} is placed in {sign} in the {house}th house of your chart. "
-    text += f"This house governs {HOUSE_MEANINGS.get(house, 'various life areas')}. "
-    text += f"{planet} represents {PLANET_NATURE.get(planet, 'cosmic influence')}.\n\n"
+    text += (
+        f"Therefore, this placement indicates: {planet} in {sign} (House {house}) "
+        f"activates the domain of {HOUSE_MEANINGS.get(house, 'various life areas')}.\n"
+    )
 
     logic = PLANET_DEEP_LOGIC.get(planet, {})
-    if "general" in logic:
-        text += logic["general"] + "\n"
+    # Only house-specific insights — NO "general" textbook definitions
     if house in logic:
-        text += logic[house] + "\n"
+        text += f"Hence, the native experiences: {logic[house]}\n"
 
     # Dignity commentary
     exaltation = {
@@ -2547,10 +2551,11 @@ def validate_report(report_text):
     ))
 
     # 5. Dasha has time + reason (both old and new prediction engine)
+    _has_reason_phrase = "because" in report_text or "due to" in report_text
     checks.append((
         "Dasha time + reason",
-        "MAHADASHA" in report_text and "because" in report_text,
-        "Dasha timeline with time and reason found" if "because" in report_text
+        "MAHADASHA" in report_text and _has_reason_phrase,
+        "Dasha timeline with time and reason found" if _has_reason_phrase
         else "MISSING: Dasha timeline lacks Time or Reason",
     ))
 
@@ -2862,6 +2867,34 @@ def _event_priority_tag(sub_house):
     return _TAGS.get(sub_house, "")
 
 
+# Alias required by Stage 4 Fix 5 spec
+def _event_tag(house):
+    """Return an event priority tag (alias for _event_priority_tag)."""
+    return _event_priority_tag(house)
+
+
+def _single_event_from_house(house):
+    """Return a single deterministic event description for the given house number.
+
+    Each house maps to exactly one event type — no chaining, no lists.
+    """
+    _MAP = {
+        1:  "identity shift occurs",
+        2:  "financial gain occurs",
+        3:  "communication opportunity arises",
+        4:  "property/home event occurs",
+        5:  "education/romance event occurs",
+        6:  "competition or health challenge occurs",
+        7:  "relationship/marriage event occurs",
+        8:  "sudden transformation occurs",
+        9:  "travel or higher learning event occurs",
+        10: "career advancement occurs",
+        11: "income/gains increase",
+        12: "foreign/spiritual event occurs",
+    }
+    return _MAP.get(house, "significant life event occurs")
+
+
 def _single_event_phrase(sub_house, verb):
     """Return a single, clean event phrase for the Antardasha house — no chaining."""
     _H = {
@@ -2886,56 +2919,46 @@ def _predict_period(maha, sub, maha_ctx, sub_ctx, maha_start, maha_end,
     """Generate a single TIME–EVENT–REASON prediction (max 2 lines).
 
     Format:
-    "Between YEAR–YEAR, [SINGLE EVENT] [verb] because [ANTARDASHA TRIGGER] — [MAHADASHA BACKGROUND]. [TAG]"
+    "YEAR–YEAR: [SINGLE EVENT] due to [ANTARDASHA] activating House N.
+     [MAHADASHA] Mahadasha provides [THEME] as background.  [TAG]"
     """
-    verb = _EVENT_VERBS.get(sub, "occurs")
-
     # Time window
     start_yr = _sign_year(sub_start)
     end_yr   = _sign_year(sub_end)
-    time_str = f"Between {start_yr}–{end_yr}"
+    time_str = f"{start_yr}–{end_yr}"
 
     sub_data   = planet_data.get(sub, {})
     maha_data  = planet_data.get(maha, {})
     sub_house  = sub_data.get("house", 0)
     maha_house = maha_data.get("house", 0)
 
-    # Single clean event phrase (Antardasha = trigger)
-    event_phrase = _single_event_phrase(sub_house, verb)
+    # Single deterministic event from Antardasha house (Fix 4)
+    event = _single_event_from_house(sub_house)
 
-    # Priority tag
-    tag = _event_priority_tag(sub_house)
+    # Priority tag (Fix 5)
+    tag = _event_tag(sub_house)
 
     # Yoga amplifier (one yoga only)
     yoga_note = ""
     if sub_yogas:
         yoga_note = f", activating {sub_yogas[0]}"
 
-    # Antardasha = trigger (reason)
-    # Strip repeated planet name by building compact sub context
+    # Antardasha = trigger — compact, no repeated planet name
     sub_lord_str = _planet_lordship_summary(sub, planet_data, lagna)
-    sub_conj     = _conjunction_partners(sub, planet_data)
-    sub_conj_str = f" conjunct {', '.join(sub_conj)}" if sub_conj else ""
-    trigger = (
-        f"{sub_lord_str} (Antardasha) placed in House {sub_house}"
-        f"{sub_conj_str}{yoga_note} acts as the direct trigger"
-    )
+    trigger = f"{sub} activating House {sub_house}{yoga_note}"
 
-    # Mahadasha = background context (compact)
-    maha_lord_str = _planet_lordship_summary(maha, planet_data, lagna)
-    background = (
-        f"the {maha} Mahadasha (House {maha_house}) provides the overarching theme"
-    )
+    # Mahadasha = background — compact
+    maha_domain = _PLANET_DOMAINS.get(maha, "life themes")
+    background = f"{maha} Mahadasha provides {maha_domain} as background"
 
-    # Special note for Mercury (Budha-Aditya Yoga)
+    # Special note for Mercury (Budha-Aditya Yoga) — Antardasha only
     combustion_note = ""
-    if sub == "Mercury":
+    if sub == "Mercury" and maha != "Mercury":
         combustion_note = (
-            " Mercury's sub-period channels Budha-Aditya Yoga energy, "
-            "making intellectual and communication work highly productive."
+            " Mercury's Budha-Aditya Yoga makes communication and intellectual work highly productive."
         )
 
-    line = f"{time_str}, {event_phrase} — because {trigger}, while {background}.{combustion_note}"
+    line = f"{time_str}: {event} due to {trigger}.\n  {background}.{combustion_note}"
     if tag:
         line += f"  {tag}"
 
@@ -3023,8 +3046,11 @@ def generate_time_event_predictions(kundali_data, dasha_data, planet_data, yogas
 
             # --- Inline validation ---
             _has_time   = any(c.isdigit() for c in prediction)
-            _has_event  = any(w in prediction.lower() for w in ["occurs", "manifests", "leads to", "happens", "intensify"])
-            _has_reason = "because" in prediction.lower()
+            _has_event  = any(w in prediction.lower() for w in [
+                "occurs", "manifests", "leads to", "happens", "intensify",
+                "arises", "increase",
+            ])
+            _has_reason = "due to" in prediction.lower() or "because" in prediction.lower()
             _no_weak    = not any(w in prediction.lower() for w in [" may ", " might ", " could ", "possibly"])
 
             if not (_has_time and _has_event and _has_reason and _no_weak):
