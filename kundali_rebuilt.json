@@ -1,0 +1,725 @@
+{
+  "basic_details": {
+    "name": "Abhishek Singh",
+    "lagna": "Gemini",
+    "rasi": "Libra",
+    "nakshatra": "Swati",
+    "nakshatra_pada": 2,
+    "nakshatra_lord": "Rahu",
+    "date_of_birth": "3:9:2000",
+    "time_of_birth": "0:0:18",
+    "place": "Ayodhya",
+    "timezone": "5.5",
+    "latitude": "26 : 48 : N",
+    "longitude": "82 : 12 : E"
+  },
+  "planets": {
+    "ASC": {
+      "sign": "Gemini",
+      "degree": 1.1525,
+      "nakshatra": "Mrigasira",
+      "pada": 3,
+      "nakshatra_lord": "Mars",
+      "house": 1
+    },
+    "Sun": {
+      "sign": "Leo",
+      "degree": 16.724722,
+      "nakshatra": "Purva Phalguni",
+      "pada": 2,
+      "nakshatra_lord": "Venus",
+      "house": 3
+    },
+    "Moon": {
+      "sign": "Libra",
+      "degree": 13.039167,
+      "nakshatra": "Swati",
+      "pada": 2,
+      "nakshatra_lord": "Rahu",
+      "house": 5
+    },
+    "Mars": {
+      "sign": "Cancer",
+      "degree": 27.129722,
+      "nakshatra": "Ashlesha",
+      "pada": 4,
+      "nakshatra_lord": "Mercury",
+      "house": 2
+    },
+    "Mercury": {
+      "sign": "Leo",
+      "degree": 27.376667,
+      "nakshatra": "Uttara Phalguni",
+      "pada": 1,
+      "nakshatra_lord": "Sun",
+      "house": 3
+    },
+    "Jupiter": {
+      "sign": "Taurus",
+      "degree": 16.191111,
+      "nakshatra": "Rohini",
+      "pada": 2,
+      "nakshatra_lord": "Moon",
+      "house": 12
+    },
+    "Venus": {
+      "sign": "Virgo",
+      "degree": 9.37,
+      "nakshatra": "Uttara Phalguni",
+      "pada": 4,
+      "nakshatra_lord": "Sun",
+      "house": 4
+    },
+    "Saturn": {
+      "sign": "Taurus",
+      "degree": 7.037222,
+      "nakshatra": "Krittika",
+      "pada": 4,
+      "nakshatra_lord": "Sun",
+      "house": 12
+    },
+    "Rahu": {
+      "sign": "Gemini",
+      "degree": 28.185833,
+      "nakshatra": "Punarvasu",
+      "pada": 3,
+      "nakshatra_lord": "Jupiter",
+      "house": 1
+    },
+    "Ketu": {
+      "sign": "Sagittarius",
+      "degree": 28.185833,
+      "nakshatra": "Uttara Ashadha",
+      "pada": 1,
+      "nakshatra_lord": "Sun",
+      "house": 7
+    }
+  },
+  "Ashtakavarga": {
+    "Sun": [
+      4,
+      5,
+      3,
+      3,
+      6,
+      3,
+      3,
+      3,
+      3,
+      4,
+      4,
+      7
+    ],
+    "Moon": [
+      4,
+      5,
+      3,
+      3,
+      5,
+      2,
+      4,
+      5,
+      5,
+      2,
+      3,
+      8
+    ],
+    "Mars": [
+      4,
+      3,
+      3,
+      2,
+      5,
+      0,
+      4,
+      2,
+      4,
+      4,
+      4,
+      4
+    ],
+    "Mercury": [
+      6,
+      5,
+      4,
+      6,
+      4,
+      2,
+      4,
+      4,
+      5,
+      7,
+      2,
+      5
+    ],
+    "Jupiter": [
+      6,
+      5,
+      6,
+      5,
+      5,
+      4,
+      5,
+      5,
+      3,
+      3,
+      6,
+      3
+    ],
+    "Venus": [
+      3,
+      3,
+      6,
+      4,
+      3,
+      6,
+      4,
+      3,
+      6,
+      6,
+      4,
+      4
+    ],
+    "Saturn": [
+      4,
+      3,
+      4,
+      3,
+      4,
+      5,
+      2,
+      3,
+      2,
+      1,
+      2,
+      6
+    ],
+    "Total": [
+      31,
+      29,
+      29,
+      26,
+      32,
+      22,
+      26,
+      25,
+      28,
+      27,
+      25,
+      37
+    ]
+  },
+  "Vimshottari_Dasha": [
+    {
+      "planet": "Rahu",
+      "years": 18,
+      "start": "03/09/2000",
+      "end": "26/01/2010"
+    },
+    {
+      "planet": "Jupiter",
+      "years": 16,
+      "start": "26/01/2010",
+      "end": "26/01/2026"
+    },
+    {
+      "planet": "Saturn",
+      "years": 19,
+      "start": "26/01/2026",
+      "end": "26/01/2045"
+    },
+    {
+      "planet": "Mercury",
+      "years": 17,
+      "start": "26/01/2045",
+      "end": "26/01/2062"
+    },
+    {
+      "planet": "Ketu",
+      "years": 7,
+      "start": "26/01/2062",
+      "end": "26/01/2069"
+    },
+    {
+      "planet": "Venus",
+      "years": 20,
+      "start": "26/01/2069",
+      "end": "26/01/2089"
+    },
+    {
+      "planet": "Sun",
+      "years": 6,
+      "start": "26/01/2089",
+      "end": "26/01/2095"
+    },
+    {
+      "planet": "Moon",
+      "years": 10,
+      "start": "26/01/2095",
+      "end": "26/01/2105"
+    },
+    {
+      "planet": "Mars",
+      "years": 7,
+      "start": "26/01/2105",
+      "end": "26/01/2112"
+    }
+  ],
+  "Yogini_Dasha": [
+    {
+      "yogini": "Pingala",
+      "years": 2,
+      "start": "29/09/1999",
+      "end": "19/09/2001"
+    },
+    {
+      "yogini": "Dhanya",
+      "years": 3,
+      "start": "19/09/2001",
+      "end": "19/09/2004"
+    },
+    {
+      "yogini": "Bhramari",
+      "years": 4,
+      "start": "19/09/2004",
+      "end": "19/09/2008"
+    },
+    {
+      "yogini": "Bhadrika",
+      "years": 5,
+      "start": "19/09/2008",
+      "end": "19/09/2013"
+    },
+    {
+      "yogini": "Ulka",
+      "years": 6,
+      "start": "19/09/2013",
+      "end": "19/09/2019"
+    },
+    {
+      "yogini": "Siddha",
+      "years": 7,
+      "start": "19/09/2019",
+      "end": "19/09/2026"
+    },
+    {
+      "yogini": "Sankata",
+      "years": 8,
+      "start": "19/09/2026",
+      "end": "19/09/2034"
+    },
+    {
+      "yogini": "Mangala",
+      "years": 1,
+      "start": "19/09/2034",
+      "end": "19/09/2035"
+    },
+    {
+      "yogini": "Pingala",
+      "years": 2,
+      "start": "19/09/2035",
+      "end": "19/09/2037"
+    },
+    {
+      "yogini": "Dhanya",
+      "years": 3,
+      "start": "19/09/2037",
+      "end": "19/09/2040"
+    },
+    {
+      "yogini": "Bhramari",
+      "years": 4,
+      "start": "19/09/2040",
+      "end": "19/09/2044"
+    },
+    {
+      "yogini": "Bhadrika",
+      "years": 5,
+      "start": "19/09/2044",
+      "end": "19/09/2049"
+    },
+    {
+      "yogini": "Ulka",
+      "years": 6,
+      "start": "19/09/2049",
+      "end": "19/09/2055"
+    },
+    {
+      "yogini": "Siddha",
+      "years": 7,
+      "start": "19/09/2055",
+      "end": "19/09/2062"
+    },
+    {
+      "yogini": "Sankata",
+      "years": 8,
+      "start": "19/09/2062",
+      "end": "19/09/2070"
+    },
+    {
+      "yogini": "Mangala",
+      "years": 1,
+      "start": "19/09/2070",
+      "end": "19/09/2071"
+    },
+    {
+      "yogini": "Pingala",
+      "years": 2,
+      "start": "19/09/2071",
+      "end": "19/09/2073"
+    },
+    {
+      "yogini": "Dhanya",
+      "years": 3,
+      "start": "19/09/2073",
+      "end": "19/09/2076"
+    },
+    {
+      "yogini": "Bhramari",
+      "years": 4,
+      "start": "19/09/2076",
+      "end": "19/09/2080"
+    },
+    {
+      "yogini": "Bhadrika",
+      "years": 5,
+      "start": "19/09/2080",
+      "end": "19/09/2085"
+    },
+    {
+      "yogini": "Ulka",
+      "years": 6,
+      "start": "19/09/2085",
+      "end": "19/09/2091"
+    },
+    {
+      "yogini": "Siddha",
+      "years": 7,
+      "start": "19/09/2091",
+      "end": "19/09/2098"
+    },
+    {
+      "yogini": "Sankata",
+      "years": 8,
+      "start": "19/09/2098",
+      "end": "19/09/2106"
+    },
+    {
+      "yogini": "Mangala",
+      "years": 1,
+      "start": "19/09/2106",
+      "end": "19/09/2107"
+    }
+  ],
+  "SadeSati": [
+    {
+      "type": "Small Panoti",
+      "rashi": "Taurus",
+      "start": "07/06/2000",
+      "end": "22/07/2002",
+      "phase": null
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Taurus",
+      "start": "09/01/2003",
+      "end": "07/04/2003",
+      "phase": null
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Virgo",
+      "start": "10/09/2009",
+      "end": "14/11/2011",
+      "phase": "Rising"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Libra",
+      "start": "15/11/2011",
+      "end": "15/05/2012",
+      "phase": "Peak"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Virgo",
+      "start": "16/05/2012",
+      "end": "03/08/2012",
+      "phase": "Rising"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Libra",
+      "start": "04/08/2012",
+      "end": "02/11/2014",
+      "phase": "Peak"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Scorpio",
+      "start": "03/11/2014",
+      "end": "26/01/2017",
+      "phase": "Setting"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Scorpio",
+      "start": "21/06/2017",
+      "end": "26/10/2017",
+      "phase": "Setting"
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Capricorn",
+      "start": "24/01/2020",
+      "end": "28/04/2022",
+      "phase": null
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Capricorn",
+      "start": "13/07/2022",
+      "end": "17/01/2023",
+      "phase": null
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Taurus",
+      "start": "08/08/2029",
+      "end": "05/10/2029",
+      "phase": null
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Taurus",
+      "start": "17/04/2030",
+      "end": "30/05/2032",
+      "phase": null
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Virgo",
+      "start": "23/10/2038",
+      "end": "05/04/2039",
+      "phase": "Rising"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Virgo",
+      "start": "13/07/2039",
+      "end": "27/01/2041",
+      "phase": "Rising"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Libra",
+      "start": "28/01/2041",
+      "end": "05/02/2041",
+      "phase": "Peak"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Virgo",
+      "start": "06/02/2041",
+      "end": "25/09/2041",
+      "phase": "Rising"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Libra",
+      "start": "26/09/2041",
+      "end": "11/12/2043",
+      "phase": "Peak"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Scorpio",
+      "start": "12/12/2043",
+      "end": "22/06/2044",
+      "phase": "Setting"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Libra",
+      "start": "23/06/2044",
+      "end": "29/08/2044",
+      "phase": "Peak"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Scorpio",
+      "start": "30/08/2044",
+      "end": "07/12/2046",
+      "phase": "Setting"
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Capricorn",
+      "start": "07/03/2049",
+      "end": "09/07/2049",
+      "phase": null
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Capricorn",
+      "start": "04/12/2049",
+      "end": "24/02/2052",
+      "phase": null
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Taurus",
+      "start": "28/05/2059",
+      "end": "10/07/2061",
+      "phase": null
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Taurus",
+      "start": "14/02/2062",
+      "end": "06/03/2062",
+      "phase": null
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Virgo",
+      "start": "30/08/2068",
+      "end": "04/11/2070",
+      "phase": "Rising"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Libra",
+      "start": "05/11/2070",
+      "end": "05/02/2073",
+      "phase": "Peak"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Scorpio",
+      "start": "06/02/2073",
+      "end": "30/03/2073",
+      "phase": "Setting"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Libra",
+      "start": "31/03/2073",
+      "end": "23/10/2073",
+      "phase": "Peak"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Scorpio",
+      "start": "24/10/2073",
+      "end": "16/01/2076",
+      "phase": "Setting"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Scorpio",
+      "start": "11/07/2076",
+      "end": "11/10/2076",
+      "phase": "Setting"
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Capricorn",
+      "start": "15/01/2079",
+      "end": "11/04/2081",
+      "phase": null
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Capricorn",
+      "start": "03/08/2081",
+      "end": "06/01/2082",
+      "phase": null
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Taurus",
+      "start": "18/07/2088",
+      "end": "30/10/2088",
+      "phase": null
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Taurus",
+      "start": "06/04/2089",
+      "end": "18/09/2090",
+      "phase": null
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Taurus",
+      "start": "25/10/2090",
+      "end": "20/05/2091",
+      "phase": null
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Virgo",
+      "start": "12/10/2097",
+      "end": "02/05/2098",
+      "phase": "Rising"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Virgo",
+      "start": "20/06/2098",
+      "end": "25/12/2099",
+      "phase": "Rising"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Libra",
+      "start": "26/12/2099",
+      "end": "17/03/2100",
+      "phase": "Peak"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Virgo",
+      "start": "18/03/2100",
+      "end": "16/09/2100",
+      "phase": "Rising"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Libra",
+      "start": "17/09/2100",
+      "end": "02/12/2102",
+      "phase": "Peak"
+    },
+    {
+      "type": "Sade Sati",
+      "rashi": "Scorpio",
+      "start": "03/12/2102",
+      "end": "29/11/2105",
+      "phase": "Setting"
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Capricorn",
+      "start": "25/02/2108",
+      "end": "28/07/2108",
+      "phase": null
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Capricorn",
+      "start": "23/11/2108",
+      "end": "16/02/2111",
+      "phase": null
+    },
+    {
+      "type": "Small Panoti",
+      "rashi": "Taurus",
+      "start": "19/05/2118",
+      "end": "01/07/2120",
+      "phase": null
+    }
+  ],
+  "Kalsarpa": false
+}
