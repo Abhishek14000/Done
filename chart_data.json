@@ -1,0 +1,216 @@
+{
+  "basic_details": {
+    "name": "Abhishek Singh",
+    "date_of_birth": "3:9:2000",
+    "time_of_birth": "0:0:18",
+    "place": "Ayodhya",
+    "lagna": "Gemini",
+    "rasi": "Libra",
+    "nakshatra": "Swati"
+  },
+  "planets": {
+    "ASC": {
+      "sign": "Gemini",
+      "house": 1,
+      "degree": 1.1525,
+      "nakshatra": "Mrigasira",
+      "retrograde": false,
+      "dignity": "neutral",
+      "combust": false
+    },
+    "Sun": {
+      "sign": "Leo",
+      "house": 3,
+      "degree": 16.724722,
+      "nakshatra": "Purva Phalguni",
+      "retrograde": false,
+      "dignity": "neutral",
+      "combust": false
+    },
+    "Moon": {
+      "sign": "Libra",
+      "house": 5,
+      "degree": 13.039167,
+      "nakshatra": "Swati",
+      "retrograde": false,
+      "dignity": "neutral",
+      "combust": false
+    },
+    "Mars": {
+      "sign": "Cancer",
+      "house": 2,
+      "degree": 27.129722,
+      "nakshatra": "Ashlesha",
+      "retrograde": false,
+      "dignity": "debilitated",
+      "combust": false
+    },
+    "Mercury": {
+      "sign": "Leo",
+      "house": 3,
+      "degree": 27.376667,
+      "nakshatra": "Uttara Phalguni",
+      "retrograde": false,
+      "dignity": "neutral",
+      "combust": true,
+      "combust_orb_degrees": 10.65
+    },
+    "Jupiter": {
+      "sign": "Taurus",
+      "house": 12,
+      "degree": 16.191111,
+      "nakshatra": "Rohini",
+      "retrograde": false,
+      "dignity": "neutral",
+      "combust": false
+    },
+    "Venus": {
+      "sign": "Virgo",
+      "house": 4,
+      "degree": 9.37,
+      "nakshatra": "Uttara Phalguni",
+      "retrograde": false,
+      "dignity": "debilitated",
+      "combust": false
+    },
+    "Saturn": {
+      "sign": "Taurus",
+      "house": 12,
+      "degree": 7.037222,
+      "nakshatra": "Krittika",
+      "retrograde": false,
+      "dignity": "neutral",
+      "combust": false
+    },
+    "Rahu": {
+      "sign": "Gemini",
+      "house": 1,
+      "degree": 28.185833,
+      "nakshatra": "Punarvasu",
+      "retrograde": false,
+      "dignity": "neutral",
+      "combust": false
+    },
+    "Ketu": {
+      "sign": "Sagittarius",
+      "house": 7,
+      "degree": 28.185833,
+      "nakshatra": "Uttara Ashadha",
+      "retrograde": false,
+      "dignity": "neutral",
+      "combust": false
+    }
+  },
+  "house_occupants": {
+    "1": [
+      "ASC",
+      "Rahu"
+    ],
+    "2": [
+      "Mars"
+    ],
+    "3": [
+      "Sun",
+      "Mercury"
+    ],
+    "4": [
+      "Venus"
+    ],
+    "5": [
+      "Moon"
+    ],
+    "6": [],
+    "7": [
+      "Ketu"
+    ],
+    "8": [],
+    "9": [],
+    "10": [],
+    "11": [],
+    "12": [
+      "Jupiter",
+      "Saturn"
+    ]
+  },
+  "lordships": {
+    "Mercury": [
+      1,
+      4
+    ],
+    "Moon": [
+      2
+    ],
+    "Sun": [
+      3
+    ],
+    "Venus": [
+      5,
+      12
+    ],
+    "Mars": [
+      6,
+      11
+    ],
+    "Jupiter": [
+      7,
+      10
+    ],
+    "Saturn": [
+      8,
+      9
+    ]
+  },
+  "yogas": [
+    "Vipreet Raj Yoga",
+    "Budh-Aditya Yoga",
+    "Neecha Bhanga Raja Yoga",
+    "Graha Malika Yoga"
+  ],
+  "dasha": [
+    {
+      "planet": "Rahu",
+      "start": "03/09/2000",
+      "end": "26/01/2010"
+    },
+    {
+      "planet": "Jupiter",
+      "start": "26/01/2010",
+      "end": "26/01/2026"
+    },
+    {
+      "planet": "Saturn",
+      "start": "26/01/2026",
+      "end": "26/01/2045"
+    },
+    {
+      "planet": "Mercury",
+      "start": "26/01/2045",
+      "end": "26/01/2062"
+    },
+    {
+      "planet": "Ketu",
+      "start": "26/01/2062",
+      "end": "26/01/2069"
+    },
+    {
+      "planet": "Venus",
+      "start": "26/01/2069",
+      "end": "26/01/2089"
+    },
+    {
+      "planet": "Sun",
+      "start": "26/01/2089",
+      "end": "26/01/2095"
+    },
+    {
+      "planet": "Moon",
+      "start": "26/01/2095",
+      "end": "26/01/2105"
+    },
+    {
+      "planet": "Mars",
+      "start": "26/01/2105",
+      "end": "26/01/2112"
+    }
+  ]
+}

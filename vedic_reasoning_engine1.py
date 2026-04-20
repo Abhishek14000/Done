@@ -4896,10 +4896,195 @@ def generate_ultra_report():
     print(_ultra_strip(_ultra_final_judgement(planets, dasha)))
 
 
+# ============================================================
+# STEP 1 — STRICT JSON DATA EXPORT (no interpretation prose)
+# Implements the "Data Engine" step of the Hybrid Jyotish System.
+# Output: chart_data.json
+# ============================================================
+
+_DEBIL_MAP_JSON = {
+    "Sun": "Libra", "Moon": "Scorpio", "Mars": "Cancer",
+    "Mercury": "Pisces", "Jupiter": "Capricorn",
+    "Venus": "Virgo", "Saturn": "Aries",
+}
+_EXALT_MAP_JSON = {
+    "Sun": "Aries", "Moon": "Taurus", "Mars": "Capricorn",
+    "Mercury": "Virgo", "Jupiter": "Cancer",
+    "Venus": "Pisces", "Saturn": "Libra",
+}
+_COMBUST_ORBS_JSON = {
+    "Moon": 12, "Mars": 17, "Mercury": 14,
+    "Jupiter": 11, "Venus": 10, "Saturn": 15,
+}
+
+
+def export_chart_data_json(planet_data, dasha_data, kundali_data,
+                           output_path="chart_data.json"):
+    """Serialise all chart facts to a strict JSON file — no prose, no interpretation.
+
+    Fields exported:
+        basic_details          — name, DOB, lagna, rasi, nakshatra
+        planets                — per-planet: sign, house, degree, nakshatra,
+                                 retrograde, dignity (exalted/debilitated/neutral),
+                                 combust (bool), combust_orb_degrees
+        house_occupants        — list of planets per house (1–12)
+        lordships              — planet → list of houses it lords
+        yogas                  — list of detected yoga names
+        dasha                  — list of Mahadasha + derived antardasha info
+    """
+    import re as _rj
+
+    # ── Basic Details ──────────────────────────────────────────
+    bd = kundali_data.get("basic_details", kundali_data)
+    basic = {}
+    for key in ("name", "date_of_birth", "time_of_birth", "place_of_birth",
+                "place", "lagna", "ascendant", "rasi", "nakshatra"):
+        val = bd.get(key) or kundali_data.get(key)
+        if val:
+            basic[key] = val
+
+    # ── Lagna index (for lordship calc) ───────────────────────
+    lagna_str = basic.get("lagna", basic.get("ascendant", ""))
+    lagna_idx = SIGN_ORDER.index(lagna_str) if lagna_str in SIGN_ORDER else -1
+
+    # ── Sun position (for combustion) ─────────────────────────
+    sun_data   = planet_data.get("Sun", {})
+    sun_degree = float(sun_data.get("degree", 0))
+    sun_sign   = sun_data.get("sign", "")
+
+    # ── Planets ───────────────────────────────────────────────
+    planets_out = {}
+    for planet, pdata in planet_data.items():
+        sign    = pdata.get("sign", "")
+        house   = pdata.get("house", None)
+        degree  = pdata.get("degree", None)
+        naksh   = pdata.get("nakshatra", "")
+        retro   = pdata.get("retrograde", False) is True
+
+        # Dignity
+        if _DEBIL_MAP_JSON.get(planet) == sign:
+            dignity = "debilitated"
+        elif _EXALT_MAP_JSON.get(planet) == sign:
+            dignity = "exalted"
+        else:
+            dignity = "neutral"
+
+        # Combustion (only for non-Sun planets)
+        combust       = False
+        combust_orb   = None
+        if planet != "Sun":
+            p_degree = float(pdata.get("degree", 0))
+            p_sign   = sign
+            if p_sign == sun_sign:
+                orb_limit = _COMBUST_ORBS_JSON.get(planet, 12)
+                raw_diff  = abs(p_degree - sun_degree)
+                diff      = min(raw_diff, 360 - raw_diff)
+                if diff <= orb_limit:
+                    combust     = True
+                    combust_orb = round(diff, 2)
+
+        planets_out[planet] = {
+            "sign":         sign,
+            "house":        house,
+            "degree":       degree,
+            "nakshatra":    naksh,
+            "retrograde":   retro,
+            "dignity":      dignity,
+            "combust":      combust,
+        }
+        if combust:
+            planets_out[planet]["combust_orb_degrees"] = combust_orb
+
+    # ── House Occupants ───────────────────────────────────────
+    house_occupants: dict = {str(h): [] for h in range(1, 13)}
+    for planet, pdata in planet_data.items():
+        h = pdata.get("house")
+        if h:
+            house_occupants[str(h)].append(planet)
+
+    # ── Lordships ─────────────────────────────────────────────
+    lordships: dict = {}
+    if lagna_idx >= 0:
+        for offset in range(12):
+            house_num  = offset + 1
+            house_sign = SIGN_ORDER[(lagna_idx + offset) % 12]
+            lord       = SIGN_LORDS.get(house_sign, "")
+            if lord:
+                lordships.setdefault(lord, []).append(house_num)
+
+    # ── Yogas ─────────────────────────────────────────────────
+    yoga_names: list = []
+    # Extract from detect_real_yogas (returns formatted text)
+    try:
+        raw_yogas = detect_real_yogas(planet_data)
+        for line in raw_yogas.splitlines():
+            m = _rj.search(r'✅\s+(.+?)\s+(?:CONFIRMED|DETECTED|YOGA)', line, _rj.IGNORECASE)
+            if m:
+                yoga_names.append(m.group(1).strip())
+            elif "Yoga" in line or "YOGA" in line:
+                # Fallback: grab first capitalized phrase
+                m2 = _rj.search(r'([A-Z][a-z]+(?:[-\s][A-Z][a-z]+)*\s+Yoga)', line)
+                if m2:
+                    yoga_names.append(m2.group(1).strip())
+    except Exception:
+        pass
+
+    # Also pull yoga names from detect_advanced_yogas text
+    try:
+        adv_yogas = detect_advanced_yogas(planet_data)
+        for line in adv_yogas.splitlines():
+            m = _rj.search(r'([A-Z][a-z]+(?:[-\s][A-Z][a-z]+)*\s+Yoga)', line)
+            if m:
+                name = m.group(1).strip()
+                if name not in yoga_names:
+                    yoga_names.append(name)
+    except Exception:
+        pass
+
+    # De-duplicate
+    yoga_names = list(dict.fromkeys(yoga_names))
+
+    # ── Dasha ─────────────────────────────────────────────────
+    dasha_out = []
+    for entry in dasha_data:
+        dasha_out.append({
+            "planet": entry.get("planet", ""),
+            "start":  entry.get("start", ""),
+            "end":    entry.get("end", ""),
+        })
+
+    # ── Assemble and write ────────────────────────────────────
+    chart_json = {
+        "basic_details":   basic,
+        "planets":         planets_out,
+        "house_occupants": house_occupants,
+        "lordships":       lordships,
+        "yogas":           yoga_names,
+        "dasha":           dasha_out,
+    }
+
+    with open(output_path, "w", encoding="utf-8") as _f:
+        json.dump(chart_json, _f, indent=2, ensure_ascii=False)
+
+    return chart_json
+
+
 # -------------------------------
 # ENTRY POINT
 # -------------------------------
 if __name__ == "__main__":
+    # --------------------------------------------------------
+    # STEP 1 — STRICT JSON DATA EXPORT (no interpretation)
+    # --------------------------------------------------------
+    JSON_OUTPUT_FILE = "chart_data.json"
+    _chart_json = export_chart_data_json(
+        planets, dasha, kundali, output_path=JSON_OUTPUT_FILE
+    )
+    print(f"✅ Strict JSON data exported to {JSON_OUTPUT_FILE}")
+    print(f"   Planets: {len(_chart_json['planets'])}  |  "
+          f"Yogas: {len(_chart_json['yogas'])}  |  "
+          f"Dashas: {len(_chart_json['dasha'])}\n")
+
     REPORT_OUTPUT_FILE = "astrology_report_final.txt"
 
     import io as _io
