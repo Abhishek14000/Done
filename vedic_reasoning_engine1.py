@@ -1,6 +1,7 @@
 from collections import defaultdict
 import itertools
 import json
+import re
 import random
 import sys
 
@@ -149,25 +150,86 @@ SOURCE_WEIGHTS = {
 DEFAULT_WEIGHT = 3
 
 _BOOK_DISPLAY_NAMES = {
-    "book2":  "Brihat Parashara Hora Sastra",
+    "book2":  "Brihat Parashara Hora Shastra",
     "book4":  "Jaimini Sutras",
-    "book7":  "Phaladeepika",
+    "book7":  "Phaladeepika — Mantreswara",
     "book5":  "Jataka Parijata",
-    "book6":  "Uttara Kalamrita",
-    "book3":  "Crux of Vedic Astrology",
-    "book9":  "Vedic Astrology",
-    "book1":  "Destiny and the Wheel of Time",
-    "book11": "Vedic Remedies in Astrology",
+    "book6":  "Uttara Kalamrita — Kalidasa",
+    "book3":  "Crux of Vedic Astrology — K.N. Rao",
+    "book9":  "Vedic Astrology: An Integrated Approach — P.V.R. Narasimha Rao",
+    "book1":  "Astrology, Destiny and the Wheel of Time — K.N. Rao",
+    "book11": "Vedic Remedies in Astrology — Sanjay Rath",
     "book10": "Classical Compilation",
 }
+
+# Display names for raw filename keys used in all_books_chunked.json
+_BOOK_RAW_DISPLAY_NAMES = {
+    "Narasimha Rao - Vedic Astrology_ An Integrated Approach (2001) - libgen.li":
+        "Vedic Astrology: An Integrated Approach — P.V.R. Narasimha Rao",
+    "Mantreswara_s__Phaladeeplka_.pdf":   "Phaladeepika — Mantreswara",
+    "Mantreswaras-Phaladeepika_.pdf":     "Phaladeepika — Mantreswara",
+    "Brihat Parasara Hora Sastra.pdf":    "Brihat Parashara Hora Shastra",
+    "Crux-of-Vedic-Astrology-Timing-of-Events1.pdf":
+        "Crux of Vedic Astrology — K.N. Rao",
+    "jataka-parijata.pdf":                "Jataka Parijata",
+    "astrology destiny and the wheel of time.pdf":
+        "Astrology, Destiny and the Wheel of Time — K.N. Rao",
+    "Kalidasa_-_Uttara_Kalamrita_compressed(pdfgear.com) (1)-compressed.pdf":
+        "Uttara Kalamrita — Kalidasa",
+    "The Brihat Jataka of Varaha Mihira (N Chidambaram Iyer).pdf":
+        "Brihat Jataka — Varahamihira",
+    "vedic-remedies-in-astrology-3-pdf-free.pdf":
+        "Vedic Remedies in Astrology — Sanjay Rath",
+    "Jaimini-Sutras-Suryanarain-Rao-1949.pdf":
+        "Jaimini Sutras — Suryanarain Rao",
+}
+
+# Classical authority weights for raw filename keys (sutra > commentary > modern)
+_BOOK_RAW_WEIGHTS = {
+    "Mantreswara_s__Phaladeeplka_.pdf":   10,
+    "Mantreswaras-Phaladeepika_.pdf":     10,
+    "Brihat Parasara Hora Sastra.pdf":    10,
+    "jataka-parijata.pdf":                9,
+    "Jaimini-Sutras-Suryanarain-Rao-1949.pdf": 9,
+    "The Brihat Jataka of Varaha Mihira (N Chidambaram Iyer).pdf": 9,
+    "Kalidasa_-_Uttara_Kalamrita_compressed(pdfgear.com) (1)-compressed.pdf": 8,
+    "Crux-of-Vedic-Astrology-Timing-of-Events1.pdf": 7,
+    "astrology destiny and the wheel of time.pdf": 6,
+    "Narasimha Rao - Vedic Astrology_ An Integrated Approach (2001) - libgen.li": 6,
+    "vedic-remedies-in-astrology-3-pdf-free.pdf": 5,
+}
+
+# Compiled regex to detect specific chart examples, exercises, and case studies
+_EXAMPLE_RE = re.compile(
+    r'chart \d+|example \d+|exercise \d+|native of chart|practical example'
+    r'|let us consider|chart no[\. ]\d'
+    r'|\b\d{2}[/\.]\d{2}[/\.]\d{4}\b'
+    r'|\b\d{1,2}:\d{2}\s*(?:am|pm|ist)\b'
+    r'|\bborn on \w|\bborn in \d{4}\b|\bbirth ?data\b',
+    re.I,
+)
+
+
+def get_display_name(book):
+    """Return a clean human-readable display name for any book key or filename."""
+    if book in _BOOK_DISPLAY_NAMES:
+        return _BOOK_DISPLAY_NAMES[book]
+    if book in _BOOK_RAW_DISPLAY_NAMES:
+        return _BOOK_RAW_DISPLAY_NAMES[book]
+    # Fallback: strip file extension, underscores, and libgen artifacts
+    name = re.sub(r'\.pdf$', '', book, flags=re.I)
+    name = re.sub(r'_+', ' ', name)
+    name = re.sub(r'\s*libgen\.\S+\s*', '', name, flags=re.I)
+    name = re.sub(r'\s*-\s*$', '', name).strip()
+    return name or "Classical Source"
 
 
 def score_chunk(query, chunk):
     """Score a chunk by keyword overlap × source authority weight."""
     text         = chunk.get("text", "").lower()
     book         = chunk.get("book", "")
-    keyword_score = sum(1 for w in query.lower().split() if w in text)
-    source_weight = SOURCE_WEIGHTS.get(book, DEFAULT_WEIGHT)
+    keyword_score = sum(1 for w in query.lower().split() if len(w) > 2 and w in text)
+    source_weight = SOURCE_WEIGHTS.get(book, _BOOK_RAW_WEIGHTS.get(book, DEFAULT_WEIGHT))
     return keyword_score * source_weight
 
 
@@ -184,28 +246,87 @@ def is_clean(chunk):
     alpha_ratio = sum(1 for c in text if c.isalpha()) / max(len(text), 1)
     if alpha_ratio < 0.45:
         return False
+    # Reject chunks that are specific chart examples or exercise cases
+    norm = re.sub(r'\s+', ' ', re.sub(r'-\s*\n\s*', '', text))
+    if _EXAMPLE_RE.search(norm):
+        return False
+    # Reject chunks with too many non-ASCII characters (OCR artifacts)
+    non_ascii = sum(1 for c in text if ord(c) > 127)
+    if non_ascii > 5:
+        return False
     return True
 
 
-def get_best_classical_support(query, chunks):
-    """Return the best-weighted classical citation for query, or empty string."""
-    scored = [(score_chunk(query, c), c) for c in chunks]
-    scored.sort(reverse=True, key=lambda x: x[0])
+def _extract_best_sentence(text, query_words):
+    """Return the single sentence from text that best matches query_words.
 
-    for _, chunk in scored:
-        if not is_clean(chunk):
+    Applies OCR normalization, then selects the sentence with the most
+    keyword hits.  Returns None when no acceptable sentence is found.
+    """
+    # Normalise OCR line-break artefacts
+    norm = re.sub(r'-\s*\n\s*', '', text)
+    norm = re.sub(r'\s+', ' ', norm).strip()
+
+    sentences = re.split(r'(?<=[.!?])\s+', norm)
+    best, best_score = None, 0
+    for s in sentences:
+        # Hard constraints: length and purity
+        if len(s) < 45 or len(s) > 350:
             continue
-        text  = chunk.get("text", "").strip()
-        book  = chunk.get("book", "")
-        page  = chunk.get("page", "")
-        name  = _BOOK_DISPLAY_NAMES.get(book, book) if book else "Unknown"
-        citation = name
+        if sum(1 for c in s if ord(c) > 127) > 0:
+            continue
+        word_count = len(s.split())
+        if word_count < 8:
+            continue
+        # Must not start with a number / page reference
+        if re.match(r'^\d+[\s\.]', s):
+            continue
+        # Must contain at least one query keyword
+        sl = s.lower()
+        hit = sum(1 for w in query_words if w in sl)
+        if hit == 0:
+            continue
+        if hit > best_score:
+            best, best_score = s, hit
+    return best
+
+
+def get_best_classical_support(query, chunks):
+    """Return the best sentence-level classical citation for query, or empty string.
+
+    Algorithm:
+    1. Score all clean, non-example chunks.
+    2. Take the top-10 highest-scoring candidates.
+    3. From each candidate, extract the single sentence with the most
+       keyword hits.
+    4. Return the citation from the first candidate that yields a good sentence.
+    """
+    query_words = [w for w in query.lower().split() if len(w) > 2]
+
+    scored = []
+    for c in chunks:
+        if not is_clean(c):
+            continue
+        s = score_chunk(query, c)
+        if s > 0:
+            scored.append((s, c))
+
+    scored.sort(reverse=True, key=lambda x: x[0])
+    top_candidates = scored[:10]
+
+    for _, chunk in top_candidates:
+        text = chunk.get("text", "").strip()
+        book = chunk.get("book", "")
+        page = chunk.get("page", "")
+
+        sentence = _extract_best_sentence(text, query_words)
+        if not sentence:
+            continue
+
+        display = get_display_name(book)
         if page:
-            citation += f" (p.{page})"
-        # Trim to a single readable paragraph (≤ 400 chars)
-        if len(text) > 400:
-            text = text[:400].rsplit(" ", 1)[0] + "…"
-        return f"\n📖 CLASSICAL SUPPORT — {citation}\n→ {text}\n"
+            display += f" (p.{page})"
+        return f"\n📖 Classical Support\n→ {display}\n→ \"{sentence.strip()}\"\n"
 
     return ""
 
