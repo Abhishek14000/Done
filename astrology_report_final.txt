@@ -48,73 +48,109 @@ SECTION 2 — PLANET-BY-PLANET ANALYSIS
 === PLANET-BY-PLANET DEEP SYNTHESIS ===
 
 --- ASC in Gemini (House 1, Nakshatra: Mrigasira) ---
-Confidence: 🟡 MODERATE
-ASC in Gemini (House 1) brings self, personality, and physical body as the primary life domain.
-ASC is conjunct Rahu in House 1 — this conjunction creates a powerful combined force in House 1 themes, blending the natures of ASC and Rahu into a single, inseparable life force.
+Confidence: 🟢 HIGH
+ASC in Gemini (House 1), conjunct Rahu —  merges with Rahu energy, concentrating self, personality, and physical body themes into one powerful life axis.
+Conjunction of ASC + Rahu in House 1 creates a combined planetary force. Both natures —  and desire, obsession, illusion, innovation, and worldly ambition — are inseparably linked in how House 1 themes manifest.
+
+📖 Classical Support
+→ Phaladeepika — Mantreswara (p.61)
+→ "If the Ascendant, the Sun and the Moon are In odd signs (viz., Aries, Gemini, Leo."
 
 --- Sun in Leo (House 3, Nakshatra: Purva Phalguni) ---
 Confidence: 🟡 MODERATE
-Sun in Leo (House 3) brings effort, courage, siblings, and communication as the primary life domain.
-The native experiences: Sun in the 3rd house gives exceptional courage, self-expression, and the ability to lead through communication, writing, and entrepreneurial initiative.
-Sun is in its OWN SIGN Leo — fully empowered and expressive. House 3 results are delivered with confidence and consistency.
-Sun is conjunct Mercury in House 3 — this conjunction creates a powerful combined force in House 3 themes, blending the natures of Sun and Mercury into a single, inseparable life force.
+Sun, ruling House 3 in Leo (House 3) in own sign (fully empowered), conjunct Mercury — authority, ego, soul, and the relationship with the father merges with Mercury energy, concentrating effort, courage, siblings, and communication themes into one powerful life axis.
+Sun in own sign Leo — fully empowered and self-directed. House 3 results are delivered with consistency and strength.
+Conjunction of Sun + Mercury in House 3 creates a combined planetary force. Both natures — authority, ego, soul, and the relationship with the father and intellect, communication, trade, adaptability, and analysis — are inseparably linked in how House 3 themes manifest.
+Sun in the 3rd house gives exceptional courage, self-expression, and the ability to lead through communication, writing, and entrepreneurial initiative.
+
+📖 Classical Support
+→ Brihat Parashara Hora Shastra
+→ "Saturn's arrangements are same in Aquarius as the Sun has in Leo."
 
 --- Moon in Libra (House 5, Nakshatra: Swati) ---
 Confidence: 🟡 MODERATE
-Moon in Libra (House 5) brings intelligence, creativity, children, and past-life merit as the primary life domain.
-Moon in Libra (House 5) shapes the emotional decision-making framework: all relationships, creative choices, and intuitive responses are filtered through Libra's need for balance, beauty, and diplomatic harmony. The native's inner emotional world directly drives the themes of House 5 — intelligence, creativity, children, and past-life merit.
+Moon, ruling House 2 in Libra (House 5) — mind, emotions, mother, and intuitive perception operates through the domain of intelligence, creativity, children, and past-life merit.
+Moon in Libra filters all emotional responses through Libra's need for balance, beauty, and diplomatic harmony. Decisions in intelligence, creativity, children, and past-life merit carry this emotional signature throughout life.
+
+📖 Classical Support
+→ Crux of Vedic Astrology — K.N. Rao (p.152)
+→ "The Moon on the date was in Swati Star in Libra the fourth house in Kalamsa as the Sun was in Sagittarius, the Matrupada."
 
 --- Mars in Cancer (House 2, Nakshatra: Ashlesha) ---
 Confidence: 🟡 MODERATE
-Mars in Cancer (House 2) brings wealth, speech, and family values as the primary life domain.
-Mars is DEBILITATED in Cancer — this placement creates pressure that, once overcome, generates Neecha Bhanga Raja Yoga. The native's challenges in House 2 directly produce the breakthrough pattern of this chart.
-Mars in Cancer (House 2) drives action, ambition, and energy in the domain of wealth, speech, and family values. Debilitated Mars in Cancer creates indirect, defensive action — the native must consciously choose direct confrontation over emotional withdrawal. The native's physical energy, financial drive, and competitive instinct are permanently anchored in House 2.
+Mars, ruling Houses 11 & 6 in Cancer (House 2) in debilitation (challenged execution) — energy, courage, aggression, action, and physical vitality operates through the domain of wealth, speech, and family values.
+Mars is DEBILITATED in Cancer — execution pressure exists in House 2. When the cancellation conditions of Neecha Bhanga are met, this converts into a breakthrough pattern that outperforms comfortable placements.
+Debilitated Mars in Cancer redirects physical drive into defensive, emotionally reactive patterns — bold, direct action must be consciously cultivated against the chart's natural tendency.
+
+📖 Classical Support
+→ Crux of Vedic Astrology — K.N. Rao (p.21)
+→ "For example, for Cancer ascendant, Mars owns the fifth and tenth houses and naturally links the house of name, fame, reputation and success with the house of authority power and knowledge."
 
 ⚖️ SYNTHESIS:
 - Mars is debilitated but Neecha Bhanga cancels this — results improve after struggle.
 
 --- Mercury in Leo (House 3, Nakshatra: Uttara Phalguni) ---
 Confidence: 🟡 MODERATE
-Mercury in Leo (House 3) brings effort, courage, siblings, and communication as the primary life domain.
-The native experiences: Mercury in the 3rd house — its natural house of communication — strongly supports writing, speaking, trading, and intellectual pursuits.
-Mercury is conjunct Sun in House 3 — this conjunction creates a powerful combined force in House 3 themes, blending the natures of Mercury and Sun into a single, inseparable life force.
+Mercury, ruling Houses 1 & 4 in Leo (House 3), conjunct Sun — intellect, communication, trade, adaptability, and analysis merges with Sun energy, concentrating effort, courage, siblings, and communication themes into one powerful life axis.
+Conjunction of Mercury + Sun in House 3 creates a combined planetary force. Both natures — intellect, communication, trade, adaptability, and analysis and authority, ego, soul, and the relationship with the father — are inseparably linked in how House 3 themes manifest.
+Mercury in the 3rd house — its natural house of communication — strongly supports writing, speaking, trading, and intellectual pursuits.
+
+📖 Classical Support
+→ Crux of Vedic Astrology — K.N. Rao (p.33)
+→ "The fifth is Leo with Mercury and Rahu causing both Subha and Asubhargala respectively."
 
 ⚖️ SYNTHESIS:
 - Mercury forms Budha-Aditya Yoga but combustion modifies it — intelligence becomes authority-driven rather than neutral.
 
 --- Jupiter in Taurus (House 12, Nakshatra: Rohini) ---
-Confidence: 🔴 CONDITIONAL
-Jupiter in Taurus (House 12) brings loss, foreign lands, moksha, and spirituality as the primary life domain.
-The native experiences: Jupiter in the 12th house shows that knowledge comes through isolation, foreign lands, or deep inner exploration. Strong moksha and spiritual liberation potential.
-Jupiter is conjunct Saturn in House 12 — this conjunction creates a powerful combined force in House 12 themes, blending the natures of Jupiter and Saturn into a single, inseparable life force.
+Confidence: 🟡 MODERATE
+Jupiter, ruling Houses 7 & 10 in Taurus (House 12), conjunct Saturn — wisdom, expansion, spirituality, children, and good fortune merges with Saturn energy, concentrating loss, foreign lands, moksha, and spirituality themes into one powerful life axis.
+Conjunction of Jupiter + Saturn in House 12 creates a combined planetary force. Both natures — wisdom, expansion, spirituality, children, and good fortune and discipline, karma, delay, perseverance, and hard lessons — are inseparably linked in how House 12 themes manifest.
+Jupiter in the 12th house shows that knowledge comes through isolation, foreign lands, or deep inner exploration. Strong moksha and spiritual liberation potential.
+
+📖 Classical Support
+→ Crux of Vedic Astrology — K.N. Rao (p.79)
+→ "The second Lord from Ascendant Jupiter, is exalted and aspects the ascendant and Arudha Lagna in Taurus (Rasidristi)."
 
 --- Venus in Virgo (House 4, Nakshatra: Uttara Phalguni) ---
 Confidence: 🟡 MODERATE
-Venus in Virgo (House 4) brings home, mother, emotional security, and comfort as the primary life domain.
-Venus is DEBILITATED in Virgo — this placement creates pressure that, once overcome, generates Neecha Bhanga Raja Yoga. The native's challenges in House 4 directly produce the breakthrough pattern of this chart.
-Venus in Virgo (House 4) governs the native's approach to love, beauty, comfort, and relationships through the lens of House 4 — home, mother, emotional security, and comfort. Debilitated Venus in Virgo brings perfectionism — relationships suffer from over-analysis and impossible standards until conscious correction is applied. The quality of the native's domestic life and intimate bonds directly reflects their management of Venus's debilitation challenge.
+Venus, ruling Houses 12 & 5 in Virgo (House 4) in debilitation (challenged execution) — love, beauty, comfort, arts, and relationships operates through the domain of home, mother, emotional security, and comfort.
+Venus is DEBILITATED in Virgo — execution pressure exists in House 4. When the cancellation conditions of Neecha Bhanga are met, this converts into a breakthrough pattern that outperforms comfortable placements.
+Venus in Virgo introduces perfectionism into relationships — the standard applied to partners and aesthetic choices is impossibly precise, damaging harmony until the native consciously relaxes the critical lens.
+
+📖 Classical Support
+→ Crux of Vedic Astrology — K.N. Rao (p.44)
+→ "The third from Cancer (counted zodiacally as the ascendant is odd) is Virgo and its lord (Mercury) conjoins Venus to indicate a daughter as the second child of second wife."
 
 ⚖️ SYNTHESIS:
 - Venus is debilitated but Neecha Bhanga cancels this — results improve after struggle.
 
 --- Saturn in Taurus (House 12, Nakshatra: Krittika) ---
-Confidence: 🔴 CONDITIONAL
-Saturn in Taurus (House 12) brings loss, foreign lands, moksha, and spirituality as the primary life domain.
-The native experiences: Saturn in the 12th house carries strong karmic isolation energy. Foreign settlement, deep spiritual evolution, or work in hidden institutions (hospitals, ashrams, research) is indicated.
-Saturn is conjunct Jupiter in House 12 — this conjunction creates a powerful combined force in House 12 themes, blending the natures of Saturn and Jupiter into a single, inseparable life force.
+Confidence: 🟡 MODERATE
+Saturn, ruling Houses 8 & 9 in Taurus (House 12), conjunct Jupiter — discipline, karma, delay, perseverance, and hard lessons merges with Jupiter energy, concentrating loss, foreign lands, moksha, and spirituality themes into one powerful life axis.
+Conjunction of Saturn + Jupiter in House 12 creates a combined planetary force. Both natures — discipline, karma, delay, perseverance, and hard lessons and wisdom, expansion, spirituality, children, and good fortune — are inseparably linked in how House 12 themes manifest.
+Saturn in the 12th house carries strong karmic isolation energy. Foreign settlement, deep spiritual evolution, or work in hidden institutions (hospitals, ashrams, research) is indicated.
+
+📖 Classical Support
+→ Crux of Vedic Astrology — K.N. Rao (p.58)
+→ "Saturn is in Scorpio and aspects Capricorn, Taurus and Leo."
 
 ⚖️ SYNTHESIS:
 - Saturn operates through adversity — results come after transformation.
 
 --- Rahu in Gemini (House 1, Nakshatra: Punarvasu) ---
 Confidence: 🟡 MODERATE
-Rahu in Gemini (House 1) brings self, personality, and physical body as the primary life domain.
-The native experiences: Rahu in the 1st house creates a magnetic, unconventional personality. The native often follows an unusual life path and may have a powerful, transformative public presence.
+Rahu in Gemini (House 1) — desire, obsession, illusion, innovation, and worldly ambition operates through the domain of self, personality, and physical body.
+Rahu in the 1st house creates a magnetic, unconventional personality. The native often follows an unusual life path and may have a powerful, transformative public presence.
+
+📖 Classical Support
+→ Phaladeepika — Mantreswara (p.11)
+→ "According to Sarvarth Chintamani the exaltation sign of Rahu is Gemini and his sign of debilitation is Sagittarius."
 
 --- Ketu in Sagittarius (House 7, Nakshatra: Uttara Ashadha) ---
 Confidence: 🟡 MODERATE
-Ketu in Sagittarius (House 7) brings marriage, business partnerships, and open enemies as the primary life domain.
-The native experiences: Ketu in the 7th house shows karmic relationships with deep soul connections but potential detachment, unusual dynamics, or spiritual orientation in partnerships.
+Ketu in Sagittarius (House 7) — detachment, past-life karma, spirituality, and liberation operates through the domain of marriage, business partnerships, and open enemies.
+Ketu in the 7th house shows karmic relationships with deep soul connections but potential detachment, unusual dynamics, or spiritual orientation in partnerships.
 
 
 === EXALTATION, DEBILITATION & NEECHA BHANGA ===
@@ -155,8 +191,8 @@ House 3 (Leo): Sun + Mercury
 
 ----------------------------------------
 📖 Classical Support
-→ Brihat Parashara Hora Shastra (p.350)
-→ "The conjunction of Venus and Mercury will producey oga."
+→ Crux of Vedic Astrology — K.N. Rao (p.170)
+→ "The conjunction of the Badhakesh Mercury with this combination removes all badhak (obstacles) in the path and the education is uninterrupted."
 ----------------------------------------
 
 House 12 (Taurus): Jupiter + Saturn
@@ -164,8 +200,8 @@ House 12 (Taurus): Jupiter + Saturn
 
 ----------------------------------------
 📖 Classical Support
-→ Brihat Parashara Hora Shastra (p.25)
-→ "NAMES OF PLANEZS .' The names of the nine planets respectively are : the Sun, the .Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu and Ketu."
+→ Crux of Vedic Astrology — K.N. Rao (p.192)
+→ "In conjunction with Jupiter it causes chandal yoga and the pregnancy was aborted."
 ----------------------------------------
 
 
@@ -377,8 +413,8 @@ Jupiter (10th lord) in House 12 + Saturn in House 12 + Mercury in House 3 + Rahu
 
 ----------------------------------------
 📖 Classical Support
-→ Crux of Vedic Astrology — K.N. Rao (p.27)
-→ "The Pachak planet/house is inimical to Jupiter as the Karak planet/house is inimical to Saturn."
+→ Crux of Vedic Astrology — K.N. Rao (p.103)
+→ "The Arudha lagna is in the tenth house promising fame provided the Lord of as cendant is strong."
 ----------------------------------------
 
 ============================================================
@@ -410,7 +446,7 @@ Rahu in 1st (Ketu in 7th axis): Karmic pull between self-development and relatio
 ----------------------------------------
 📖 Classical Support
 → Phaladeepika — Mantreswara (p.18)
-→ "marriage of the native would take place in his 24th years after the commencement of the Dasa of the Sun lord of the 7th house."
+→ "The marriage actually took place in the Dasa of Venus."
 ----------------------------------------
 
 ============================================================

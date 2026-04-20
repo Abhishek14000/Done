@@ -313,6 +313,19 @@ def _extract_best_sentence(text, query_words):
     norm = re.sub(r'-\s*\n\s*', '', text)
     norm = re.sub(r'\s+', ' ', norm).strip()
 
+    # Compiled pattern for irrelevant/generic topic markers — reject outright
+    _GENERIC_TOPIC_RE = re.compile(
+        r'\bnames of (planets|signs|houses)\b'
+        r'|\bnames of the (nine|seven|twelve)?\s*(planets|grahas)\b'
+        r'|\bchapter \d\b|\bchapter \w+\b'
+        r'|\bdefinition of\b|\bis defined as\b'
+        r'|\bsun moon mars mercury jupiter venus saturn\b'  # generic planet-listing lines
+        r'|\bthe nine planets are\b|\bgraha means\b|\bnavagraha\b'
+        r'|sun.*moon.*mars.*mercury.*jupiter.*venus.*saturn'  # comma-separated planet lists
+        r'|\bsun.*moon.*mars.*mercury.*jupiter\b',  # partial planet roster
+        re.I,
+    )
+
     sentences = re.split(r'(?<=[.!?])\s+', norm)
     best, best_score = None, 0
     for s in sentences:
@@ -326,6 +339,13 @@ def _extract_best_sentence(text, query_words):
             continue
         # Must not start with a number / page reference
         if re.match(r'^\d+[\s\.]', s):
+            continue
+        # Reject sentence fragments that start with a lowercase letter
+        # (they are torn from the middle of a larger sentence)
+        if s and s[0].islower():
+            continue
+        # Reject sentences containing "/" (topic-slash notation not found in genuine classical prose)
+        if '/' in s:
             continue
         # Reject OCR garbage special characters (Devanagari transliteration noise)
         if re.search(r'[{}\$\\#@~^<>=\*]', s):
@@ -358,6 +378,106 @@ def _extract_best_sentence(text, query_words):
         # Reject OCR artifact: '?' immediately before a letter (e.g. "?th lord")
         if re.search(r'\?[a-z]', s.lower()):
             continue
+        # Reject sentences containing embedded section/page numbers (e.g. "House 137 The...")
+        # These are book section headings accidentally included as prose
+        if re.search(r'\b\d{2,3}\s+[A-Z][a-z]', s):
+            continue
+        # Reject sentences ending with a bare number (truncated citations like "she will 118")
+        if re.search(r'\s\d+[\""]?\s*$', s):
+            continue
+        # Reject sentences with OCR digit-for-letter in short tokens (e.g. "5e", "1n", "1f")
+        if re.search(r'\b\d[a-z]\b', s.lower()):
+            continue
+        # Reject fused word pairs: lowercase letter immediately adjacent to alpha char with no space
+        # (e.g. "favourablep lanet", "iir J", "Jispotitor") — OCR space-drop between words
+        if re.search(r'[a-z]{2,}[A-Z][a-z]', s):
+            continue
+        # Reject OCR space-drop artifacts: tokens ≥2 chars with zero vowels (e.g. "nd", "fvr")
+        _VOWELS = set('aeiouAEIOU')
+        if any(
+            len(tok) >= 2 and not any(c in _VOWELS for c in tok)
+            for tok in (w.strip("',;:.!?\"()") for w in s.split())
+        ):
+            continue
+        # Reject sentences with invalid initial consonant clusters indicating OCR scramble
+        # e.g. "ptrrea" (ptr-), "lvfarg" (lvf-) — not valid English word starts
+        _VALID_3C_CLUSTERS = {'str', 'thr', 'chr', 'shr', 'spl', 'spr', 'squ', 'scr', 'sch', 'phr', 'phl'}
+        _VALID_2C_CLUSTERS = {
+            'bl', 'br', 'ch', 'cl', 'cr', 'dr', 'dw', 'fl', 'fr', 'gh', 'gl', 'gn', 'gr',
+            'kh', 'kl', 'kn', 'kr', 'ph', 'pl', 'pr', 'ps', 'pt', 'sc', 'sh', 'sk', 'sl',
+            'sm', 'sn', 'sp', 'sq', 'sr', 'st', 'sw', 'th', 'tr', 'tw', 'wh', 'wr', 'zh',
+        }
+        def _bad_cluster(tok):
+            t = tok.lower()
+            if len(t) < 4:
+                return False
+            # Count leading consonants
+            lc = 0
+            for c in t:
+                if c in _VOWELS:
+                    break
+                lc += 1
+            if lc < 2:
+                return False
+            if lc >= 3 and t[:3] not in _VALID_3C_CLUSTERS:
+                return True
+            if lc >= 2 and t[:2] not in _VALID_2C_CLUSTERS:
+                return True
+            return False
+        if any(
+            _bad_cluster(w.strip("',;:.!?\"()"))
+            for w in s.split()
+        ):
+            continue
+        # Reject OCR space-insertion artifacts: a ≥5-char token followed by a ≤3-char
+        # unknown fragment indicates a word was split by an erroneous space
+        # e.g. "producey" + "oga" = "produce yoga", "statesmena" + "re" = "statesmen are",
+        #      "pater" + "nal" = "paternal"
+        _COMMON_SHORT = {
+            # articles / prepositions / conjunctions / pronouns
+            'a', 'am', 'an', 'as', 'at', 'be', 'by', 'do', 'go', 'he', 'i', 'if',
+            'in', 'is', 'it', 'me', 'my', 'no', 'of', 'on', 'or', 're', 'so', 'to',
+            'up', 'us', 'we', 'and', 'any', 'are', 'but', 'can', 'did', 'for', 'had',
+            'has', 'him', 'his', 'how', 'its', 'let', 'may', 'not', 'now', 'one', 'our',
+            'out', 'own', 'per', 'put', 'run', 'say', 'set', 'she', 'six', 'ten', 'the',
+            'too', 'two', 'use', 'was', 'way', 'who', 'yet', 'you', 'via', 'viz', 'etc',
+            # common 3-letter nouns/adjectives/verbs found in classical text
+            'age', 'ago', 'aim', 'air', 'all', 'arm', 'art', 'bad', 'bay', 'big', 'bit',
+            'boy', 'bus', 'buy', 'car', 'cut', 'day', 'due', 'ear', 'end', 'eye', 'far',
+            'few', 'fit', 'fun', 'get', 'god', 'got', 'has', 'hit', 'hot', 'job', 'joy',
+            'key', 'law', 'leg', 'lie', 'lot', 'low', 'man', 'men', 'map', 'new', 'nor',
+            'nun', 'oak', 'old', 'pay', 'ran', 'red', 'sat', 'sea', 'sit', 'sky', 'sun',
+            'sum', 'son', 'tax', 'top', 'try', 'war', 'win', 'won', 'yes', 'yet', 'era',
+            'era', 'eye', 'gem', 'him', 'hot', 'ill', 'joy', 'kin', 'lie', 'log', 'mad',
+            'net', 'nil', 'odd', 'old', 'pen', 'pie', 'pit', 'raw', 'rod', 'row', 'rub',
+            'rum', 'sin', 'sir', 'six', 'sky', 'sob', 'sow', 'spa', 'spy', 'stir', 'sub',
+            'sue', 'sum', 'sup', 'tab', 'tan', 'tap', 'tar', 'tea', 'ten', 'tin', 'tip',
+            'toe', 'ton', 'tow', 'toy', 'tug', 'tum', 'van', 'vow', 'war', 'wet', 'wig',
+            'wit', 'woe', 'zip', 'zoo', 'ago', 'ago', 'aim', 'aye',
+            # astrology-specific short words
+            'ash', 'drs', 'leo', 'sun', 'orb', 'arc',
+        }
+        tokens_plain = [w.strip("',;:.!?\"()").lower() for w in s.split()]
+        _ocr_space_insert = False
+        for i, tok in enumerate(tokens_plain[:-1]):
+            nxt = tokens_plain[i + 1]
+            if len(tok) >= 5 and 2 <= len(nxt) <= 3 and nxt not in _COMMON_SHORT:
+                _ocr_space_insert = True
+                break
+        if _ocr_space_insert:
+            continue
+        # Reject generic/irrelevant topic sentences — they don't support any conclusion
+        if _GENERIC_TOPIC_RE.search(s):
+            continue
+        # Reject sentences that are planet-sign exaltation/debilitation rosters
+        # (e.g. "Saturn for Aries, Venus for Cancer, the Sun for Libra and Mars for Capricorn")
+        if len(re.findall(r'\b(Sun|Moon|Mars|Mercury|Jupiter|Venus|Saturn)\b', s, re.I)) >= 3:
+            sign_list = re.findall(
+                r'\b(Aries|Taurus|Gemini|Cancer|Leo|Virgo|Libra|Scorpio|Sagittarius|Capricorn|Aquarius|Pisces)\b',
+                s, re.I,
+            )
+            if len(sign_list) >= 3:
+                continue  # pure roster/listing sentence
         # Must contain at least TWO query keywords (single-hit matches are too unreliable)
         sl = s.lower()
         hit = sum(1 for w in query_words if w in sl)
@@ -890,30 +1010,71 @@ def interpret_text(raw_text):
 # -------------------------------
 # PLANET ANALYSIS
 # -------------------------------
-def _compute_confidence(planet, data):
+def _compute_confidence(planet, data, all_planets=None):
     """Return a confidence label for a planet's interpretation.
 
-    Based on dignity (own/exalted vs debilitated/combust) and whether
-    the house placement is a kendra/trikona (strong) or dusthana (weak).
+    Yoga-aware logic:
+      🟢 HIGH        — own/exalted dignity, OR strong yoga support (kendra/trikona + conjunctions)
+      🟡 MODERATE    — mixed dignity, neutral house, OR Neecha Bhanga active
+      🔴 CONDITIONAL — debilitated + no yoga support, OR dusthana without any yoga
 
-    Returns one of:
-      '🟢 HIGH'        — exalted or own sign, kendra/trikona placement
-      '🟡 MODERATE'    — neutral dignity, mixed house
-      '🔴 CONDITIONAL' — debilitated, combust, or dusthana with no yoga support
+    Neecha Bhanga is treated as MODERATE (not LOW) because the debilitation
+    cancellation converts the weakness into eventual strength.
     """
-    dignity = data.get("dignity", "").lower()
-    house   = data.get("house", 0)
+    dignity  = data.get("dignity", "").lower()
+    house    = data.get("house", 0)
+    combust  = data.get("combust", False)
+    sign     = data.get("sign", "")
 
-    is_strong  = dignity in ("exalted", "own sign", "own")
-    is_weak    = dignity in ("debilitated", "debilited") or data.get("combust", False)
-    is_kendra  = house in (1, 4, 7, 10)
-    is_trikona = house in (1, 5, 9)
-    is_dusthana = house in (6, 8, 12)
+    is_exalted   = dignity in ("exalted",)
+    is_own       = dignity in ("own sign", "own")
+    is_debil     = dignity in ("debilitated", "debilited")
+    is_kendra    = house in (1, 4, 7, 10)
+    is_trikona   = house in (1, 5, 9)
+    is_dusthana  = house in (6, 8, 12)
 
-    if is_weak or is_dusthana:
-        return "🔴 CONDITIONAL"
-    if is_strong and (is_kendra or is_trikona):
+    # Yoga support: conjunctions in kendra/trikona add strength regardless of dignity
+    conj_partners = []
+    if all_planets:
+        conj_partners = [
+            p for p, d in all_planets.items()
+            if p not in (planet, "ASC") and d.get("house") == house
+        ]
+    has_conj_yoga = bool(conj_partners) and (is_kendra or is_trikona)
+
+    # Neecha Bhanga check: sign lord or exaltation lord in kendra
+    _DEBIL_SIGN_LORDS = {
+        "Mars": "Moon", "Mercury": "Jupiter", "Jupiter": "Saturn",
+        "Venus": "Mercury", "Saturn": "Mars", "Sun": "Venus", "Moon": "Mars",
+    }
+    _DEBIL_SIGNS = {
+        "Sun": "Libra", "Moon": "Scorpio", "Mars": "Cancer",
+        "Mercury": "Pisces", "Jupiter": "Capricorn", "Venus": "Virgo", "Saturn": "Aries",
+    }
+    neecha_bhanga = False
+    if is_debil and all_planets and _DEBIL_SIGNS.get(planet) == sign:
+        sign_lord = _DEBIL_SIGN_LORDS.get(planet, "")
+        exalt_lord = _EXALTATION_LORDS.get(planet, "")
+        for lord in (sign_lord, exalt_lord):
+            if lord and all_planets.get(lord, {}).get("house", 0) in (1, 4, 7, 10):
+                neecha_bhanga = True
+                break
+
+    # HIGH: strong dignity OR yogic configuration
+    if (is_exalted or is_own) and (is_kendra or is_trikona):
         return "🟢 HIGH"
+    if has_conj_yoga and not (is_debil and not neecha_bhanga):
+        return "🟢 HIGH"
+
+    # CONDITIONAL: debilitated with no cancellation + dusthana, or combust in dusthana
+    if is_debil and not neecha_bhanga and is_dusthana:
+        return "🔴 CONDITIONAL"
+    if combust and is_dusthana:
+        return "🔴 CONDITIONAL"
+    if is_debil and not neecha_bhanga and not has_conj_yoga:
+        return "🔴 CONDITIONAL"
+
+    # MODERATE: neecha bhanga, mixed dignity, or neutral placement
     return "🟡 MODERATE"
 
 
@@ -928,7 +1089,7 @@ def analyze_planets():
             f"house {data.get('house', '')}"
         ]
 
-        confidence = _compute_confidence(planet, data)
+        confidence = _compute_confidence(planet, data, planets)
 
         section = f"\n=== {planet.upper()} ===\n"
         section += f"{planet} in {data.get('sign', 'N/A')} (House {data.get('house', 'N/A')}, {data.get('nakshatra', 'N/A')})\n"
@@ -2219,20 +2380,21 @@ def synthesize_planet(planet, data, all_planets):
     house = data.get("house", 0)
     nakshatra = data.get("nakshatra", "Unknown")
 
-    confidence = _compute_confidence(planet, data)
+    confidence = _compute_confidence(planet, data, all_planets)
     text = f"\n--- {planet} in {sign} (House {house}, Nakshatra: {nakshatra}) ---\n"
     text += f"Confidence: {confidence}\n"
-    text += (
-        f"{planet} in {sign} (House {house}) brings "
-        f"{HOUSE_MEANINGS.get(house, 'various life areas')} as the primary life domain.\n"
-    )
 
-    logic = PLANET_DEEP_LOGIC.get(planet, {})
-    # Only house-specific insights — NO "general" textbook definitions
-    if house in logic:
-        text += f"The native experiences: {logic[house]}\n"
+    # --- Dynamic opening: lordship + conjunction + dignity (Part 4) ---
+    # Determine which houses this planet rules in this chart
+    lordships = _get_planet_lordships(planet, all_planets)
+    lord_str  = f", ruling House{'s' if len(lordships) > 1 else ''} {' & '.join(str(h) for h in lordships)}" if lordships else ""
 
-    # Dignity commentary
+    conj_partners = [
+        p for p, d in all_planets.items()
+        if p not in (planet, "ASC") and d.get("house") == house
+    ]
+    conj_str = " + ".join(conj_partners) if conj_partners else ""
+
     exaltation = {
         "Sun": "Aries", "Moon": "Taurus", "Mars": "Capricorn",
         "Mercury": "Virgo", "Jupiter": "Cancer", "Venus": "Pisces", "Saturn": "Libra",
@@ -2248,65 +2410,97 @@ def synthesize_planet(planet, data, all_planets):
         "Rahu": [], "Ketu": [],
     }
 
+    dignity_note = ""
+    if exaltation.get(planet) == sign:
+        dignity_note = " at peak strength (exalted)"
+    elif debilitation.get(planet) == sign:
+        dignity_note = " in debilitation (challenged execution)"
+    elif sign in own_signs.get(planet, []):
+        dignity_note = " in own sign (fully empowered)"
+
+    if conj_str:
+        text += (
+            f"{planet}{lord_str} in {sign} (House {house}){dignity_note}, conjunct {conj_str} — "
+            f"{PLANET_NATURE.get(planet, '')} merges with {' and '.join(conj_partners)} energy, "
+            f"concentrating {HOUSE_MEANINGS.get(house, 'multiple life areas')} themes into one powerful life axis.\n"
+        )
+    else:
+        text += (
+            f"{planet}{lord_str} in {sign} (House {house}){dignity_note} — "
+            f"{PLANET_NATURE.get(planet, '')} operates through the domain of "
+            f"{HOUSE_MEANINGS.get(house, 'multiple life areas')}.\n"
+        )
+
+    # --- Dignity commentary ---
     if exaltation.get(planet) == sign:
         text += (
-            f"{planet} is EXALTED in {sign} — this brings maximum expression of this planet's "
-            f"qualities throughout life. Results in House {house} are amplified "
-            f"and consistently strong.\n"
+            f"{planet} is EXALTED in {sign} — maximum expression of {PLANET_NATURE.get(planet, 'its qualities')} "
+            f"throughout life. House {house} results are amplified and consistently strong.\n"
         )
     elif debilitation.get(planet) == sign:
         text += (
-            f"{planet} is DEBILITATED in {sign} — this placement creates pressure "
-            f"that, once overcome, generates Neecha Bhanga Raja Yoga. The native's challenges "
-            f"in House {house} directly produce the breakthrough pattern of this chart.\n"
+            f"{planet} is DEBILITATED in {sign} — execution pressure exists in House {house}. "
+            f"When the cancellation conditions of Neecha Bhanga are met, this converts into a "
+            f"breakthrough pattern that outperforms comfortable placements.\n"
         )
     elif sign in own_signs.get(planet, []):
         text += (
-            f"{planet} is in its OWN SIGN {sign} — fully empowered and expressive. "
-            f"House {house} results are delivered with confidence and consistency.\n"
+            f"{planet} in own sign {sign} — fully empowered and self-directed. "
+            f"House {house} results are delivered with consistency and strength.\n"
         )
 
-    # Conjunction enrichment — adds specific planetary interaction context
-    conj_partners = [
-        p for p, d in all_planets.items()
-        if p != planet and p != "ASC" and d.get("house") == house
-    ]
+    # --- Conjunction enrichment (specific yogas named) ---
     if conj_partners:
-        conj_str = " + ".join(conj_partners)
         text += (
-            f"{planet} is conjunct {conj_str} in House {house} — this conjunction "
-            f"creates a powerful combined force in House {house} themes, blending the "
-            f"natures of {planet} and {conj_str} into a single, inseparable life force.\n"
+            f"Conjunction of {planet} + {conj_str} in House {house} creates a combined planetary force. "
+            f"Both natures — {PLANET_NATURE.get(planet, '')} and "
+            f"{', '.join(PLANET_NATURE.get(p, '') for p in conj_partners)} — "
+            f"are inseparably linked in how House {house} themes manifest.\n"
         )
 
-    # Planet-specific additional depth for Moon, Mars, Venus (historically weak sections)
+    # --- House-specific deep logic (direct statement — no template prefix) ---
+    logic = PLANET_DEEP_LOGIC.get(planet, {})
+    if house in logic:
+        text += f"{logic[house]}\n"
+
+    # --- Planet-specific depth for Moon, Mars, Venus ---
     if planet == "Moon":
         text += (
-            f"Moon in {sign} (House {house}) shapes the emotional decision-making framework: "
-            f"all relationships, creative choices, and intuitive responses are filtered through "
-            f"{sign}'s need for {_MOON_SIGN_NEED.get(sign, 'balance and harmony')}. "
-            f"The native's inner emotional world directly drives "
-            f"the themes of House {house} — {HOUSE_MEANINGS.get(house, 'intelligence and creativity')}.\n"
+            f"Moon in {sign} filters all emotional responses through {sign}'s need for "
+            f"{_MOON_SIGN_NEED.get(sign, 'balance and harmony')}. "
+            f"Decisions in {HOUSE_MEANINGS.get(house, 'creative domains')} carry this emotional signature throughout life.\n"
         )
     elif planet == "Mars":
-        text += (
-            f"Mars in {sign} (House {house}) drives action, ambition, and energy in the domain of "
-            f"{HOUSE_MEANINGS.get(house, 'wealth and family')}. "
-            f"{'Debilitated Mars in Cancer creates indirect, defensive action — the native must consciously choose direct confrontation over emotional withdrawal.' if sign == 'Cancer' else f'Mars in {sign} channels its drive forcefully into House {house} themes.'} "
-            f"The native's physical energy, financial drive, and competitive instinct "
-            f"are permanently anchored in House {house}.\n"
-        )
+        if sign == "Cancer":
+            text += (
+                f"Debilitated Mars in Cancer redirects physical drive into defensive, emotionally reactive patterns — "
+                f"bold, direct action must be consciously cultivated against the chart's natural tendency.\n"
+            )
+        else:
+            text += (
+                f"Mars in {sign} channels ambition and competitive drive into "
+                f"{HOUSE_MEANINGS.get(house, 'the primary life domain')} with directness.\n"
+            )
     elif planet == "Venus":
-        text += (
-            f"Venus in {sign} (House {house}) governs the native's approach to love, beauty, "
-            f"comfort, and relationships through the lens of House {house} — "
-            f"{HOUSE_MEANINGS.get(house, 'home and emotional security')}. "
-            f"{'Debilitated Venus in Virgo brings perfectionism — relationships suffer from over-analysis and impossible standards until conscious correction is applied.' if sign == 'Virgo' else f'Venus in {sign} brings harmony and aesthetic refinement to House {house}.'} "
-            f"The quality of the native's domestic life and intimate bonds directly "
-            f"reflects their management of Venus's debilitation challenge.\n"
-        )
+        if sign == "Virgo":
+            text += (
+                f"Venus in Virgo introduces perfectionism into relationships — "
+                f"the standard applied to partners and aesthetic choices is impossibly precise, "
+                f"damaging harmony until the native consciously relaxes the critical lens.\n"
+            )
+        else:
+            text += (
+                f"Venus in {sign} brings aesthetic refinement and relational harmony to "
+                f"{HOUSE_MEANINGS.get(house, 'the home domain')}.\n"
+            )
 
-    # Global synthesis: resolve combust/debil/yoga contradictions into unified conclusion
+    # --- Inline classical support immediately after key statement (Part 5) ---
+    citation_kw = [planet.lower(), sign.lower()]
+    support = get_classical_support(citation_kw)
+    if support:
+        text += support
+
+    # --- Global synthesis: resolve combust/debil/yoga contradictions ---
     context   = _build_synthesis_context(planet, all_planets)
     conflicts = resolve_conflicts(planet, data, context)
     if conflicts:
@@ -2315,6 +2509,7 @@ def synthesize_planet(planet, data, all_planets):
             text += f"- {c}\n"
 
     return text
+
 
 
 def synthesize_all_planets(planet_data):
