@@ -70,7 +70,7 @@ def generate_time_window(main_period):
     end   = extract_year(main_period.get("end", ""))
     if start and end:
         mid = (start + end) // 2
-        return f"HIGH PROBABILITY WINDOW: {mid - 1}–{mid + 1}"
+        return f"\n🔴 HIGH PROBABILITY WINDOW: {mid - 1}–{mid + 1}\n"
     return "TIME WINDOW: Not available"
 
 
@@ -87,26 +87,34 @@ ACTION_WORDS = [
 
 
 def vary_sentence(sentence):
-    """Replace bland verbs with a randomly chosen action word to reduce repetition."""
+    """Replace bland/repetitive verbs and connectors to improve readability."""
     if not sentence:
         return sentence
     action = random.choice(ACTION_WORDS)
-    for target in ("produces", "combines", "creates"):
-        sentence = sentence.replace(target, action)
+    replacements = {
+        "produces":  action,
+        "combines":  action,
+        "creates":   action,
+        "indicates": random.choice(["reveals", "shows", "signals"]),
+        "therefore": random.choice(["thus", "accordingly", "as a result"]),
+        "hence":     random.choice(["consequently", "so", "which leads to"]),
+    }
+    for k, v in replacements.items():
+        sentence = sentence.replace(k, v)
     return sentence
 
 
 def get_classical_support(keywords):
     """Retrieve one clean classical-text line for the given keywords.
 
-    Returns a formatted 'Classical Support: ...' string, or None when no
+    Returns a formatted '📖 CLASSICAL SUPPORT' block, or None when no
     relevant clean principle can be extracted from the corpus.
     """
     insights = retrieve_insights(keywords)
     for insight in insights:
         clean = interpret_text(insight)
         if clean:
-            return f"Classical Support: {clean}"
+            return f"\n📖 CLASSICAL SUPPORT\n→ {clean}\n"
     return None
 
 
@@ -310,8 +318,9 @@ def analyze_planets():
         # Task 3 — classical support for each planet
         support = get_classical_support(keywords[:2])
         if support:
-            section += f"  📖 {support}\n"
+            section += f"\n{'-' * 40}{support}{'-' * 40}\n"
 
+        section = "\n" + section.strip() + "\n"
         output.append(section)
 
     return "\n".join(output)
@@ -468,8 +477,9 @@ def detect_yogas():
     # Task 3 — classical authority for yoga section
     support = get_classical_support(["raj yoga", "kendra", "trikona"])
     if support:
-        output += f"\n  📖 {support}\n"
+        output += f"\n{'-' * 40}{support}{'-' * 40}\n"
 
+    output = "\n" + output.strip() + "\n"
     return output
 SIGN_ORDER = [
     "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
@@ -1119,8 +1129,9 @@ def analyze_career(planet_data):
     # Task 3 — classical support for career section
     career_support = get_classical_support(["tenth house", "career", "saturn", "sun"])
     if career_support:
-        output += f"  📖 {career_support}\n"
+        output += f"\n{'-' * 40}{career_support}{'-' * 40}\n"
 
+    output = "\n" + output.strip() + "\n"
     return output
 
 
@@ -1258,8 +1269,9 @@ def analyze_marriage(planet_data):
     # Task 3 — classical support for marriage section
     marriage_support = get_classical_support(["seventh house", "marriage", "venus", "partner"])
     if marriage_support:
-        output += f"\n  📖 {marriage_support}\n"
+        output += f"\n{'-' * 40}{marriage_support}{'-' * 40}\n"
 
+    output = "\n" + output.strip() + "\n"
     return output
 
 
@@ -2165,7 +2177,7 @@ def detect_conjunctions(planet_data):
             interpreted = vary_sentence(interpreted)
             # Only display if the *interpreted principle* mentions a planet from this conjunction
             if any(pl in interpreted.lower() for pl in plist_lower):
-                output += f"  📖 Classical: {interpreted}\n"
+                output += f"\n{'-' * 40}\n📖 Classical: {interpreted}\n{'-' * 40}\n"
                 break  # one classical note per conjunction is sufficient
 
         output += "\n"
@@ -2321,7 +2333,7 @@ def analyze_dasha_timeline(dasha_list, planet_data):
         output += f"{'=' * 55}\n"
 
         # Time window injection (Task 1)
-        output += f"  → {generate_time_window(period)}\n"
+        output += f"{'=' * 50}{generate_time_window(period)}{'=' * 50}\n"
 
         if profile:
             output += f"  Theme:      {profile.get('theme', '')}\n"
@@ -2376,17 +2388,18 @@ def analyze_dasha_timeline(dasha_list, planet_data):
             interpreted = interpret_text(insight)
             if interpreted and classical_added < 2:
                 interpreted = vary_sentence(interpreted)
-                output += f"  📖 Classical: {interpreted}\n"
+                output += f"\n{'-' * 40}\n📖 Classical: {interpreted}\n{'-' * 40}\n"
                 classical_added += 1
 
         # Task 3 — additional classical support if none found above
         if classical_added == 0:
             support = get_classical_support([planet.lower(), sign.lower(), "dasha"])
             if support:
-                output += f"  📖 {support}\n"
+                output += f"\n{'-' * 40}{support}{'-' * 40}\n"
 
         output += "\n"
 
+    output = "\n" + output.strip() + "\n"
     return output
 
 
@@ -3534,7 +3547,7 @@ def generate_time_event_predictions(kundali_data, dasha_data, planet_data, yogas
         output += "=" * 60 + "\n"
 
         # Time window (Task 1)
-        output += f"  → {generate_time_window(maha_period)}\n"
+        output += f"{'=' * 50}{generate_time_window(maha_period)}{'=' * 50}\n"
 
         # Mahadasha placement context line
         maha_data  = planet_data.get(maha, {})
@@ -3580,7 +3593,7 @@ def generate_time_event_predictions(kundali_data, dasha_data, planet_data, yogas
                 ad_period["end"]   = str(sub_end.year)   if sub_end   else ""
             except Exception:
                 pass
-            output += f"  → {generate_time_window(ad_period)}\n"
+            output += f"{'=' * 50}{generate_time_window(ad_period)}{'=' * 50}\n"
             output += f"  {prediction}\n\n"
             prediction_count += 1
 
@@ -4418,7 +4431,7 @@ def _ultra_dasha_section(dasha_list, planet_data):
         # TIMING
         output += "  TIMING:\n"
         # Task 1 — time window for this Mahadasha
-        output += f"  → {generate_time_window(period)}\n"
+        output += f"{'=' * 50}{generate_time_window(period)}{'=' * 50}\n"
         try:
             sy = int(start.split("/")[-1]) if "/" in start else int(start[:4])
             ey = int(end.split("/")[-1]) if "/" in end else int(end[:4])
@@ -4492,7 +4505,7 @@ def _ultra_dasha_section(dasha_list, planet_data):
                         f"  • {planet}–{sub} [{start_str} → {end_str}]: "
                         f"activates House {main_h} + House {sub_h}, producing {event_chain}."
                         f"{conj_sub_note}{combust_note}\n"
-                        f"    → {ad_window}\n"
+                        f"{'=' * 50}{ad_window}{'=' * 50}\n"
                     )
                 output += "\n"
 
