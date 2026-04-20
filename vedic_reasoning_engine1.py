@@ -166,6 +166,8 @@ _BOOK_DISPLAY_NAMES = {
 _BOOK_RAW_DISPLAY_NAMES = {
     "Narasimha Rao - Vedic Astrology_ An Integrated Approach (2001) - libgen.li":
         "Vedic Astrology: An Integrated Approach — P.V.R. Narasimha Rao",
+    "Narasimha Rao - Vedic Astrology_ An Integrated Approach (2001) - libgen.li (1).pdf":
+        "Vedic Astrology: An Integrated Approach — P.V.R. Narasimha Rao",
     "Mantreswara_s__Phaladeeplka_.pdf":   "Phaladeepika — Mantreswara",
     "Mantreswaras-Phaladeepika_.pdf":     "Phaladeepika — Mantreswara",
     "Brihat Parasara Hora Sastra.pdf":    "Brihat Parashara Hora Shastra",
@@ -196,6 +198,7 @@ _BOOK_RAW_WEIGHTS = {
     "Crux-of-Vedic-Astrology-Timing-of-Events1.pdf": 7,
     "astrology destiny and the wheel of time.pdf": 6,
     "Narasimha Rao - Vedic Astrology_ An Integrated Approach (2001) - libgen.li": 6,
+    "Narasimha Rao - Vedic Astrology_ An Integrated Approach (2001) - libgen.li (1).pdf": 6,
     "vedic-remedies-in-astrology-3-pdf-free.pdf": 5,
 }
 
@@ -332,9 +335,223 @@ def get_best_classical_support(query, chunks):
 
 
 # ============================================================
-# END WEIGHTED CITATION ENGINE
+# CLASSICAL REMEDY ENGINE (Part 3)
+# Strict: only text-supported remedies for afflicted planets
 # ============================================================
+
+# Trigger: only generate remedies for these conditions
+_REMEDY_DEBIL_MAP = {
+    "Sun": "Libra", "Moon": "Scorpio", "Mars": "Cancer",
+    "Mercury": "Pisces", "Jupiter": "Capricorn", "Venus": "Virgo", "Saturn": "Aries",
+}
+
+# Per-planet classical remedy queries for the chunk search
+_REMEDY_QUERIES = {
+    "Mars":    "planets adversely posited propitiate virtuous fasts japa adorations",
+    "Venus":   "Venus gemstone diamond wearing powerful good results propitiate",
+    "Mercury": "Mercury planets adversely posited propitiate fasts japa",
+    "Jupiter": "Jupiter planets adversely posited propitiate fasts japa",
+    "Moon":    "Moon planets adversely posited propitiate fasts japa",
+    "Sun":     "Sun planets adversely posited propitiate fasts japa",
+    "Saturn":  "Saturn Mritunjaya propitiate worship remedy malefic",
+}
+
+# Reject words that mark a sentence as case-study/generic filler
+_REMEDY_REJECT_RE = re.compile(
+    r'\bshe was\b|\bhe was advised\b|\bnative was advised\b|\bthe native had\b'
+    r'|\bthis girl\b|\bin a state of\b|\bcase study\b|\bcase studies\b'
+    r'|\bvisited my home\b|\bwas told to\b|\bI cannot recommend\b',
+    re.I,
+)
+
+
+def find_remedy_citation(planet, condition):
+    """Search all_books_chunked.json for the best clean remedy citation.
+
+    Returns a formatted citation block string, or empty string if nothing
+    passes the quality bar.
+    """
+    query = _REMEDY_QUERIES.get(planet, f"{planet} remedy propitiation")
+    query_words = [w for w in query.lower().split() if len(w) > 2]
+
+    scored = []
+    for c in _all_books_chunked_normalized:
+        if not is_clean(c):
+            continue
+        # Remedies pool uses relaxed example filter — allow general statements
+        # but still block case-study sentences at sentence-extraction time.
+        s = score_chunk(query, c)
+        if s > 0:
+            scored.append((s, c))
+
+    # Compiled regex for OCR-scrambled words (common BPHS OCR artifacts)
+    _OCR_JUNK_RE = re.compile(r'Plmet|Jrrpiter|Prescribc?d|numbet|subscrib|vrse|sloka\s+\d', re.I)
+
+    scored.sort(reverse=True, key=lambda x: x[0])
+
+    for _, chunk in scored[:50]:
+        text = chunk.get("text", "").strip()
+        book = chunk.get("book", "")
+
+        norm = re.sub(r'\s+', ' ', re.sub(r'-\s*\n\s*', '', text)).strip()
+        sentences = re.split(r'(?<=[.!?])\s+', norm)
+
+        for s in sentences:
+            sl = s.lower()
+            # Must mention an actual remedial ACTION (not just mention of mantra in career context)
+            if not re.search(
+                r'\bpropitiat|\bgemstone\b|\bwearing\b.*\bgemstone|\bwearing\b.*diamond'
+                r'|\bfasting\b|\bfast on\b|\bappease\b|\bjapa\b'
+                r'|it will be necessary to propitiate|propitiate them by'
+                r'|\bremedial measure|\bremedy\b.*planet|\bupaya\b',
+                sl,
+            ):
+                continue
+            # Must not be an OCR artefact or case-study sentence
+            if sum(1 for c in s if ord(c) > 127) > 0:
+                continue
+            if _OCR_JUNK_RE.search(s):
+                continue
+            if _REMEDY_REJECT_RE.search(s):
+                continue
+            if len(s) < 50 or len(s) > 300:
+                continue
+            if len(s.split()) < 8:
+                continue
+            # Must end with terminal punctuation (reject truncated chunk-boundary fragments)
+            if not s.rstrip().endswith(('.', '!', '?')):
+                continue
+            # Word-level quality: reject if >15% of words are length-1 tokens (OCR fragments)
+            words = s.split()
+            if sum(1 for w in words if len(w) <= 1) / len(words) > 0.12:
+                continue
+            # Should relate to planet or general affliction/propitiation rule
+            planet_hit = planet.lower() in sl
+            general_hit = re.search(
+                r'adversely posited|afflicted planet|weak planet|debilitat'
+                r'|it will be necessary to propitiate|propitiate them by'
+                r'|planets are favourable|remedy.*planet|planet.*remedy',
+                sl,
+            )
+            if not (planet_hit or general_hit):
+                continue
+
+            display = get_display_name(book)
+            # Fix known OCR ligature/spacing errors in the extracted sentence
+            clean_s = re.sub(r'prayersprescribed', 'prayers prescribed', s)
+            return (
+                f"\n📖 Classical Support\n"
+                f"→ {display}\n"
+                f"→ \"{clean_s.strip()}\"\n"
+            )
+
+    return ""
+
+
+def generate_classical_remedies(planet_data):
+    """Generate a CLASSICAL REMEDIES section for the report.
+
+    STRICT: remedies are only generated when a planet is debilitated or
+    combust, and only when a clean text-supported citation is found.
+    """
+    output = "\n" + "=" * 60 + "\n"
+    output += "SECTION 14 — CLASSICAL REMEDIES\n"
+    output += "=" * 60 + "\n"
+    output += (
+        "Remedies are generated ONLY for debilitated or combust planets "
+        "with direct classical text support.\n\n"
+    )
+
+    sun_data  = planet_data.get("Sun", {})
+    sun_sign  = sun_data.get("sign", "")
+    sun_deg   = sun_data.get("degree", 0)
+
+    found_any = False
+
+    for planet, data in planet_data.items():
+        if planet in ("ASC", "Rahu", "Ketu"):
+            continue
+
+        sign  = data.get("sign", "")
+        house = data.get("house", 0)
+        deg   = data.get("degree", 0)
+
+        # --- Trigger 1: Debilitation ---
+        is_debil = _REMEDY_DEBIL_MAP.get(planet) == sign
+
+        # --- Trigger 2: Combustion ---
+        is_combust = False
+        if planet != "Sun":
+            orb = _COMBUSTION_ORBS.get(planet)
+            if orb and sign == sun_sign and abs(deg - sun_deg) < orb:
+                is_combust = True
+
+        if not (is_debil or is_combust):
+            continue
+
+        condition = []
+        if is_debil:
+            condition.append(f"debilitated in {sign}")
+        if is_combust:
+            condition.append(f"combust ({abs(deg - sun_deg):.1f}° from Sun)")
+        cond_str = " and ".join(condition)
+
+        citation = find_remedy_citation(planet, cond_str)
+        if not citation:
+            citation = "\n(No direct classical remedy found for this configuration in available texts.)\n"
+
+        found_any = True
+        output += f"▸ {planet} [{cond_str} | House {house}]\n"
+        output += f"→ Condition: {planet} is {cond_str}, weakening its significations.\n"
+        output += f"→ Chart relevance: {planet} rules house(s) {', '.join(str(h) for h in _get_planet_lordships(planet, planet_data))} for this chart.\n"
+        output += citation
+        output += "\n"
+
+    if not found_any:
+        output += "No debilitated or combust planets found in this chart.\n"
+        output += "No remedies are required.\n"
+
+    return output
+
+
+def _get_planet_lordships(planet, planet_data):
+    """Return list of houses for which the planet is lord, derived from lagna sign."""
+    lagna_sign = None
+    asc_data = planet_data.get("ASC", {})
+    if asc_data:
+        lagna_sign = asc_data.get("sign", "")
+
+    if not lagna_sign:
+        return []
+
+    _ZODIAC = [
+        "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+        "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces",
+    ]
+    _SIGN_LORDS_LOCAL = {
+        "Aries": "Mars", "Taurus": "Venus", "Gemini": "Mercury",
+        "Cancer": "Moon", "Leo": "Sun", "Virgo": "Mercury",
+        "Libra": "Venus", "Scorpio": "Mars", "Sagittarius": "Jupiter",
+        "Capricorn": "Saturn", "Aquarius": "Saturn", "Pisces": "Jupiter",
+    }
+
+    try:
+        lagna_idx = _ZODIAC.index(lagna_sign)
+    except ValueError:
+        return []
+
+    owned = []
+    for i, sign in enumerate(_ZODIAC):
+        if _SIGN_LORDS_LOCAL.get(sign) == planet:
+            house_num = ((i - lagna_idx) % 12) + 1
+            owned.append(house_num)
+    return owned
+
+
 # ============================================================
+# END CLASSICAL REMEDY ENGINE
+# ============================================================
+
 
 # ============================================================
 # GLOBAL SYNTHESIS ENGINE (Task 3)
@@ -4376,6 +4593,11 @@ def generate_report():
     print("=" * 60)
     print(final_judgement(planets))
 
+    # --------------------------------------------------------
+    # 14. CLASSICAL REMEDIES
+    # --------------------------------------------------------
+    print(generate_classical_remedies(planets))
+
 # ============================================================
 # STAGE 7.5 — ULTRA PRECISION OUTPUT LAYER
 # Every statement: CAUSE → MECHANISM → RESULT → DOMAIN
@@ -5254,19 +5476,5 @@ if __name__ == "__main__":
         print("\n⚠  One or more validation checks failed — review the report for issues.")
 
     print(f"\n✅ Report saved to {REPORT_OUTPUT_FILE}")
-
-    # --------------------------------------------------------
-    # STAGE 7.5 — Ultra Precision Report
-    # --------------------------------------------------------
-    ULTRA_OUTPUT_FILE = "astrology_report_ultra.txt"
-    with open(ULTRA_OUTPUT_FILE, "w", encoding="utf-8") as _ultra_file:
-        _tee_ultra = _Tee(_ultra_file)
-        sys.stdout = _tee_ultra
-        try:
-            generate_ultra_report()
-        finally:
-            sys.stdout = sys.__stdout__
-
-    print(f"\n✅ Ultra report saved to {ULTRA_OUTPUT_FILE}")
 
 
