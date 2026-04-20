@@ -890,6 +890,33 @@ def interpret_text(raw_text):
 # -------------------------------
 # PLANET ANALYSIS
 # -------------------------------
+def _compute_confidence(planet, data):
+    """Return a confidence label for a planet's interpretation.
+
+    Based on dignity (own/exalted vs debilitated/combust) and whether
+    the house placement is a kendra/trikona (strong) or dusthana (weak).
+
+    Returns one of:
+      '🟢 HIGH'        — exalted or own sign, kendra/trikona placement
+      '🟡 MODERATE'    — neutral dignity, mixed house
+      '🔴 CONDITIONAL' — debilitated, combust, or dusthana with no yoga support
+    """
+    dignity = data.get("dignity", "").lower()
+    house   = data.get("house", 0)
+
+    is_strong  = dignity in ("exalted", "own sign", "own")
+    is_weak    = dignity in ("debilitated", "debilited") or data.get("combust", False)
+    is_kendra  = house in (1, 4, 7, 10)
+    is_trikona = house in (1, 5, 9)
+    is_dusthana = house in (6, 8, 12)
+
+    if is_weak or is_dusthana:
+        return "🔴 CONDITIONAL"
+    if is_strong and (is_kendra or is_trikona):
+        return "🟢 HIGH"
+    return "🟡 MODERATE"
+
+
 def analyze_planets():
     output = []
 
@@ -901,17 +928,11 @@ def analyze_planets():
             f"house {data.get('house', '')}"
         ]
 
-        insights = retrieve_insights(keywords)
-        insights = insights[:2]  # max 2 insights per planet
+        confidence = _compute_confidence(planet, data)
 
         section = f"\n=== {planet.upper()} ===\n"
         section += f"{planet} in {data.get('sign', 'N/A')} (House {data.get('house', 'N/A')}, {data.get('nakshatra', 'N/A')})\n"
-
-        for insight in insights:
-            interpreted = interpret_text(insight)
-            if interpreted:
-                interpreted = vary_sentence(interpreted)
-                section += f"- {interpreted}\n"
+        section += f"Confidence: {confidence}\n"
 
         # Task 3 — classical support for each planet
         support = get_classical_support(keywords[:2])
@@ -930,6 +951,7 @@ def analyze_planets():
         output.append(section)
 
     return "\n".join(output)
+
 
 
 # -------------------------------
@@ -997,7 +1019,7 @@ def analyze_dasha():
         else:
             output += (
                 f"  Career: {planet} in House {house} directs professional focus into {house_domain} — "
-                f"results are tied to how effectively the native activates House {house} themes.\n"
+                f"results are tied to how effectively the native drives House {house} themes.\n"
             )
 
         # Relationship signal
@@ -1072,7 +1094,7 @@ def detect_yogas():
         "lakshmi yoga"
     ]
 
-    insights = retrieve_insights(keywords)
+    insights = []  # chunk-text pipeline removed — reasoning is built from structured data
 
     for insight in insights:
         interpreted = interpret_text(insight)
@@ -1497,7 +1519,7 @@ def analyze_antardasha(dasha_list):
     rel_planet = main if main in (seventh_lord, "Venus") else (sub if sub in (seventh_lord, "Venus") else None)
     if rel_planet:
         output += (
-            f"{n}. Relationship event: {rel_planet} as 7th lord or Venus activates partnership-domain events — "
+            f"{n}. Relationship event: {rel_planet} as 7th lord or Venus drives partnership-domain events — "
             f"because {rel_planet} is the primary relationship indicator and is active in this period, "
             f"commitment decisions, partnership restructuring, or romantic deepening become time-sensitive. "
             f"Events in this domain during this window carry long-term karmic weight.\n"
@@ -1510,7 +1532,7 @@ def analyze_antardasha(dasha_list):
         fin_h = planets.get(fin_planet, {}).get("house", 0)
         output += (
             f"{n}. Financial accumulation window: {fin_planet} in House {fin_h} ({_house_event_phrase(fin_h)}) "
-            f"activates the wealth axis — because House {fin_h} is a direct income/gain house, "
+            f"drives the wealth axis — because House {fin_h} is a direct income/gain house, "
             f"financial inflows in this period are structurally supported. "
             f"Investment decisions and income-generating initiatives launched in this window carry higher durability.\n"
         )
@@ -1625,7 +1647,7 @@ def analyze_career(planet_data):
             f"research, spiritual advisory, or behind-the-scenes consulting. "
             f"Conventional employment is incompatible with this placement — the native's career "
             f"thrives only in non-hierarchical, autonomous, or cross-border contexts. "
-            f"{tenth_lord} as 10th lord in House 12 activates Vipreet Raj Yoga: rise comes "
+            f"{tenth_lord} as 10th lord in House 12 triggers Vipreet Raj Yoga: rise comes "
             f"through adversity, isolation, and unconventional paths that peers avoid.\n"
         )
     elif tenth_lord_h in (1, 5, 9):
@@ -1653,7 +1675,7 @@ def analyze_career(planet_data):
     elif saturn_h in (6, 8, 12):
         output += (
             f"Career runs through delays and unconventional paths — House {saturn_h} placement "
-            f"activates Vipreet Raj Yoga potential: unexpected rise through adversity. "
+            f"triggers Vipreet Raj Yoga potential: unexpected rise through adversity. "
             f"Every apparent setback is a mechanism for long-term elevation.\n"
         )
     elif saturn_h == 3:
@@ -1727,7 +1749,7 @@ def analyze_career(planet_data):
         output += (
             f" Mars debilitated in {mars_s} (House {mars_h}) creates execution gaps — "
             f"the native must consciously overcome the tendency to retreat under pressure. "
-            f"Mastering this debilitation activates Neecha Bhanga Raja Yoga, converting the "
+            f"Mastering this debilitation triggers Neecha Bhanga Raja Yoga, converting the "
             f"chart's greatest execution weakness into its most durable career asset."
         )
     output += "\n"
@@ -2113,7 +2135,7 @@ PLANET_DEEP_LOGIC = {
         1:  "Jupiter in the 1st house blesses the native with wisdom, optimism, and a generous, philosophical personality. Natural teachers and advisors emerge from this placement.",
         5:  "Jupiter in the 5th house supports exceptional intelligence, higher education, and blessings through children and creative endeavours.",
         9:  "Jupiter in the 9th house — its natural house of higher knowledge — gives deep dharmic orientation, blessings from teachers, and fortunate grace in life.",
-        12: "Jupiter in the 12th house indicates that knowledge comes through isolation, foreign lands, or deep inner exploration. Strong moksha and spiritual liberation potential.",
+        12: "Jupiter in the 12th house shows that knowledge comes through isolation, foreign lands, or deep inner exploration. Strong moksha and spiritual liberation potential.",
     },
     "Rahu": {
         "general": (
@@ -2131,7 +2153,7 @@ PLANET_DEEP_LOGIC = {
             "disinterest in those areas. Ketu placements show where the native has innate skill "
             "but little worldly attachment, making liberation possible."
         ),
-        7:  "Ketu in the 7th house indicates karmic relationships with deep soul connections but potential detachment, unusual dynamics, or spiritual orientation in partnerships.",
+        7:  "Ketu in the 7th house shows karmic relationships with deep soul connections but potential detachment, unusual dynamics, or spiritual orientation in partnerships.",
         12: "Ketu in the 12th house — its natural domain — strongly supports moksha, spiritual liberation, psychic sensitivity, and connection to foreign or hidden realms.",
     },
     "Mars": {
@@ -2172,7 +2194,7 @@ PLANET_DEEP_LOGIC = {
         ),
         1:  "Moon in the 1st house makes the personality highly emotionally expressive, empathetic, and sensitive to environmental influences.",
         4:  "Moon in the 4th house — its natural domain — gives strong emotional security, love of home, a nourishing nature, and a close relationship with the mother.",
-        10: "Moon in the 10th house indicates a career in public life, caregiving, hospitality, or any work that involves direct engagement with the public.",
+        10: "Moon in the 10th house points to a career in public life, caregiving, hospitality, or any work that involves direct engagement with the public.",
     },
     "Sun": {
         "general": (
@@ -2197,16 +2219,18 @@ def synthesize_planet(planet, data, all_planets):
     house = data.get("house", 0)
     nakshatra = data.get("nakshatra", "Unknown")
 
+    confidence = _compute_confidence(planet, data)
     text = f"\n--- {planet} in {sign} (House {house}, Nakshatra: {nakshatra}) ---\n"
+    text += f"Confidence: {confidence}\n"
     text += (
-        f"Therefore, {planet} in {sign} (House {house}) activates "
+        f"{planet} in {sign} (House {house}) brings "
         f"{HOUSE_MEANINGS.get(house, 'various life areas')} as the primary life domain.\n"
     )
 
     logic = PLANET_DEEP_LOGIC.get(planet, {})
     # Only house-specific insights — NO "general" textbook definitions
     if house in logic:
-        text += f"Hence, the native experiences: {logic[house]}\n"
+        text += f"The native experiences: {logic[house]}\n"
 
     # Dignity commentary
     exaltation = {
@@ -2226,19 +2250,19 @@ def synthesize_planet(planet, data, all_planets):
 
     if exaltation.get(planet) == sign:
         text += (
-            f"{planet} is EXALTED in {sign} — therefore maximum expression of this planet's "
-            f"qualities is available throughout life. Results in House {house} are amplified "
+            f"{planet} is EXALTED in {sign} — this brings maximum expression of this planet's "
+            f"qualities throughout life. Results in House {house} are amplified "
             f"and consistently strong.\n"
         )
     elif debilitation.get(planet) == sign:
         text += (
-            f"{planet} is DEBILITATED in {sign} — hence this placement creates pressure "
+            f"{planet} is DEBILITATED in {sign} — this placement creates pressure "
             f"that, once overcome, generates Neecha Bhanga Raja Yoga. The native's challenges "
             f"in House {house} directly produce the breakthrough pattern of this chart.\n"
         )
     elif sign in own_signs.get(planet, []):
         text += (
-            f"{planet} is in its OWN SIGN {sign} — therefore fully empowered and expressive. "
+            f"{planet} is in its OWN SIGN {sign} — fully empowered and expressive. "
             f"House {house} results are delivered with confidence and consistency.\n"
         )
 
@@ -2250,8 +2274,8 @@ def synthesize_planet(planet, data, all_planets):
     if conj_partners:
         conj_str = " + ".join(conj_partners)
         text += (
-            f"{planet} is conjunct {conj_str} in House {house} — hence this conjunction "
-            f"creates a powerful combined activation of House {house} themes, blending the "
+            f"{planet} is conjunct {conj_str} in House {house} — this conjunction "
+            f"creates a powerful combined force in House {house} themes, blending the "
             f"natures of {planet} and {conj_str} into a single, inseparable life force.\n"
         )
 
@@ -2261,15 +2285,15 @@ def synthesize_planet(planet, data, all_planets):
             f"Moon in {sign} (House {house}) shapes the emotional decision-making framework: "
             f"all relationships, creative choices, and intuitive responses are filtered through "
             f"{sign}'s need for {_MOON_SIGN_NEED.get(sign, 'balance and harmony')}. "
-            f"Therefore, the native's inner emotional world directly influences "
+            f"The native's inner emotional world directly drives "
             f"the themes of House {house} — {HOUSE_MEANINGS.get(house, 'intelligence and creativity')}.\n"
         )
     elif planet == "Mars":
         text += (
             f"Mars in {sign} (House {house}) drives action, ambition, and energy in the domain of "
             f"{HOUSE_MEANINGS.get(house, 'wealth and family')}. "
-            f"{'Debilitated Mars in Cancer creates indirect, defensive action — therefore the native must consciously choose direct confrontation over emotional withdrawal.' if sign == 'Cancer' else f'Mars in {sign} channels its drive forcefully into House {house} themes.'} "
-            f"Hence, the native's physical energy, financial drive, and competitive instinct "
+            f"{'Debilitated Mars in Cancer creates indirect, defensive action — the native must consciously choose direct confrontation over emotional withdrawal.' if sign == 'Cancer' else f'Mars in {sign} channels its drive forcefully into House {house} themes.'} "
+            f"The native's physical energy, financial drive, and competitive instinct "
             f"are permanently anchored in House {house}.\n"
         )
     elif planet == "Venus":
@@ -2277,8 +2301,8 @@ def synthesize_planet(planet, data, all_planets):
             f"Venus in {sign} (House {house}) governs the native's approach to love, beauty, "
             f"comfort, and relationships through the lens of House {house} — "
             f"{HOUSE_MEANINGS.get(house, 'home and emotional security')}. "
-            f"{'Debilitated Venus in Virgo introduces perfectionism — hence relationships suffer from over-analysis and impossible standards until conscious correction is applied.' if sign == 'Virgo' else f'Venus in {sign} brings harmony and aesthetic refinement to House {house}.'} "
-            f"Therefore, the quality of the native's domestic life and intimate bonds directly "
+            f"{'Debilitated Venus in Virgo brings perfectionism — relationships suffer from over-analysis and impossible standards until conscious correction is applied.' if sign == 'Virgo' else f'Venus in {sign} brings harmony and aesthetic refinement to House {house}.'} "
+            f"The quality of the native's domestic life and intimate bonds directly "
             f"reflects their management of Venus's debilitation challenge.\n"
         )
 
@@ -2373,8 +2397,8 @@ def detect_advanced_yogas(planet_data):
     if jup_h in [1, 5, 9] and sat_h in [1, 4, 7, 10]:
         yogas_found.append(
             "⚡ Raj Yoga — Kendra-Trikona lord connection (Jupiter in trikona, Saturn in kendra). "
-            "Strong potential for rise in status, authority, and recognition. This yoga activates "
-            "ambition, discipline, and long-term achievement. Authority and leadership are strongly indicated."
+            "Strong potential for rise in status, authority, and recognition. This yoga drives "
+            "ambition, discipline, and long-term achievement. Authority and leadership are strongly supported."
         )
 
     # 5. Dhan Yoga
@@ -2550,7 +2574,7 @@ def detect_advanced_yogas(planet_data):
     if max_chain >= 5:
         yogas_found.append(
             f"🔗 Graha Malika Yoga — {max_chain} consecutive houses are occupied by planets, forming "
-            f"a garland of planetary energy. This yoga indicates a life of intense activity, varied "
+            f"a garland of planetary energy. This yoga shows a life of intense activity, varied "
             f"experiences, and wide-ranging impact across multiple life domains."
         )
 
@@ -2721,7 +2745,7 @@ _NAMED_CONJUNCTIONS = {
     frozenset({"Jupiter", "Saturn"}): (
         "Jupiter-Saturn conjunction — A rare and weighty combination: disciplined wisdom, "
         "spiritual ambition, and long-term achievement through patient, principled effort. "
-        "In a dusthana house this activates Vipreet Raj Yoga potential."
+        "In a dusthana house this triggers Vipreet Raj Yoga potential."
     ),
     frozenset({"Jupiter", "Venus"}): (
         "Jupiter-Venus conjunction — Wealth, beauty, and spiritual grace combined. "
@@ -2794,20 +2818,11 @@ def detect_conjunctions(planet_data):
                     named_shown.add(key)
                     output += f"  → {_NAMED_CONJUNCTIONS[key]}\n"
 
-        # Validate with classical text chunks — only show if the extracted principle
-        # specifically references at least one of the planets in this conjunction.
+        # Classical support via citation engine (not chunk-text pipeline)
         keywords = [p.lower() for p in plist] + ["conjunction", "conjunct", "together"]
-        insights = retrieve_insights(keywords)
-        plist_lower = {p.lower() for p in plist}
-        for insight in insights[:4]:
-            interpreted = interpret_text(insight)
-            if not interpreted:
-                continue
-            interpreted = vary_sentence(interpreted)
-            # Only display if the *interpreted principle* mentions a planet from this conjunction
-            if any(pl in interpreted.lower() for pl in plist_lower):
-                output += f"\n{'-' * 40}\n📖 Classical: {interpreted}\n{'-' * 40}\n"
-                break  # one classical note per conjunction is sufficient
+        support = get_classical_support(keywords[:3])
+        if support:
+            output += f"\n{'-' * 40}{support}{'-' * 40}\n"
 
         output += "\n"
 
@@ -2885,7 +2900,7 @@ _DASHA_PROFILES = {
         "theme":       "Authority, identity, and professional recognition",
         "events":      "Career advancement, government connections, clarity of life purpose, recognition from superiors",
         "challenges":  "Ego conflicts, authority clashes, health issues (heart/eyes), father-related events",
-        "reason":      "Sun governs the soul, ego, authority, and the father — its period activates these themes centrally",
+        "reason":      "Sun governs the soul, ego, authority, and the father — its period drives these themes centrally",
     },
     "Moon": {
         "theme":       "Mind, emotions, public life, and the mother",
@@ -2915,7 +2930,7 @@ _DASHA_PROFILES = {
         "theme":       "Relationships, beauty, luxury, and creative expression",
         "events":      "Marriage/romantic union, artistic career growth, financial gains, social expansion, comforts and pleasures",
         "challenges":  "Overindulgence, relationship complications, material attachment",
-        "reason":      "Venus governs love, beauty, and material comfort — its period activates relationships and creative life",
+        "reason":      "Venus governs love, beauty, and material comfort — its period drives relationships and creative life",
     },
     "Saturn": {
         "theme":       "Discipline, karma, hard work, and long-term building",
@@ -3020,22 +3035,10 @@ def analyze_dasha_timeline(dasha_list, planet_data):
                 f"struggle characterise this period, but hard-won gains are lasting.\n"
             )
 
-        # Classical text validation
-        keywords = [planet.lower(), "dasha", "mahadasa", sign.lower(), "period"]
-        insights = retrieve_insights(keywords)
-        classical_added = 0
-        for insight in insights:
-            interpreted = interpret_text(insight)
-            if interpreted and classical_added < 2:
-                interpreted = vary_sentence(interpreted)
-                output += f"\n{'-' * 40}\n📖 Classical: {interpreted}\n{'-' * 40}\n"
-                classical_added += 1
-
-        # Task 3 — additional classical support if none found above
-        if classical_added == 0:
-            support = get_classical_support([planet.lower(), sign.lower(), "dasha"])
-            if support:
-                output += f"\n{'-' * 40}{support}{'-' * 40}\n"
+        # Classical support via citation engine (not chunk-text pipeline)
+        support = get_classical_support([planet.lower(), sign.lower(), "dasha"])
+        if support:
+            output += f"\n{'-' * 40}{support}{'-' * 40}\n"
 
         output += "\n"
 
@@ -3409,7 +3412,7 @@ def synthesize_chart(planet_data):
                 f"  Synthesis: Jupiter's expansive wisdom meets Saturn's disciplined karma "
                 f"in the 12th house of moksha and foreign lands — the native builds a life "
                 f"connected to spiritual institutions, foreign environments, or research-oriented, "
-                f"behind-the-scenes roles. Saturn in House 12 activates Vipreet Raj Yoga: "
+                f"behind-the-scenes roles. Saturn in House 12 triggers Vipreet Raj Yoga: "
                 f"unexpected rise through adversity and isolation is the dominant career pattern.\n"
             )
             # Lordship
@@ -4139,9 +4142,9 @@ def _predict_period(maha, sub, maha_ctx, sub_ctx, maha_start, maha_end,
             " Budha-Aditya Yoga amplifies intellectual output and communication breakthroughs."
         )
     elif sub == "Jupiter" and sub_house == maha_house:
-        yoga_amplifier = " Vipreet Raj Yoga activates — rise through adversity in this sub-period."
+        yoga_amplifier = " Vipreet Raj Yoga triggers — rise through adversity in this sub-period."
     elif sub == "Saturn" and sub_house == maha_house:
-        yoga_amplifier = " Vipreet Raj Yoga activates — unexpected gains from hidden or foreign sectors."
+        yoga_amplifier = " Vipreet Raj Yoga triggers — unexpected gains from hidden or foreign sectors."
 
     line = f"{time_str}: {event} due to {trigger}.\n  {background}.{yoga_amplifier}"
     if tag:
@@ -4449,7 +4452,7 @@ def final_judgement(planet_data):
         f"philosophically unconventional background — superficial bonds are impossible "
         f"for this chart. Venus debilitated in {venus_s} (House {venus_h}) creates "
         f"perfectionism that damages otherwise promising relationships; "
-        f"therefore, the native must consciously release idealistic expectations "
+        f"the native must consciously release idealistic expectations "
         f"to sustain long-term harmony.\n\n"
     )
 
@@ -4467,7 +4470,7 @@ def final_judgement(planet_data):
         f"→ CORE WEAKNESS: Mars debilitated in {mars_s} (House {mars_h}) produces "
         f"emotional withdrawal and passive-aggressive retreat precisely when bold, direct action is required. "
         f"The gap between intellectual vision and decisive execution is the single greatest threat to this chart's potential. "
-        f"Mastering this debilitation directly activates Neecha Bhanga Raja Yoga — "
+        f"Mastering this debilitation directly triggers Neecha Bhanga Raja Yoga — "
         f"the chart's greatest vulnerability becomes its most durable career asset the moment Mars energy is redirected into strategic, purposeful action.\n\n"
     )
 
@@ -4483,7 +4486,7 @@ def final_judgement(planet_data):
     anta_clause = (
         f" The active {current_maha}–{current_anta} Antardasha (through {current_anta_end}) "
         f"accelerates this foundation-building: {current_anta} in House "
-        f"{planet_data.get(current_anta, {}).get('house', '?')} activates "
+        f"{planet_data.get(current_anta, {}).get('house', '?')} drives "
         f"{_house_event_phrase(planet_data.get(current_anta, {}).get('house', 0))} "
         f"alongside {current_maha}'s institutional and philosophical influence."
         if current_anta else ""
@@ -4908,7 +4911,7 @@ def _ultra_yoga_section(planet_data):
 
     # Jupiter-Saturn conjunction (Vipreet Raj Yoga potential)
     if jup_h == sat_h and jup_h:
-        vr_note = " This activates Vipreet Raj Yoga: career rise is triggered by adversity, not support." if jup_h in (6, 8, 12) else ""
+        vr_note = " This triggers Vipreet Raj Yoga: career rise comes through adversity, not support." if jup_h in (6, 8, 12) else ""
         output += f"▸ JUPITER–SATURN CONJUNCTION (House {jup_h})\n"
         output += (
             f"  Disciplined wisdom concentrated in House {jup_h} ({_house_event_phrase(jup_h)}). "
@@ -5051,7 +5054,7 @@ def _ultra_dasha_section(dasha_list, planet_data):
         second_lord   = SIGN_LORDS.get(SIGN_ORDER[(lagna_idx + 1) % 12], "") if lagna_idx >= 0 else ""
         eleventh_lord = SIGN_LORDS.get(SIGN_ORDER[(lagna_idx + 10) % 12], "") if lagna_idx >= 0 else ""
         if planet in (second_lord, eleventh_lord) or house in (2, 11):
-            output += f"    Money: Wealth accumulation period — {h_phrase} directly activates financial gains.\n"
+            output += f"    Money: Wealth accumulation period — {h_phrase} directly drives financial gains.\n"
         elif house in (8, 12):
             output += f"    Money: Financial restructuring — hidden gains, foreign income, or institutional funding replace conventional income streams.\n"
         else:
@@ -5061,7 +5064,7 @@ def _ultra_dasha_section(dasha_list, planet_data):
         seventh_lord = SIGN_LORDS.get(SIGN_ORDER[(lagna_idx + 6) % 12], "") if lagna_idx >= 0 else ""
         ketu_h = planet_data.get("Ketu", {}).get("house", 0)
         if planet == seventh_lord or 7 in lords_of:
-            output += f"    Relationship: Marriage or partnership event triggered — {planet} as 7th lord activates commitment decisions.\n"
+            output += f"    Relationship: Marriage or partnership event triggered — {planet} as 7th lord drives commitment decisions.\n"
         elif planet in ("Venus", "Ketu") or house == 7:
             output += f"    Relationship: Karmic relationship event — {planet} in House {house} forces partnership restructuring or romantic deepening.\n"
         else:
@@ -5148,7 +5151,7 @@ def _ultra_dasha_section(dasha_list, planet_data):
 
                     output += (
                         f"  • {planet}–{sub} [{start_str} → {end_str}]: "
-                        f"activates House {main_h} + House {sub_h}, producing {event_chain}."
+                        f"drives House {main_h} + House {sub_h}, producing {event_chain}."
                         f"{conj_sub_note}{combust_note}\n"
                         f"{'=' * 50}{ad_window}{'=' * 50}\n"
                     )
