@@ -107,19 +107,112 @@ def vary_sentence(sentence):
 def get_classical_support(keywords):
     """Retrieve one clean classical-text line for the given keywords.
 
-    Returns a formatted '📖 CLASSICAL SUPPORT' block, or None when no
-    relevant clean principle can be extracted from the corpus.
+    Delegates to get_best_classical_support() using the weighted citation
+    engine.  Returns a formatted '📖 CLASSICAL SUPPORT' block, or None.
     """
-    insights = retrieve_insights(keywords)
-    for insight in insights:
-        clean = interpret_text(insight)
-        if clean:
-            return f"\n📖 CLASSICAL SUPPORT\n→ {clean}\n"
-    return None
+    query = " ".join(keywords)
+    result = get_best_classical_support(query, _all_books_chunks)
+    if result:
+        return result
+    # fallback: try against full pool if primary dataset yields nothing
+    fallback = get_best_classical_support(query, all_chunks)
+    return fallback if fallback else None
 
 
 # ============================================================
-# END REFINEMENT LAYER UTILITIES
+# WEIGHTED CLASSICAL CITATION ENGINE (Task 5)
+# ============================================================
+
+# Book keys match actual keys in all_books_chunks.json:
+#   book2  = Brihat Parashara Hora Sastra
+#   book4  = Jaimini Sutras
+#   book7  = Phaladeepika
+#   book5  = Jataka Parijata
+#   book6  = Uttara Kalamrita
+#   book3  = Crux of Vedic Astrology (Sanjay Rath)
+#   book9  = Vedic Astrology – P.V.R. Narasimha Rao
+#   book1  = Destiny and the Wheel of Time – K.N. Rao
+#   book11 = Vedic Remedies in Astrology
+#   book10 = General compilation
+SOURCE_WEIGHTS = {
+    "book2":  10,   # Brihat Parashara Hora Sastra
+    "book4":  9,    # Jaimini Sutras
+    "book7":  8,    # Phaladeepika
+    "book5":  8,    # Jataka Parijata
+    "book6":  7,    # Uttara Kalamrita
+    "book3":  7,    # Crux of Vedic Astrology
+    "book9":  6,    # Vedic Astrology – Narasimha Rao
+    "book1":  5,    # K.N. Rao
+    "book11": 5,    # Vedic Remedies
+    "book10": 4,    # Compilation
+}
+DEFAULT_WEIGHT = 3
+
+_BOOK_DISPLAY_NAMES = {
+    "book2":  "Brihat Parashara Hora Sastra",
+    "book4":  "Jaimini Sutras",
+    "book7":  "Phaladeepika",
+    "book5":  "Jataka Parijata",
+    "book6":  "Uttara Kalamrita",
+    "book3":  "Crux of Vedic Astrology",
+    "book9":  "Vedic Astrology",
+    "book1":  "Destiny and the Wheel of Time",
+    "book11": "Vedic Remedies in Astrology",
+    "book10": "Classical Compilation",
+}
+
+
+def score_chunk(query, chunk):
+    """Score a chunk by keyword overlap × source authority weight."""
+    text         = chunk.get("text", "").lower()
+    book         = chunk.get("book", "")
+    keyword_score = sum(1 for w in query.lower().split() if w in text)
+    source_weight = SOURCE_WEIGHTS.get(book, DEFAULT_WEIGHT)
+    return keyword_score * source_weight
+
+
+def is_clean(chunk):
+    """Return True only for chunks worth citing."""
+    text = chunk.get("text", "")
+    if len(text) < 80:
+        return False
+    low = text.lower()
+    # Filter OCR garbage / page headers / short metadata
+    if low.startswith(("-", "page", "vol", "chapter")):
+        return False
+    # Reject chunks that are almost pure OCR noise (very few alpha chars)
+    alpha_ratio = sum(1 for c in text if c.isalpha()) / max(len(text), 1)
+    if alpha_ratio < 0.45:
+        return False
+    return True
+
+
+def get_best_classical_support(query, chunks):
+    """Return the best-weighted classical citation for query, or empty string."""
+    scored = [(score_chunk(query, c), c) for c in chunks]
+    scored.sort(reverse=True, key=lambda x: x[0])
+
+    for _, chunk in scored:
+        if not is_clean(chunk):
+            continue
+        text  = chunk.get("text", "").strip()
+        book  = chunk.get("book", "")
+        page  = chunk.get("page", "")
+        name  = _BOOK_DISPLAY_NAMES.get(book, book) if book else "Unknown"
+        citation = name
+        if page:
+            citation += f" (p.{page})"
+        # Trim to a single readable paragraph (≤ 400 chars)
+        if len(text) > 400:
+            text = text[:400].rsplit(" ", 1)[0] + "…"
+        return f"\n📖 CLASSICAL SUPPORT — {citation}\n→ {text}\n"
+
+    return ""
+
+
+# ============================================================
+# END WEIGHTED CITATION ENGINE
+# ============================================================
 # ============================================================
 
 # ============================================================
