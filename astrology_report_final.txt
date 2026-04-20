@@ -66,10 +66,16 @@ Therefore, Mars in Cancer (House 2) activates wealth, speech, and family values 
 Mars is DEBILITATED in Cancer — hence this placement creates pressure that, once overcome, generates Neecha Bhanga Raja Yoga. The native's challenges in House 2 directly produce the breakthrough pattern of this chart.
 Mars in Cancer (House 2) drives action, ambition, and energy in the domain of wealth, speech, and family values. Debilitated Mars in Cancer creates indirect, defensive action — therefore the native must consciously choose direct confrontation over emotional withdrawal. Hence, the native's physical energy, financial drive, and competitive instinct are permanently anchored in House 2.
 
+⚖️ SYNTHESIS:
+- Mars is debilitated but Neecha Bhanga cancels this — results improve after struggle.
+
 --- Mercury in Leo (House 3, Nakshatra: Uttara Phalguni) ---
 Therefore, Mercury in Leo (House 3) activates effort, courage, siblings, and communication as the primary life domain.
 Hence, the native experiences: Mercury in the 3rd house — its natural house of communication — strongly supports writing, speaking, trading, and intellectual pursuits.
 Mercury is conjunct Sun in House 3 — hence this conjunction creates a powerful combined activation of House 3 themes, blending the natures of Mercury and Sun into a single, inseparable life force.
+
+⚖️ SYNTHESIS:
+- Mercury forms Budha-Aditya Yoga but combustion modifies it — intelligence becomes authority-driven rather than neutral.
 
 --- Jupiter in Taurus (House 12, Nakshatra: Rohini) ---
 Therefore, Jupiter in Taurus (House 12) activates loss, foreign lands, moksha, and spirituality as the primary life domain.
@@ -81,10 +87,16 @@ Therefore, Venus in Virgo (House 4) activates home, mother, emotional security, 
 Venus is DEBILITATED in Virgo — hence this placement creates pressure that, once overcome, generates Neecha Bhanga Raja Yoga. The native's challenges in House 4 directly produce the breakthrough pattern of this chart.
 Venus in Virgo (House 4) governs the native's approach to love, beauty, comfort, and relationships through the lens of House 4 — home, mother, emotional security, and comfort. Debilitated Venus in Virgo introduces perfectionism — hence relationships suffer from over-analysis and impossible standards until conscious correction is applied. Therefore, the quality of the native's domestic life and intimate bonds directly reflects their management of Venus's debilitation challenge.
 
+⚖️ SYNTHESIS:
+- Venus is debilitated but Neecha Bhanga cancels this — results improve after struggle.
+
 --- Saturn in Taurus (House 12, Nakshatra: Krittika) ---
 Therefore, Saturn in Taurus (House 12) activates loss, foreign lands, moksha, and spirituality as the primary life domain.
 Hence, the native experiences: Saturn in the 12th house carries strong karmic isolation energy. Foreign settlement, deep spiritual evolution, or work in hidden institutions (hospitals, ashrams, research) is indicated.
 Saturn is conjunct Jupiter in House 12 — hence this conjunction creates a powerful combined activation of House 12 themes, blending the natures of Saturn and Jupiter into a single, inseparable life force.
+
+⚖️ SYNTHESIS:
+- Saturn operates through adversity — results come after transformation.
 
 --- Rahu in Gemini (House 1, Nakshatra: Punarvasu) ---
 Therefore, Rahu in Gemini (House 1) activates self, personality, and physical body as the primary life domain.
@@ -137,23 +149,7 @@ House 12 (Taurus): Jupiter + Saturn
 
 
 === RETROGRADE PLANET ANALYSIS ===
-Retrograde planets (Vakri Graha) redirect their energy inward, deepening internal development while delaying external results. Retrograde flags are not encoded in the source kundali JSON; the following principles apply if any of these planets were retrograde at birth — verify against an ephemeris for the birth date.
-
-Saturn:
-  If Saturn is retrograde: karmic lessons become more internalized. Discipline and delays are felt more keenly but the eventual rewards are exceptionally durable. The native revisits past-life karmic debts with greater intensity and thoroughness.
-
-Jupiter:
-  If Jupiter is retrograde: wisdom develops through introspection rather than external mentors. Blessings arrive after re-evaluation and inner growth. Spiritual or philosophical values may be unconventional and self-developed.
-
-Mars:
-  If Mars is retrograde: energy and drive turn inward — the native is a 'strategic warrior' who plans before acting. Assertiveness can be bottled up and released suddenly; physical vitality strengthens through disciplined internal practice.
-
-Mercury:
-  If Mercury is retrograde: communication and analysis deepen through review and revision. The intellect is thorough and non-linear. Writing, research, and behind-the-scenes analytical work often produce outstanding results.
-
-Venus:
-  If Venus is retrograde: relationship values are reassessed through deep inner reflection. Artistic ability deepens by revisiting and refining creative works. Past-life romantic patterns may resurface for resolution.
-
+No retrograde planets confirmed in source kundali data.
 
 
 === LORDSHIP ANALYSIS — ALL 12 HOUSE RULERS ===
@@ -276,7 +272,7 @@ SECTION 3 — YOGA DETECTION
 
 
 === ADVANCED YOGA ANALYSIS (20+ YOGAS) ===
-1. ☀️ Budh-Aditya Yoga — Sun and Mercury conjunct in the same house. Strong intelligence, articulate communication, and intellectual brilliance. Excellent for writers, speakers, analysts, and diplomats. The combination of soul (Sun) and intellect (Mercury) in one house creates a razor-sharp communicator.
+1. ☀️ Budh-Aditya Yoga — Sun and Mercury conjunct in House 3. ⚖️ SYNTHESIS: Mercury is combust (within 10.7° of Sun) — intelligence becomes authority-driven rather than neutral. Analytical brilliance is channeled through solar command; communication leads with conviction and authority, not diplomacy. The yoga's strength is present but filtered through Sun's agenda — writers, leaders, and advisors benefit most.
 
 2. 🔥 Vipreet Raj Yoga — Saturn in dusthana (6th, 8th, or 12th house). Success through adversity, unexpected rise, and triumph after hardship. The greater the challenge faced, the greater the eventual reward. This is the yoga of the phoenix — rising from difficulties.
 

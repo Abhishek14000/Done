@@ -122,6 +122,94 @@ def get_classical_support(keywords):
 # END REFINEMENT LAYER UTILITIES
 # ============================================================
 
+# ============================================================
+# GLOBAL SYNTHESIS ENGINE (Task 3)
+# ============================================================
+
+_DEBIL_MAP_SYNTH = {
+    "Sun": "Libra", "Moon": "Scorpio", "Mars": "Cancer",
+    "Mercury": "Pisces", "Jupiter": "Capricorn", "Venus": "Virgo", "Saturn": "Aries",
+}
+
+
+def _build_synthesis_context(planet, planet_data):
+    """Build context dict for resolve_conflicts() using kundali data only."""
+    pdata  = planet_data.get(planet, {})
+    sun_h  = planet_data.get("Sun", {}).get("house", 0)
+    mer_h  = planet_data.get("Mercury", {}).get("house", 0)
+    moon_h = planet_data.get("Moon", {}).get("house", 0)
+    jup_h  = planet_data.get("Jupiter", {}).get("house", 0)
+    sat_h  = planet_data.get("Saturn", {}).get("house", 0)
+    p_h    = pdata.get("house", 0)
+    p_s    = pdata.get("sign", "")
+
+    # Combust: planet shares a house with the Sun (excluding Sun itself)
+    combust = (planet != "Sun" and p_h > 0 and p_h == sun_h)
+
+    # Debilitated: planet is in its debilitation sign
+    debil = bool(p_s and _DEBIL_MAP_SYNTH.get(planet) == p_s)
+
+    # Retrograde: sourced from kundali data ONLY — no inference
+    retro = pdata.get("retrograde") is True
+
+    # Yoga list: names of active yogas this planet participates in
+    yoga = []
+    if planet in ("Sun", "Mercury") and sun_h and mer_h and sun_h == mer_h:
+        yoga.append("Budha-Aditya")
+    if debil:
+        yoga.append("Neecha Bhanga")
+    if planet in ("Jupiter", "Moon") and jup_h and moon_h and abs(jup_h - moon_h) % 3 == 0:
+        yoga.append("Gajakesari")
+    if planet == "Saturn" and sat_h in (6, 8, 12):
+        yoga.append("Vipreet Raj")
+
+    return {
+        "combust":     combust,
+        "debilitated": debil,
+        "retrograde":  retro,
+        "yoga":        yoga,
+    }
+
+
+def resolve_conflicts(planet, pdata, context):
+    """Return list of unified synthesis statements that resolve chart contradictions."""
+    result = []
+
+    combust = context.get("combust", False)
+    debil   = context.get("debilitated", False)
+    yoga    = context.get("yoga", [])
+    retro   = context.get("retrograde", False)
+    house   = pdata.get("house")
+
+    if combust and "Budha-Aditya" in yoga:
+        result.append(
+            f"{planet} forms Budha-Aditya Yoga but combustion modifies it — "
+            f"intelligence becomes authority-driven rather than neutral."
+        )
+
+    if debil and "Neecha Bhanga" in yoga:
+        result.append(
+            f"{planet} is debilitated but Neecha Bhanga cancels this — "
+            f"results improve after struggle."
+        )
+
+    if retro:
+        result.append(
+            f"{planet} is retrograde — results manifest after internal processing and delay."
+        )
+
+    if house in [6, 8, 12] and yoga:
+        result.append(
+            f"{planet} operates through adversity — results come after transformation."
+        )
+
+    return result
+
+
+# ============================================================
+# END SYNTHESIS ENGINE
+# ============================================================
+
 
 def retrieve_insights(keywords, chunk_list=None):
     """Search *every* chunk in chunk_list for keyword relevance.
@@ -319,6 +407,14 @@ def analyze_planets():
         support = get_classical_support(keywords[:2])
         if support:
             section += f"\n{'-' * 40}{support}{'-' * 40}\n"
+
+        # Task 4 — synthesis: resolve combust/debil/yoga contradictions
+        context   = _build_synthesis_context(planet, planets)
+        conflicts = resolve_conflicts(planet, data, context)
+        if conflicts:
+            section += "\n⚖️ SYNTHESIS:\n"
+            for c in conflicts:
+                section += f"- {c}\n"
 
         section = "\n" + section.strip() + "\n"
         output.append(section)
@@ -1676,6 +1772,14 @@ def synthesize_planet(planet, data, all_planets):
             f"reflects their management of Venus's debilitation challenge.\n"
         )
 
+    # Global synthesis: resolve combust/debil/yoga contradictions into unified conclusion
+    context   = _build_synthesis_context(planet, all_planets)
+    conflicts = resolve_conflicts(planet, data, context)
+    if conflicts:
+        text += "\n⚖️ SYNTHESIS:\n"
+        for c in conflicts:
+            text += f"- {c}\n"
+
     return text
 
 
@@ -1725,12 +1829,27 @@ def detect_advanced_yogas(planet_data):
 
     # 2. Budh-Aditya Yoga
     if sun_h and mer_h and sun_h == mer_h:
-        yogas_found.append(
-            "☀️ Budh-Aditya Yoga — Sun and Mercury conjunct in the same house. Strong intelligence, "
-            "articulate communication, and intellectual brilliance. Excellent for writers, speakers, "
-            "analysts, and diplomats. The combination of soul (Sun) and intellect (Mercury) in one "
-            "house creates a razor-sharp communicator."
-        )
+        # Check combustion (Mercury within 14° of Sun)
+        mer_deg = planet_data.get("Mercury", {}).get("degree", 0)
+        sun_deg = planet_data.get("Sun", {}).get("degree", 0)
+        combust_orb = abs(mer_deg - sun_deg)
+        if combust_orb < 14:
+            yogas_found.append(
+                "☀️ Budh-Aditya Yoga — Sun and Mercury conjunct in House "
+                + str(sun_h) + ". "
+                "⚖️ SYNTHESIS: Mercury is combust (within " + f"{combust_orb:.1f}" + "° of Sun) — "
+                "intelligence becomes authority-driven rather than neutral. Analytical brilliance "
+                "is channeled through solar command; communication leads with conviction and "
+                "authority, not diplomacy. The yoga's strength is present but filtered through "
+                "Sun's agenda — writers, leaders, and advisors benefit most."
+            )
+        else:
+            yogas_found.append(
+                "☀️ Budh-Aditya Yoga — Sun and Mercury conjunct in the same house. Strong intelligence, "
+                "articulate communication, and intellectual brilliance. Excellent for writers, speakers, "
+                "analysts, and diplomats. The combination of soul (Sun) and intellect (Mercury) in one "
+                "house creates a razor-sharp communicator."
+            )
 
     # 3. Chandra-Mangal Yoga
     if moon_h and mars_h and moon_h == mars_h:
@@ -2222,17 +2341,28 @@ _RETROGRADE_PRINCIPLES = {
 
 
 def detect_retrograde(planet_data):
-    """Provide retrograde interpretation framework for the chart."""
+    """Retrograde analysis using kundali data only — no hypothetical inference."""
     output = "\n=== RETROGRADE PLANET ANALYSIS ===\n"
-    output += (
-        "Retrograde planets (Vakri Graha) redirect their energy inward, deepening internal "
-        "development while delaying external results. Retrograde flags are not encoded in "
-        "the source kundali JSON; the following principles apply if any of these planets "
-        "were retrograde at birth — verify against an ephemeris for the birth date.\n\n"
-    )
-    for planet, principle in _RETROGRADE_PRINCIPLES.items():
-        if planet in planet_data:
-            output += f"{planet}:\n  {principle}\n\n"
+
+    retro_found = []
+    for planet, pdata in planet_data.items():
+        if pdata.get("retrograde") is True:
+            retro_found.append(planet)
+            principle = _RETROGRADE_PRINCIPLES.get(planet)
+            if principle:
+                output += f"{planet} (RETROGRADE — confirmed in source data):\n"
+                # Strip the "If X is retrograde:" prefix from the principle text
+                clean = principle.split(":", 1)[-1].strip() if ":" in principle else principle
+                output += f"  {clean}\n\n"
+            else:
+                output += (
+                    f"{planet} is retrograde — energy turns inward, producing delayed "
+                    f"and internally processed results.\n\n"
+                )
+
+    if not retro_found:
+        output += "No retrograde planets confirmed in source kundali data.\n"
+
     return output
 
 
