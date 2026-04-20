@@ -213,6 +213,49 @@ _EXAMPLE_RE = re.compile(
 )
 
 
+# ============================================================
+# SOURCE PRIORITY HIERARCHY
+# ============================================================
+# Tier 1 — Absolute sutra authority (BPHS, Jaimini, Brihat Jataka)
+# Tier 2 — Classical texts (Phaladeepika, Jataka Parijata, Uttara Kalamrita)
+# Tier 3 — Modern commentary (K.N. Rao, Narasimha Rao, Sanjay Rath, etc.)
+# ============================================================
+
+_TIER1_BOOKS = frozenset({
+    # bookN keys
+    "book2",   # Brihat Parashara Hora Sastra
+    "book4",   # Jaimini Sutras
+    # raw filename keys
+    "Brihat Parasara Hora Sastra.pdf",
+    "Jaimini-Sutras-Suryanarain-Rao-1949.pdf",
+    "The Brihat Jataka of Varaha Mihira (N Chidambaram Iyer).pdf",
+})
+
+_TIER2_BOOKS = frozenset({
+    # bookN keys
+    "book5",   # Jataka Parijata
+    "book6",   # Uttara Kalamrita
+    "book7",   # Phaladeepika
+    # raw filename keys
+    "Mantreswara_s__Phaladeeplka_.pdf",
+    "Mantreswaras-Phaladeepika_.pdf",
+    "jataka-parijata.pdf",
+    "Kalidasa_-_Uttara_Kalamrita_compressed(pdfgear.com) (1)-compressed.pdf",
+})
+
+# Everything else falls into Tier 3
+
+
+def _get_chunk_tier(chunk):
+    """Return 1, 2, or 3 for the source tier of a chunk."""
+    book = chunk.get("book", "")
+    if book in _TIER1_BOOKS:
+        return 1
+    if book in _TIER2_BOOKS:
+        return 2
+    return 3
+
+
 def get_display_name(book):
     """Return a clean human-readable display name for any book key or filename."""
     if book in _BOOK_DISPLAY_NAMES:
@@ -284,10 +327,41 @@ def _extract_best_sentence(text, query_words):
         # Must not start with a number / page reference
         if re.match(r'^\d+[\s\.]', s):
             continue
-        # Must contain at least one query keyword
+        # Reject OCR garbage special characters (Devanagari transliteration noise)
+        if re.search(r'[{}\$\\#@~^<>=\*]', s):
+            continue
+        # Reject fused camelCase OCR artifacts (e.g. "aJrt", "inhabited-byS aturn")
+        if re.search(r'[a-z][A-Z]', s):
+            continue
+        # Reject digit-embedded tokens: OCR substitutes a digit for a letter (e.g. "l2th")
+        if re.search(r'[a-z]\d[a-z]', s.lower()):
+            continue
+        # Reject fused long tokens: OCR line-break artifacts produce unnaturally long words
+        if any(len(w.strip("',;:.!?\"()")) > 20 for w in s.split()):
+            continue
+        # Reject sentences with suspicious isolated single-char words (OCR character drops)
+        stripped_tokens = [w.strip("',;:.!?\"()") for w in s.split()]
+        susp_singles = [
+            w for w in stripped_tokens
+            if len(w) == 1 and w not in 'aAiI0123456789'
+        ]
+        if len(susp_singles) > 0:
+            continue
+        # Reject punctuation-fused tokens: comma/semicolon/colon with no surrounding space
+        # (e.g. "Venus,t" = OCR fused "Venus, the")
+        if re.search(r'\w+[,;:]\w', s):
+            continue
+        # Require sufficient valid-character density (alpha + normal punctuation)
+        valid_chars = sum(1 for c in s if c.isalpha() or c in " .,;:!?-'\"()")
+        if valid_chars / max(len(s), 1) < 0.85:
+            continue
+        # Reject OCR artifact: '?' immediately before a letter (e.g. "?th lord")
+        if re.search(r'\?[a-z]', s.lower()):
+            continue
+        # Must contain at least TWO query keywords (single-hit matches are too unreliable)
         sl = s.lower()
         hit = sum(1 for w in query_words if w in sl)
-        if hit == 0:
+        if hit < 2:
             continue
         if hit > best_score:
             best, best_score = s, hit
@@ -297,40 +371,47 @@ def _extract_best_sentence(text, query_words):
 def get_best_classical_support(query, chunks):
     """Return the best sentence-level classical citation for query, or empty string.
 
-    Algorithm:
-    1. Score all clean, non-example chunks.
-    2. Take the top-10 highest-scoring candidates.
-    3. From each candidate, extract the single sentence with the most
-       keyword hits.
-    4. Return the citation from the first candidate that yields a good sentence.
+    TIERED SELECTION (Authority > Readability):
+    1. Search Tier 1 (BPHS, Jaimini, Brihat Jataka) first.
+       If any valid citation found there → use it, stop.
+    2. Else search Tier 2 (Phaladeepika, Jataka Parijata, Uttara Kalamrita).
+       If found → use it, stop.
+    3. Else search Tier 3 (modern commentary).
+    4. Nothing found → return empty string.
+
+    Within each tier, chunks are ranked by pure keyword-hit count so that
+    relevance decides, not just source authority.
     """
     query_words = [w for w in query.lower().split() if len(w) > 2]
 
-    scored = []
-    for c in chunks:
-        if not is_clean(c):
-            continue
-        s = score_chunk(query, c)
-        if s > 0:
-            scored.append((s, c))
+    def _search_tier(tier_num, candidates_per_tier=10):
+        tier_scored = []
+        for c in chunks:
+            if _get_chunk_tier(c) != tier_num:
+                continue
+            if not is_clean(c):
+                continue
+            kw = sum(1 for w in query_words if w in c.get("text", "").lower())
+            if kw > 0:
+                tier_scored.append((kw, c))
+        tier_scored.sort(reverse=True, key=lambda x: x[0])
+        for _, chunk in tier_scored[:candidates_per_tier]:
+            text = chunk.get("text", "").strip()
+            book = chunk.get("book", "")
+            page = chunk.get("page", "")
+            sentence = _extract_best_sentence(text, query_words)
+            if not sentence:
+                continue
+            display = get_display_name(book)
+            if page:
+                display += f" (p.{page})"
+            return f"\n📖 Classical Support\n→ {display}\n→ \"{sentence.strip()}\"\n"
+        return ""
 
-    scored.sort(reverse=True, key=lambda x: x[0])
-    top_candidates = scored[:10]
-
-    for _, chunk in top_candidates:
-        text = chunk.get("text", "").strip()
-        book = chunk.get("book", "")
-        page = chunk.get("page", "")
-
-        sentence = _extract_best_sentence(text, query_words)
-        if not sentence:
-            continue
-
-        display = get_display_name(book)
-        if page:
-            display += f" (p.{page})"
-        return f"\n📖 Classical Support\n→ {display}\n→ \"{sentence.strip()}\"\n"
-
+    for tier in (1, 2, 3):
+        result = _search_tier(tier)
+        if result:
+            return result
     return ""
 
 
@@ -368,83 +449,81 @@ _REMEDY_REJECT_RE = re.compile(
 def find_remedy_citation(planet, condition):
     """Search all_books_chunked.json for the best clean remedy citation.
 
+    TIERED SELECTION: searches Tier 1 first, then Tier 2, then Tier 3.
     Returns a formatted citation block string, or empty string if nothing
     passes the quality bar.
     """
     query = _REMEDY_QUERIES.get(planet, f"{planet} remedy propitiation")
     query_words = [w for w in query.lower().split() if len(w) > 2]
 
-    scored = []
-    for c in _all_books_chunked_normalized:
-        if not is_clean(c):
-            continue
-        # Remedies pool uses relaxed example filter — allow general statements
-        # but still block case-study sentences at sentence-extraction time.
-        s = score_chunk(query, c)
-        if s > 0:
-            scored.append((s, c))
-
     # Compiled regex for OCR-scrambled words (common BPHS OCR artifacts)
     _OCR_JUNK_RE = re.compile(r'Plmet|Jrrpiter|Prescribc?d|numbet|subscrib|vrse|sloka\s+\d', re.I)
 
-    scored.sort(reverse=True, key=lambda x: x[0])
+    def _sentence_passes(s, planet_name):
+        """Return True if sentence s is a valid remedy sentence."""
+        sl = s.lower()
+        if not re.search(
+            r'\bpropitiat|\bgemstone\b|\bwearing\b.*\bgemstone|\bwearing\b.*diamond'
+            r'|\bfasting\b|\bfast on\b|\bappease\b|\bjapa\b'
+            r'|it will be necessary to propitiate|propitiate them by'
+            r'|\bremedial measure|\bremedy\b.*planet|\bupaya\b',
+            sl,
+        ):
+            return False
+        if sum(1 for c in s if ord(c) > 127) > 0:
+            return False
+        if _OCR_JUNK_RE.search(s):
+            return False
+        if _REMEDY_REJECT_RE.search(s):
+            return False
+        if len(s) < 50 or len(s) > 300:
+            return False
+        if len(s.split()) < 8:
+            return False
+        if not s.rstrip().endswith(('.', '!', '?')):
+            return False
+        words = s.split()
+        if sum(1 for w in words if len(w) <= 1) / len(words) > 0.12:
+            return False
+        planet_hit = planet_name.lower() in sl
+        general_hit = re.search(
+            r'adversely posited|afflicted planet|weak planet|debilitat'
+            r'|it will be necessary to propitiate|propitiate them by'
+            r'|planets are favourable|remedy.*planet|planet.*remedy',
+            sl,
+        )
+        return bool(planet_hit or general_hit)
 
-    for _, chunk in scored[:50]:
-        text = chunk.get("text", "").strip()
-        book = chunk.get("book", "")
+    def _try_tier(tier_num):
+        tier_chunks = []
+        for c in _all_books_chunked_normalized:
+            if _get_chunk_tier(c) != tier_num:
+                continue
+            if not is_clean(c):
+                continue
+            kw = sum(1 for w in query_words if w in c.get("text", "").lower())
+            if kw > 0:
+                tier_chunks.append((kw, c))
+        tier_chunks.sort(reverse=True, key=lambda x: x[0])
+        for _, chunk in tier_chunks[:25]:
+            text = chunk.get("text", "").strip()
+            book = chunk.get("book", "")
+            norm = re.sub(r'\s+', ' ', re.sub(r'-\s*\n\s*', '', text)).strip()
+            for s in re.split(r'(?<=[.!?])\s+', norm):
+                if _sentence_passes(s, planet):
+                    display = get_display_name(book)
+                    clean_s = re.sub(r'prayersprescribed', 'prayers prescribed', s)
+                    return (
+                        f"\n📖 Classical Support\n"
+                        f"→ {display}\n"
+                        f"→ \"{clean_s.strip()}\"\n"
+                    )
+        return ""
 
-        norm = re.sub(r'\s+', ' ', re.sub(r'-\s*\n\s*', '', text)).strip()
-        sentences = re.split(r'(?<=[.!?])\s+', norm)
-
-        for s in sentences:
-            sl = s.lower()
-            # Must mention an actual remedial ACTION (not just mention of mantra in career context)
-            if not re.search(
-                r'\bpropitiat|\bgemstone\b|\bwearing\b.*\bgemstone|\bwearing\b.*diamond'
-                r'|\bfasting\b|\bfast on\b|\bappease\b|\bjapa\b'
-                r'|it will be necessary to propitiate|propitiate them by'
-                r'|\bremedial measure|\bremedy\b.*planet|\bupaya\b',
-                sl,
-            ):
-                continue
-            # Must not be an OCR artefact or case-study sentence
-            if sum(1 for c in s if ord(c) > 127) > 0:
-                continue
-            if _OCR_JUNK_RE.search(s):
-                continue
-            if _REMEDY_REJECT_RE.search(s):
-                continue
-            if len(s) < 50 or len(s) > 300:
-                continue
-            if len(s.split()) < 8:
-                continue
-            # Must end with terminal punctuation (reject truncated chunk-boundary fragments)
-            if not s.rstrip().endswith(('.', '!', '?')):
-                continue
-            # Word-level quality: reject if >15% of words are length-1 tokens (OCR fragments)
-            words = s.split()
-            if sum(1 for w in words if len(w) <= 1) / len(words) > 0.12:
-                continue
-            # Should relate to planet or general affliction/propitiation rule
-            planet_hit = planet.lower() in sl
-            general_hit = re.search(
-                r'adversely posited|afflicted planet|weak planet|debilitat'
-                r'|it will be necessary to propitiate|propitiate them by'
-                r'|planets are favourable|remedy.*planet|planet.*remedy',
-                sl,
-            )
-            if not (planet_hit or general_hit):
-                continue
-
-            display = get_display_name(book)
-            # Fix known OCR ligature/spacing errors in the extracted sentence
-            clean_s = re.sub(r'prayersprescribed', 'prayers prescribed', s)
-            return (
-                f"\n📖 Classical Support\n"
-                f"→ {display}\n"
-                f"→ \"{clean_s.strip()}\"\n"
-            )
-
+    for tier in (1, 2, 3):
+        result = _try_tier(tier)
+        if result:
+            return result
     return ""
 
 
